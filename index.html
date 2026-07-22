@@ -493,7 +493,7 @@
 
 <header class="header">
   <div>
-    <div class="header-brand">Coach <span>Akash Singh</span></div>
+    <div class="header-brand"><span>Akash Singh</span></div>
     <div class="header-sub">"Consistency over perfection — every single day."</div>
   </div>
   <div class="header-ig">
@@ -667,7 +667,7 @@
             <input type="tel" id="f_phone" placeholder="+91 98765 43210" required/>
           </div>
           <div class="field">
-            <label>Email <span class="opt">(optional)</span></label>
+            <label>Email <span class="req">*</span></label>
             <input type="email" id="f_email" placeholder="rahul@email.com"/>
           </div>
         </div>
@@ -793,7 +793,7 @@
 </div>
 
 <div class="footer">
-  Designed by <a href="https://instagram.com/akash.liftsup">Coach Akash Singh</a> · @akash.liftsup · Personal Coaching
+  Designed by <a href="https://instagram.com/akash.liftsup">Akash Singh</a> · @akash.liftsup · Personal Coaching
 </div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -1036,6 +1036,7 @@ async function submitForm() {
   const required = {
     'Name':   document.getElementById('f_name').value.trim(),
     'Phone':  document.getElementById('f_phone').value.trim(),
+    'Email':  document.getElementById('f_email').value.trim(),
     'Age':    document.getElementById('f_age').value.trim(),
     'Weight': document.getElementById('f_weight').value.trim(),
     'Height': document.getElementById('f_height').value.trim(),
