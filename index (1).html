@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Get Your Plan — Coach Akash Singh</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  :root {
+    --bg: #050508;
+    --card: #0e0e14;
+    --card2: #14141c;
+    --card-hover: #1a1a28;
+    --border: rgba(255,255,255,0.06);
+    --text: #f2f2f5;
+    --muted: #7a7a8e;
+    --accent: #ff5a3c;
+    --accent2: #ff8a4c;
+    --gold: #fbbf24;
+    --gold-dim: rgba(251,191,36,0.12);
+    --success: #34d399;
+    --radius: 14px;
+    --radius-sm: 10px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeInUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeInScale { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
+  @keyframes pulseGlow { 0%,100% { box-shadow:0 0 0 0 rgba(255,90,60,0); } 50% { box-shadow:0 0 20px 2px rgba(255,90,60,0.08); } }
+  @keyframes shimmer { 0% { background-position:-200% center; } 100% { background-position:200% center; } }
+  @keyframes borderGlow { 0%,100% { border-color:rgba(255,90,60,0.15); } 50% { border-color:rgba(255,90,60,0.35); } }
+  @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+  @keyframes checkPop { 0% { transform:scale(0); opacity:0; } 60% { transform:scale(1.3); } 100% { transform:scale(1); opacity:1; } }
+  @keyframes gradientShift { 0% { background-position:0% 50%; } 50% { background-position:100% 50%; } 100% { background-position:0% 50%; } }
+  @keyframes breathe { 0%,100% { transform:scale(1); } 50% { transform:scale(1.03); } }
+  @keyframes iconBounce { 0%,100% { transform:translateY(0) rotate(0deg); } 25% { transform:translateY(-3px) rotate(-2deg); } 75% { transform:translateY(-3px) rotate(2deg); } }
+
+  /* ── BACKGROUND GLOW ── */
+  .bg-glow {
+    position: fixed; top: -20%; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(255,90,60,0.05) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+    animation: breathe 8s ease-in-out infinite;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: rgba(5,5,8,0.9); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,90,60,0.15);
+    padding: 1rem 2rem;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;
+    position: sticky; top: 0; z-index: 100;
+    animation: fadeInUp 0.5s ease-out;
+  }
+  .header-brand { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.3px; }
+  .header-brand span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .header-sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; font-style: italic; }
+  .header-ig a {
+    font-size: 0.8rem; color: var(--accent); text-decoration: none; font-weight: 600;
+    border: 1px solid rgba(255,90,60,0.25); padding: 6px 16px; border-radius: 999px;
+    transition: all 0.25s;
+  }
+  .header-ig a:hover {
+    background: rgba(255,90,60,0.1); border-color: rgba(255,90,60,0.5);
+    transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,90,60,0.15);
+  }
+
+  /* ═══════════════════════════════════════════
+     TWO-COLUMN DESKTOP LAYOUT
+     ═══════════════════════════════════════════ */
+  .page-wrap {
+    position: relative; z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .col-left { min-width: 0; }
+  .col-right { min-width: 0; }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center; padding: 3rem 1rem 2rem;
+    max-width: 700px; margin: 0 auto;
+    animation: fadeInUp 0.7s ease-out 0.1s both;
+  }
+  .hero-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,90,60,0.08); border: 1px solid rgba(255,90,60,0.2);
+    color: var(--accent); font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 6px 18px; border-radius: 999px; margin-bottom: 1.25rem;
+    animation: float 3s ease-in-out infinite;
+  }
+  .hero h1 {
+    font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800;
+    line-height: 1.15; letter-spacing: -0.8px; margin-bottom: 0.7rem; color: #fff;
+  }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero-sub { font-size: 1.05rem; color: #aaa; margin-bottom: 0.3rem; }
+  .hero-nogimmick {
+    font-size: 0.9rem; color: var(--accent2); font-weight: 700;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .hero-nogimmick::before { content: '⚡'; animation: iconBounce 2s ease-in-out infinite; }
+
+  /* ── TRUST BADGES ── */
+  .trust {
+    display: flex; justify-content: center; gap: 2rem;
+    flex-wrap: wrap; padding: 0 1rem 1.5rem;
+    max-width: 700px; margin: 0 auto;
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+  }
+  .trust-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--muted); transition: color 0.2s; }
+  .trust-item:hover { color: #ccc; }
+  .trust-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
+    box-shadow: 0 0 6px rgba(255,90,60,0.4);
+  }
+
+  /* ── SCARCITY BAR ── */
+  .scarcity-bar {
+    max-width: 700px; margin: 0 auto 0.75rem; padding: 0 0.5rem;
+    animation: fadeInUp 0.6s ease-out 0.25s both;
+  }
+  .scarcity-inner {
+    background: linear-gradient(135deg, rgba(251,191,36,0.06), rgba(255,90,60,0.06));
+    border: 1px solid rgba(251,191,36,0.25);
+    border-radius: var(--radius-sm); padding: 12px 20px;
+    text-align: center; font-size: 0.85rem; color: var(--gold); font-weight: 600;
+    animation: borderGlow 3s ease-in-out infinite;
+  }
+
+  /* ── SPOT COUNTER ── */
+  .spot-counter {
+    max-width: 700px; margin: 0 auto 0.75rem; padding: 0 0.5rem;
+    animation: fadeInUp 0.6s ease-out 0.3s both;
+  }
+  .spot-inner {
+    background: var(--card); border: 1px solid rgba(255,90,60,0.12);
+    border-radius: var(--radius-sm); padding: 14px 20px;
+  }
+  .spot-label {
+    display: flex; justify-content: space-between; font-size: 0.8rem;
+    margin-bottom: 10px; flex-wrap: wrap; gap: 4px;
+  }
+  .spot-label-left { color: var(--muted); }
+  .spot-label-right { color: var(--accent); font-weight: 700; }
+  .spot-bar-bg { background: rgba(255,255,255,0.05); border-radius: 999px; height: 8px; overflow: hidden; }
+  .spot-bar-fill {
+    height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--gold));
+    background-size: 200% 100%;
+    animation: gradientShift 4s ease infinite;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .spot-text { margin-top: 8px; font-size: 0.76rem; color: var(--gold); font-weight: 600; text-align: center; }
+
+  /* ── TRANSFORMATION HOOK ── */
+  .hook-box {
+    max-width: 700px; margin: 0 auto; padding: 0 0.5rem;
+    animation: fadeInUp 0.6s ease-out 0.35s both;
+  }
+  .hook-inner {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent); border-radius: var(--radius);
+    padding: 1.25rem 1.5rem; transition: all 0.3s;
+  }
+  .hook-inner:hover { border-left-color: var(--accent2); box-shadow: -4px 0 20px rgba(255,90,60,0.06); }
+  .hook-inner p { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.75rem; line-height: 1.65; }
+  .hook-checks { display: flex; flex-direction: column; gap: 6px; }
+  .hook-check { font-size: 0.85rem; color: #ccc; display: flex; align-items: center; gap: 10px; }
+  .hook-check span.tick { color: var(--accent); font-weight: 800; font-size: 0.95rem; }
+  .hook-result {
+    margin-top: 0.9rem; font-size: 0.88rem; font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+
+  /* ── PLAN SECTION ── */
+  .plan-section {
+    max-width: 700px; margin: 0 auto; padding: 1.5rem 0.5rem 2rem;
+    animation: fadeInUp 0.6s ease-out 0.4s both;
+  }
+  .plan-section-title {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 1rem; display: flex; align-items: center; gap: 10px;
+  }
+  .plan-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .plan-cards { display: flex; flex-direction: column; gap: 12px; }
+
+  .plan-card {
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 1.25rem 1.5rem;
+    cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative; user-select: none; overflow: hidden;
+  }
+  .plan-card::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, rgba(255,90,60,0.04), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .plan-card:hover::before { opacity: 1; }
+  .plan-card:hover {
+    border-color: rgba(255,90,60,0.3); transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.4), 0 0 20px rgba(255,90,60,0.04);
+  }
+  .plan-card.selected {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255,90,60,0.1), 0 12px 32px rgba(0,0,0,0.3);
+    background: rgba(255,90,60,0.03);
+  }
+  .plan-card.selected::before { opacity: 1; }
+  .plan-card-top { display: flex; align-items: flex-start; gap: 14px; position: relative; z-index: 1; }
+  .plan-card-left { flex: 1; }
+  .plan-name { font-size: 1rem; font-weight: 800; color: #fff; }
+  .plan-desc { font-size: 0.8rem; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+  .plan-badge {
+    display: inline-block; background: var(--gold-dim);
+    border: 1px solid rgba(251,191,36,0.25); color: var(--gold);
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; padding: 3px 10px; border-radius: 999px; margin-top: 6px;
+  }
+  .plan-price-wrap { text-align: right; flex-shrink: 0; }
+  .plan-original { font-size: 0.75rem; color: #444; text-decoration: line-through; }
+  .plan-launch { font-size: 1.2rem; font-weight: 800; color: var(--accent); line-height: 1.1; }
+  .plan-launch.free-tag { font-size: 0.95rem; }
+  .plan-popular {
+    position: absolute; top: -1px; right: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff; font-size: 0.6rem; font-weight: 800;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 4px 14px; border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 12px rgba(255,90,60,0.25);
+  }
+  .plan-check {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px; transition: all 0.25s;
+  }
+  .plan-card.selected .plan-check {
+    background: var(--accent); border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(255,90,60,0.3);
+  }
+  .plan-check-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; display: none; }
+  .plan-card.selected .plan-check-dot { display: block; animation: checkPop 0.3s ease-out; }
+
+  /* ═══════════════════════════════════════════
+     FORM — RIGHT COLUMN
+     ═══════════════════════════════════════════ */
+  .form-wrap { padding: 0 0 4rem; }
+  .form-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 2rem;
+    box-shadow: 0 0 0 1px rgba(255,90,60,0.04), 0 24px 64px rgba(0,0,0,0.5);
+    animation: fadeInScale 0.6s ease-out 0.5s both;
+  }
+  .plan-summary {
+    background: rgba(255,90,60,0.04); border: 1px solid rgba(255,90,60,0.12);
+    border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 1.5rem;
+    display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;
+    transition: all 0.25s;
+  }
+  .plan-summary:hover { background: rgba(255,90,60,0.06); border-color: rgba(255,90,60,0.2); }
+  .plan-summary-name { color: #ccc; font-weight: 600; }
+  .plan-summary-price { color: var(--accent); font-weight: 800; font-size: 1rem; }
+
+  .form-section-label {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 1.75rem 0 1rem; display: flex; align-items: center; gap: 10px;
+  }
+  .form-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .form-section-label:first-child { margin-top: 0; }
+
+  .field { margin-bottom: 1.1rem; }
+  .field label { display: block; font-size: 0.78rem; font-weight: 600; color: #bbb; margin-bottom: 6px; }
+  .field label .req { color: var(--accent); margin-left: 2px; }
+  .field label .opt { color: var(--muted); font-weight: 400; margin-left: 4px; font-size: 0.72rem; }
+  .field input[type="text"], .field input[type="email"], .field input[type="number"],
+  .field input[type="tel"], .field textarea {
+    width: 100%; background: var(--card2); border: 1.5px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius-sm); padding: 11px 14px; font-size: 0.9rem;
+    color: var(--text); font-family: inherit; outline: none; transition: all 0.25s;
+    -webkit-appearance: none;
+  }
+  .field input:focus, .field textarea:focus {
+    border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,90,60,0.1), 0 0 16px rgba(255,90,60,0.05);
+    background: var(--card-hover);
+  }
+  .field input::placeholder, .field textarea::placeholder { color: #444; }
+  .field textarea { resize: vertical; min-height: 80px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .chip-opt {
+    border: 1.5px solid rgba(255,255,255,0.06); border-radius: 999px;
+    padding: 7px 16px; font-size: 0.82rem; cursor: pointer; color: var(--muted);
+    background: var(--card2); transition: all 0.25s; font-weight: 500; user-select: none;
+  }
+  .chip-opt:hover { border-color: rgba(255,90,60,0.3); color: #ccc; transform: translateY(-1px); background: var(--card-hover); }
+  .chip-opt.active {
+    background: rgba(255,90,60,0.1); border-color: var(--accent); color: var(--accent);
+    font-weight: 600; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(255,90,60,0.1);
+  }
+
+  .submit-btn {
+    width: 100%; margin-top: 1.75rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    background-size: 200% 200%; color: #fff; border: none;
+    border-radius: var(--radius-sm); padding: 16px; font-size: 1.05rem;
+    font-weight: 800; letter-spacing: 0.03em; cursor: pointer;
+    transition: all 0.3s; position: relative; overflow: hidden;
+    box-shadow: 0 4px 20px rgba(255,90,60,0.25);
+  }
+  .submit-btn::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+    transition: left 0.6s;
+  }
+  .submit-btn:hover {
+    transform: translateY(-2px); box-shadow: 0 8px 32px rgba(255,90,60,0.35);
+    animation: shimmer 2s linear infinite; background-size: 200% 200%;
+  }
+  .submit-btn:hover::before { left: 100%; }
+  .submit-btn:active { transform: scale(0.98) translateY(0); box-shadow: 0 2px 8px rgba(255,90,60,0.2); }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+  .submit-btn:disabled::before { display: none; }
+  .submit-note { text-align: center; font-size: 0.74rem; color: var(--muted); margin-top: 0.75rem; }
+
+  .success-card {
+    background: var(--card); border: 1px solid rgba(52,211,153,0.2);
+    border-radius: 18px; padding: 3rem 2rem; text-align: center; display: none;
+    box-shadow: 0 0 0 1px rgba(52,211,153,0.08), 0 24px 64px rgba(0,0,0,0.5);
+  }
+  .success-card.show { display: block; animation: fadeInScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .form-card.hide { display: none; }
+  .success-icon {
+    width: 68px; height: 68px; border-radius: 50%;
+    background: rgba(52,211,153,0.1); border: 2px solid rgba(52,211,153,0.3);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.25rem; font-size: 1.8rem;
+    animation: checkPop 0.5s ease-out 0.2s both;
+  }
+  .success-card h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem; color: #fff; }
+  .success-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
+  .success-tg {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 1.25rem;
+    background: linear-gradient(135deg, #E1306C, #fd1d1d); color: #fff; text-decoration: none;
+    font-weight: 700; font-size: 0.9rem; padding: 11px 24px; border-radius: var(--radius-sm);
+    transition: all 0.25s; box-shadow: 0 4px 16px rgba(225,48,108,0.3);
+  }
+  .success-tg:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(225,48,108,0.35); }
+  .success-wa-note { margin-top: 0.9rem; font-size: 0.8rem; color: var(--muted); }
+  .success-wa-note a { color: var(--success); text-decoration: none; font-weight: 600; transition: color 0.2s; }
+  .success-wa-note a:hover { text-decoration: underline; color: #6ee7b7; }
+
+  .form-error {
+    background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25);
+    color: #f87171; border-radius: var(--radius-sm); padding: 10px 14px;
+    font-size: 0.85rem; margin-top: 1rem; display: none;
+  }
+  .form-error.show { display: block; animation: fadeInUp 0.3s ease-out; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center; padding: 2rem 1.5rem; font-size: 0.74rem; color: #333;
+    border-top: 1px solid var(--border); position: relative; z-index: 1;
+  }
+  .footer a { color: var(--accent); text-decoration: none; font-weight: 600; transition: color 0.2s; }
+  .footer a:hover { color: var(--accent2); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #333; }
+  ::selection { background: rgba(255,90,60,0.25); color: #fff; }
+
+  /* ═══════════════════════════════════════════
+     RESPONSIVE — TABLET
+     ═══════════════════════════════════════════ */
+  @media (min-width: 640px) {
+    .hero h1 { font-size: 2.6rem; }
+    .hero { padding: 4rem 2rem 2.5rem; }
+    .hero-sub { font-size: 1.1rem; }
+    .hook-inner p { font-size: 0.92rem; }
+    .plan-card { padding: 1.4rem 1.75rem; }
+    .form-card { padding: 2.5rem; }
+  }
+
+  /* ═══════════════════════════════════════════
+     RESPONSIVE — DESKTOP (TWO-COLUMN)
+     ═══════════════════════════════════════════ */
+  @media (min-width: 900px) {
+    .page-wrap {
+      grid-template-columns: 1fr 420px;
+      gap: 2.5rem;
+      align-items: start;
+      padding: 0 2rem;
+    }
+    .col-right { position: sticky; top: 80px; }
+
+    .hero { text-align: left; padding: 4rem 0 2rem; max-width: none; }
+    .hero h1 { font-size: 2.8rem; letter-spacing: -1px; }
+    .hero-sub { font-size: 1.15rem; }
+    .hero-nogimmick { font-size: 0.95rem; }
+
+    .trust { justify-content: flex-start; padding: 0 0 1.5rem; max-width: none; gap: 2rem; }
+    .scarcity-bar, .spot-counter, .hook-box, .plan-section { max-width: none; padding-left: 0; padding-right: 0; }
+    .plan-section { padding-bottom: 3rem; }
+
+    .plan-card { padding: 1.5rem 1.75rem; }
+    .plan-name { font-size: 1.05rem; }
+    .plan-desc { font-size: 0.82rem; }
+    .plan-launch { font-size: 1.3rem; }
+    .plan-original { font-size: 0.78rem; }
+    .plan-badge { font-size: 0.68rem; padding: 3px 10px; }
+
+    .form-card { padding: 2.5rem; border-radius: 20px; }
+    .form-section-label { margin: 2rem 0 1.25rem; }
+    .field { margin-bottom: 1.25rem; }
+    .field label { font-size: 0.8rem; }
+    .field input, .field textarea { padding: 12px 16px; font-size: 0.92rem; }
+    .chip-opt { padding: 8px 18px; font-size: 0.85rem; }
+    .submit-btn { padding: 17px; font-size: 1.1rem; }
+
+    .bg-glow { width: 1000px; height: 1000px; top: -30%; }
+  }
+
+  /* ═══════════════════════════════════════════
+     RESPONSIVE — LARGE DESKTOP
+     ═══════════════════════════════════════════ */
+  @media (min-width: 1100px) {
+    .page-wrap { max-width: 1100px; grid-template-columns: 1fr 460px; gap: 3rem; }
+    .hero h1 { font-size: 3.2rem; }
+    .hero-sub { font-size: 1.2rem; }
+    .plan-card { padding: 1.6rem 2rem; }
+    .plan-name { font-size: 1.1rem; }
+    .plan-desc { font-size: 0.85rem; }
+    .form-card { padding: 2.75rem; }
+  }
+
+  /* ═══════════════════════════════════════════
+     RESPONSIVE — MOBILE
+     ═══════════════════════════════════════════ */
+  @media (max-width: 639px) {
+    .header { padding: 0.85rem 1.25rem; }
+    .page-wrap { padding: 0 0.75rem; }
+    .hero { padding: 2.5rem 0.5rem 1.5rem; }
+    .hero h1 { font-size: 1.7rem; }
+    .hero-pill { animation: none; }
+    .trust { gap: 1rem; }
+    .trust-item { font-size: 0.74rem; }
+    .field-row { grid-template-columns: 1fr; }
+    .form-card { padding: 1.5rem; border-radius: 14px; }
+    .plan-card { padding: 1.1rem 1.25rem; }
+    .plan-card:hover { transform: none; }
+    .chip-opt:hover { transform: none; }
+    .submit-btn:hover { transform: none; }
+    .success-tg:hover { transform: none; }
+    .scarcity-inner { font-size: 0.78rem; padding: 10px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<header class="header">
+  <div>
+    <div class="header-brand">Coach <span>Akash Singh</span></div>
+    <div class="header-sub">"Consistency over perfection — every single day."</div>
+  </div>
+  <div class="header-ig">
+    <a href="https://instagram.com/akash.liftsup" target="_blank">@akash.liftsup</a>
+  </div>
+</header>
+
+<div class="page-wrap">
+
+  <!-- LEFT COLUMN -->
+  <div class="col-left">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-pill">Personalised Fitness Plans</div>
+      <h1>Get Your Custom <em>Fat Loss / Muscle</em> Plan</h1>
+      <p class="hero-sub">Built for YOUR body, schedule &amp; diet</p>
+      <p class="hero-nogimmick">No generic plans. No guesswork.</p>
+    </div>
+
+    <!-- TRUST -->
+    <div class="trust">
+      <div class="trust-item"><div class="trust-dot"></div> 100% personalised</div>
+      <div class="trust-item"><div class="trust-dot"></div> Responds within 24 hrs</div>
+      <div class="trust-item"><div class="trust-dot"></div> Coach reviews personally</div>
+    </div>
+
+    <!-- SCARCITY -->
+    <div class="scarcity-bar">
+      <div class="scarcity-inner" id="scarcityText">
+        🎁 First <strong>100 people get their plan FREE</strong> &nbsp;·&nbsp; After that, normal prices apply
+      </div>
+    </div>
+
+    <!-- SPOT COUNTER -->
+    <div class="spot-counter">
+      <div class="spot-inner">
+        <div class="spot-label">
+          <span class="spot-label-left" id="spotLabel">🎁 Free spots remaining</span>
+          <span class="spot-label-right" id="spotsLeft">31 spots left</span>
+        </div>
+        <div class="spot-bar-bg">
+          <div class="spot-bar-fill" id="spotBar" style="width:0%"></div>
+        </div>
+        <div class="spot-text" id="spotText">69 of 100 free spots taken</div>
+      </div>
+    </div>
+
+    <!-- TRANSFORMATION HOOK -->
+    <div class="hook-box">
+      <div class="hook-inner">
+        <p>Most people fail because they follow random YouTube workouts.</p>
+        <p style="margin-bottom:0.5rem;">This plan is built based on:</p>
+        <div class="hook-checks">
+          <div class="hook-check"><span class="tick">✔</span> Your body stats</div>
+          <div class="hook-check"><span class="tick">✔</span> Your lifestyle</div>
+          <div class="hook-check"><span class="tick">✔</span> Your diet preference</div>
+        </div>
+        <div class="hook-result">So you actually see results.</div>
+      </div>
+    </div>
+
+    <!-- PLAN SELECTION -->
+    <div class="plan-section">
+      <div class="plan-section-title" id="planSectionTitle">Choose your plan</div>
+      <div class="plan-cards">
+
+        <!-- FREE PLAN (shown while spots < 100) -->
+        <div class="plan-card selected" id="card-free" onclick="selectPlan('free')">
+          <div class="plan-popular" id="freePopularBadge" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1200;">🎁 Free for first 100</div>
+          <div class="plan-card-top">
+            <div class="plan-check" id="check-free"><div class="plan-check-dot"></div></div>
+            <div class="plan-card-left">
+              <div class="plan-name">🆓 Full Custom Plan — Free</div>
+              <div class="plan-desc">Diet + Workout plan personalised to your body, goal &amp; diet. Completely free — first 100 only.</div>
+            </div>
+            <div class="plan-price-wrap">
+              <div class="plan-original" style="color:#555;">₹249</div>
+              <div class="plan-launch free-tag">FREE</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-card" id="card-diet" onclick="selectPlan('diet')">
+          <div class="plan-card-top">
+            <div class="plan-check" id="check-diet"><div class="plan-check-dot"></div></div>
+            <div class="plan-card-left">
+              <div class="plan-name">🥗 Custom Diet Plan</div>
+              <div class="plan-desc">Indian meal plan (veg/non-veg) built for your goal + body stats</div>
+              <div class="plan-badge">90% off — launch price</div>
+            </div>
+            <div class="plan-price-wrap">
+              <div class="plan-original">₹149</div>
+              <div class="plan-launch">₹15</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-card" id="card-workout" onclick="selectPlan('workout')">
+          <div class="plan-card-top">
+            <div class="plan-check" id="check-workout"><div class="plan-check-dot"></div></div>
+            <div class="plan-card-left">
+              <div class="plan-name">🏋️ Custom Workout Plan</div>
+              <div class="plan-desc">4–5 day gym or home workout plan based on your goal</div>
+              <div class="plan-badge">90% off — launch price</div>
+            </div>
+            <div class="plan-price-wrap">
+              <div class="plan-original">₹149</div>
+              <div class="plan-launch">₹15</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-card" id="card-combo" onclick="selectPlan('combo')">
+          <div class="plan-popular">⭐ Most Popular</div>
+          <div class="plan-card-top">
+            <div class="plan-check" id="check-combo"><div class="plan-check-dot"></div></div>
+            <div class="plan-card-left">
+              <div class="plan-name">🔥 Diet + Workout Combo</div>
+              <div class="plan-desc">Full package — custom meal plan + workout plan together. Best value.</div>
+              <div class="plan-badge">90% off — launch price</div>
+            </div>
+            <div class="plan-price-wrap">
+              <div class="plan-original">₹249</div>
+              <div class="plan-launch">₹25</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="col-right">
+
+    <div class="form-wrap">
+
+      <!-- SUCCESS -->
+      <div class="success-card" id="successCard">
+        <div class="success-icon">✓</div>
+        <h2>Request received!</h2>
+        <p>Coach Akash will review your details and send your personalised plan within <strong>24 hours</strong>.</p>
+        <a class="success-tg" href="https://instagram.com/akash.liftsup" target="_blank" style="background:#E1306C;">
+          📸 DM on Instagram @akash.liftsup
+        </a>
+        <div class="success-wa-note" style="margin-top:0.75rem;color:var(--muted);font-size:0.8rem;">
+          Drop a DM if you have any questions!
+        </div>
+      </div>
+
+      <!-- FORM CARD -->
+      <div class="form-card" id="formCard">
+
+        <div class="plan-summary">
+          <span class="plan-summary-name" id="summaryName">🆓 Full Custom Plan — Free</span>
+          <span class="plan-summary-price" id="summaryPrice">FREE</span>
+        </div>
+
+        <div class="form-section-label">Personal info</div>
+
+        <div class="field">
+          <label>Full name <span class="req">*</span></label>
+          <input type="text" id="f_name" placeholder="e.g. Rahul Sharma" required/>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>WhatsApp number <span class="req">*</span></label>
+            <input type="tel" id="f_phone" placeholder="+91 98765 43210" required/>
+          </div>
+          <div class="field">
+            <label>Email <span class="opt">(optional)</span></label>
+            <input type="email" id="f_email" placeholder="rahul@email.com"/>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Age <span class="req">*</span></label>
+            <input type="number" id="f_age" placeholder="25" min="15" max="65" required/>
+          </div>
+          <div class="field">
+            <label>Gender <span class="req">*</span></label>
+            <div class="chips" style="margin-top:4px;">
+              <div class="chip-opt active" data-group="gender" data-val="Male">♂ Male</div>
+              <div class="chip-opt" data-group="gender" data-val="Female">♀ Female</div>
+            </div>
+            <input type="hidden" id="f_gender" value="Male"/>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Weight (kg) <span class="req">*</span></label>
+            <input type="number" id="f_weight" placeholder="70" min="35" max="200" required/>
+          </div>
+          <div class="field">
+            <label>Height (cm) <span class="req">*</span></label>
+            <input type="number" id="f_height" placeholder="170" min="140" max="220" required/>
+          </div>
+        </div>
+
+        <div class="form-section-label">Goals &amp; preferences</div>
+
+        <div class="field">
+          <label>Primary goal <span class="req">*</span></label>
+          <div class="chips">
+            <div class="chip-opt active" data-group="goal" data-val="Weight Loss">⚖️ Weight Loss</div>
+            <div class="chip-opt" data-group="goal" data-val="Fat Loss">🔥 Fat Loss</div>
+            <div class="chip-opt" data-group="goal" data-val="Weight Gain / Muscle">💪 Weight Gain</div>
+          </div>
+          <input type="hidden" id="f_goal" value="Weight Loss"/>
+        </div>
+
+        <div class="field">
+          <label>Where do you train? <span class="req">*</span></label>
+          <div class="chips">
+            <div class="chip-opt active" data-group="training" data-val="Gym">🏋️ Gym</div>
+            <div class="chip-opt" data-group="training" data-val="Home">🏠 Home</div>
+          </div>
+          <input type="hidden" id="f_training" value="Gym"/>
+        </div>
+
+        <div class="field">
+          <label>Diet preference <span class="req">*</span></label>
+          <div class="chips">
+            <div class="chip-opt active" data-group="diet" data-val="Vegetarian">🥦 Vegetarian</div>
+            <div class="chip-opt" data-group="diet" data-val="Non-Veg">🍗 Non-Veg</div>
+          </div>
+          <input type="hidden" id="f_diet" value="Vegetarian"/>
+        </div>
+
+        <div class="field">
+          <label>Whey protein?</label>
+          <div class="chips">
+            <div class="chip-opt" data-group="whey" data-val="With Whey Protein">With Whey</div>
+            <div class="chip-opt active" data-group="whey" data-val="No Whey">No Whey</div>
+          </div>
+          <input type="hidden" id="f_whey" value="No Whey"/>
+        </div>
+
+        <div class="form-section-label">Body measurements <span class="req">*</span></div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Waist (cm) <span class="req">*</span></label>
+            <input type="number" id="f_waist" placeholder="e.g. 85" min="50" max="180"/>
+          </div>
+          <div class="field">
+            <label>Neck (cm) <span class="req">*</span></label>
+            <input type="number" id="f_neck" placeholder="e.g. 38" min="25" max="70"/>
+          </div>
+        </div>
+
+        <div class="field" id="hipsField" style="display:none;">
+          <label>Hips (cm) <span class="req">*</span></label>
+          <input type="number" id="f_hips" placeholder="e.g. 95" min="50" max="180"/>
+        </div>
+
+        <div class="form-section-label">Anything else</div>
+
+        <div class="field">
+          <label>Health issues / injuries / allergies</label>
+          <textarea id="f_health" placeholder="e.g. Lower back pain, lactose intolerant, knee injury..."></textarea>
+        </div>
+
+        <div class="field">
+          <label>Current activity level</label>
+          <div class="chips">
+            <div class="chip-opt active" data-group="activity" data-val="Sedentary (desk job)">Sedentary</div>
+            <div class="chip-opt" data-group="activity" data-val="Lightly active">Lightly active</div>
+            <div class="chip-opt" data-group="activity" data-val="Moderately active">Moderate</div>
+            <div class="chip-opt" data-group="activity" data-val="Very active">Very active</div>
+          </div>
+          <input type="hidden" id="f_activity" value="Sedentary (desk job)"/>
+        </div>
+
+        <div class="field">
+          <label>Message to Coach Akash</label>
+          <textarea id="f_message" placeholder="Anything specific you want in your plan, your schedule, budget, etc..."></textarea>
+        </div>
+
+        <div class="form-error" id="formError">Please fill in all required fields</div>
+
+        <button class="submit-btn" id="submitBtn" onclick="submitForm()">
+          Get My Free Plan Now →
+        </button>
+        <div class="submit-note">Coach Akash reviews personally — no bots, no auto-replies.</div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="footer">
+  Designed by <a href="https://instagram.com/akash.liftsup">Coach Akash Singh</a> · @akash.liftsup · Personal Coaching
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script>
+/* ================================================================
+   CONFIG — update before going live
+   ================================================================ */
+const WEB3FORMS_KEY   = '1af83a9e-c1c8-443b-8cad-e47575ad3bab';
+const TG_BOT_TOKEN    = '8323966181:AAHkRHr-JXaEK_yVv1kG-fRXbtta4BBgT_8';
+const TG_CHAT_ID      = '676917032';
+const TG_BOT_USERNAME = 'AkashCoachBot';
+const RAZORPAY_KEY_ID = 'YOUR_RAZORPAY_KEY_ID'; // ← Add your Razorpay Key ID here
+const WHATSAPP_NUMBER = '919999999999';           // ← Your WhatsApp number with country code
+
+/* ── PLANS ── */
+const PLANS = {
+  free:    { name: '🆓 Full Custom Plan — Free', price: 0,  display: 'FREE', original: '₹249' },
+  diet:    { name: '🥗 Custom Diet Plan',         price: 15, display: '₹15',  original: '₹149' },
+  workout: { name: '🏋️ Custom Workout Plan',     price: 15, display: '₹15',  original: '₹149' },
+  combo:   { name: '🔥 Diet + Workout Combo',    price: 25, display: '₹25',  original: '₹249' },
+};
+
+/* ── FIREBASE SPOT COUNTER ── */
+const TOTAL = 100;
+
+// Firebase config — replace with your own from Firebase Console
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyB7kJYXnf-eaBLQOSaF6ARAFTm-ExpvcYo",
+  authDomain:        "coach-akash-fitness-plan.firebaseapp.com",
+  databaseURL:       "https://coach-akash-fitness-plan-default-rtdb.firebaseio.com",
+  projectId:         "coach-akash-fitness-plan",
+  storageBucket:     "coach-akash-fitness-plan.firebasestorage.app",
+  messagingSenderId: "616737641311",
+  appId:             "1:616737641311:web:9b5efb31b115ef1e78dcea"
+};
+
+let firebaseDB = null;
+let spotCountRef = null;
+let freeOfferActive = true; // tracks whether free spots remain
+
+function initFirebase() {
+  try {
+    if (typeof firebase === 'undefined') return;
+    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    firebaseDB = firebase.database();
+    spotCountRef = firebaseDB.ref('spotsTaken');
+    spotCountRef.on('value', (snapshot) => {
+      const taken = snapshot.val() || 0;
+      updateSpotUI(taken);
+    });
+  } catch(e) {
+    console.warn('Firebase not configured yet:', e.message);
+    updateSpotUI(69); // fallback
+  }
+}
+
+function updateSpotUI(taken) {
+  const left = Math.max(TOTAL - taken, 0);
+  const pct  = Math.min((taken / TOTAL) * 100, 100);
+
+  setTimeout(() => {
+    document.getElementById('spotBar').style.width = pct + '%';
+  }, 300);
+
+  if (taken < TOTAL) {
+    // ── FREE OFFER STILL ACTIVE ──
+    freeOfferActive = true;
+    document.getElementById('spotsLeft').textContent = left + ' free spots left';
+    document.getElementById('spotText').textContent = taken + ' of ' + TOTAL + ' free spots taken';
+    document.getElementById('spotLabel').textContent = '🎁 Free spots remaining';
+    document.getElementById('scarcityText').innerHTML =
+      '🎁 First <strong>100 people get their plan FREE</strong> &nbsp;·&nbsp; After that, normal prices apply';
+    document.getElementById('card-free').style.display = '';
+
+    // Default select free if not already on a paid plan
+    if (selectedPlan === 'free' || !document.getElementById('card-' + selectedPlan)) {
+      selectPlan('free');
+    }
+  } else {
+    // ── FREE OFFER CLOSED — switch to paid ──
+    freeOfferActive = false;
+    document.getElementById('spotsLeft').textContent = 'Offer closed';
+    document.getElementById('spotText').textContent = 'All 100 free spots taken — paid plans below';
+    document.getElementById('spotLabel').textContent = '✅ Free offer ended';
+    document.getElementById('spotBar').style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
+    document.getElementById('scarcityText').innerHTML =
+      '⚠️ Free spots are <strong>all taken</strong> &nbsp;·&nbsp; Choose a paid plan below';
+
+    // Hide free card, auto-select diet
+    document.getElementById('card-free').style.display = 'none';
+    if (selectedPlan === 'free') selectPlan('diet');
+  }
+}
+
+async function incrementSpotCount() {
+  if (!spotCountRef) return;
+  try {
+    await spotCountRef.transaction(current => (current || 0) + 1);
+  } catch(e) {
+    console.warn('Could not increment spot count:', e);
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  initFirebase();
+  document.querySelector('.success-wa-note a').href = `https://wa.me/${WHATSAPP_NUMBER}`;
+});
+
+/* ── PLAN SELECTION ── */
+let selectedPlan = 'free';
+function selectPlan(key) {
+  selectedPlan = key;
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('card-' + key).classList.add('selected');
+  const p = PLANS[key];
+  document.getElementById('summaryName').textContent = p.name;
+  document.getElementById('summaryPrice').textContent = p.display;
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = p.price === 0 ? 'Get My Free Plan Now →' : `Pay ${p.display} & Get My Plan →`;
+}
+
+/* ── CHIPS ── */
+document.querySelectorAll('.chip-opt').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const group = chip.dataset.group;
+    document.querySelectorAll(`[data-group="${group}"]`).forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    document.getElementById('f_' + group).value = chip.dataset.val;
+    if (group === 'gender') {
+      document.getElementById('hipsField').style.display = chip.dataset.val === 'Female' ? '' : 'none';
+    }
+  });
+});
+
+/* ── COLLECT DATA ── */
+function collectData() {
+  return {
+    plan:     PLANS[selectedPlan].name,
+    price:    PLANS[selectedPlan].display,
+    name:     document.getElementById('f_name').value.trim(),
+    phone:    document.getElementById('f_phone').value.trim(),
+    email:    document.getElementById('f_email').value.trim() || '',
+    age:      document.getElementById('f_age').value.trim(),
+    gender:   document.getElementById('f_gender').value,
+    weight:   document.getElementById('f_weight').value.trim(),
+    height:   document.getElementById('f_height').value.trim(),
+    goal:     document.getElementById('f_goal').value,
+    training: document.getElementById('f_training').value,
+    diet:     document.getElementById('f_diet').value,
+    whey:     document.getElementById('f_whey').value,
+    waist:    document.getElementById('f_waist').value || '—',
+    neck:     document.getElementById('f_neck').value || '—',
+    hips:     document.getElementById('f_hips').value || '—',
+    activity: document.getElementById('f_activity').value,
+    health:   document.getElementById('f_health').value.trim() || '—',
+    message:  document.getElementById('f_message').value.trim() || '—',
+  };
+}
+
+/* ── SEND DATA ── */
+async function sendLeadData(data, paymentId = null) {
+  const tgText =
+`🏋️ *New Plan Request*
+💳 *Plan:* ${data.plan} (${data.price})${paymentId ? `\n✅ *Payment ID:* \`${paymentId}\`` : ''}
+
+👤 *Name:* ${data.name}
+📱 *Phone:* ${data.phone}
+📧 *Email:* ${data.email}
+
+📊 *Stats*
+• Age: ${data.age} | Gender: ${data.gender}
+• Weight: ${data.weight} kg | Height: ${data.height} cm
+
+🎯 *Goal:* ${data.goal}
+🏠 *Training:* ${data.training}
+🥗 *Diet:* ${data.diet}
+🥛 *Whey:* ${data.whey}
+
+📏 *Measurements*
+• Waist: ${data.waist} | Neck: ${data.neck} | Hips: ${data.hips}
+
+🏃 *Activity:* ${data.activity}
+🩺 *Health notes:* ${data.health}
+💬 *Message:* ${data.message}`;
+
+  // Submit to Web3Forms
+  const formRes = await fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      access_key: WEB3FORMS_KEY,
+      subject: `New Plan Request — ${data.name} (${data.plan})`,
+      from_name: data.name,
+      email: data.email || 'no-email@coachakash.in',
+      Plan: data.plan, Price: data.price,
+      Payment_ID: paymentId || 'Free / Pending',
+      Name: data.name, Phone: data.phone, Email: data.email,
+      Age: data.age, Gender: data.gender,
+      Weight_kg: data.weight, Height_cm: data.height,
+      Goal: data.goal, Training: data.training,
+      Diet: data.diet, Whey: data.whey,
+      Waist_cm: data.waist, Neck_cm: data.neck, Hips_cm: data.hips,
+      Activity: data.activity, Health_Notes: data.health,
+      Message: data.message,
+    }),
+  });
+
+  // Fire Telegram separately — don't let it block or break the main flow
+  if (TG_BOT_TOKEN !== 'YOUR_BOT_TOKEN') {
+    fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: TG_CHAT_ID, text: tgText }),
+    }).catch(() => {});
+  }
+
+  if (!formRes.ok) {
+    const errBody = await formRes.json().catch(() => ({}));
+    return errBody.message || ('HTTP ' + formRes.status);
+  }
+  return true;
+}
+
+/* ── SHOW SUCCESS ── */
+function showSuccess() {
+  document.getElementById('formCard').classList.add('hide');
+  document.getElementById('successCard').classList.add('show');
+  document.querySelectorAll('.plan-section, .hook-box, .spot-counter, .scarcity-bar').forEach(el => el.style.display = 'none');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── SUBMIT ── */
+async function submitForm() {
+  const btn = document.getElementById('submitBtn');
+  const errEl = document.getElementById('formError');
+  errEl.classList.remove('show');
+
+  const required = {
+    'Name':   document.getElementById('f_name').value.trim(),
+    'Phone':  document.getElementById('f_phone').value.trim(),
+    'Age':    document.getElementById('f_age').value.trim(),
+    'Weight': document.getElementById('f_weight').value.trim(),
+    'Height': document.getElementById('f_height').value.trim(),
+  };
+  const missing = Object.entries(required).filter(([,v]) => !v).map(([k]) => k);
+  if (missing.length) {
+    errEl.textContent = `Please fill in: ${missing.join(', ')}`;
+    errEl.classList.add('show');
+    return;
+  }
+
+  const data = collectData();
+
+  /* FREE PLAN — no payment */
+  if (selectedPlan === 'free') {
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    try {
+      const result = await sendLeadData(data, null);
+      if (result === true) {
+        incrementSpotCount().catch(() => {}); // fire and forget
+        showSuccess();
+      } else {
+        errEl.textContent = 'Submission failed: ' + (result || 'Unknown error');
+        errEl.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = 'Get My Free Plan Now →';
+      }
+    } catch(err) {
+      errEl.textContent = 'Error: ' + err.message;
+      errEl.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Get My Free Plan Now →';
+    }
+    return;
+  }
+
+  /* PAID PLANS — Razorpay */
+  if (RAZORPAY_KEY_ID === 'YOUR_RAZORPAY_KEY_ID') {
+    errEl.textContent = '⚠️ Payment not set up yet. Please contact Coach Akash on WhatsApp directly.';
+    errEl.classList.add('show');
+    return;
+  }
+
+  const plan = PLANS[selectedPlan];
+  const rzp = new Razorpay({
+    key: RAZORPAY_KEY_ID,
+    amount: plan.price * 100,
+    currency: 'INR',
+    name: 'Coach Akash Singh',
+    description: plan.name,
+    prefill: {
+      name: data.name,
+      contact: data.phone,
+      email: data.email !== '—' ? data.email : '',
+    },
+    theme: { color: '#ff5a3c' },
+    handler: async function(response) {
+      btn.disabled = true;
+      btn.textContent = 'Confirming...';
+      try {
+        if (await sendLeadData(data, response.razorpay_payment_id)) {
+          await incrementSpotCount();
+          showSuccess();
+        } else throw new Error();
+      } catch {
+        errEl.textContent = `Payment done ✓ (ID: ${response.razorpay_payment_id}) — but form failed. Send this ID to Coach Akash on WhatsApp.`;
+        errEl.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = `Pay ${plan.display} & Get My Plan →`;
+      }
+    },
+    modal: {
+      ondismiss: () => {
+        btn.disabled = false;
+        btn.textContent = `Pay ${plan.display} & Get My Plan →`;
+      }
+    }
+  });
+  rzp.open();
+}
+</script>
+</body>
+</html>
