@@ -981,25 +981,72 @@ async function sendLeadData(data, paymentId = null) {
 🩺 *Health notes:* ${data.health}
 💬 *Message:* ${data.message}`;
 
+  const emailBody =
+`NEW PLAN REQUEST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 PLAN DETAILS
+   Plan: ${data.plan}
+   Price: ${data.price}${paymentId ? `\n   Payment ID: ${paymentId}` : ''}
+
+👤 CLIENT INFORMATION
+   Name: ${data.name}
+   Phone: ${data.phone}
+   Email: ${data.email}
+
+📊 BODY STATS
+   Age: ${data.age} years  |  Gender: ${data.gender}
+   Weight: ${data.weight} kg  |  Height: ${data.height} cm
+
+🎯 FITNESS GOALS
+   Goal: ${data.goal}
+   Training: ${data.training}
+   Diet: ${data.diet}
+   Whey Protein: ${data.whey}
+
+📏 BODY MEASUREMENTS
+   Waist: ${data.waist} cm  |  Neck: ${data.neck} cm  |  Hips: ${data.hips} cm
+
+🏃 LIFESTYLE
+   Activity Level: ${data.activity}
+   Health / Injuries: ${data.health}
+
+💬 CLIENT MESSAGE
+   ${data.message}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Submitted via Akash Singh — Fitness Plan`;
+
   // Submit to Web3Forms
   const formRes = await fetch('https://api.web3forms.com/submit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
     body: JSON.stringify({
       access_key: WEB3FORMS_KEY,
-      subject: `New Plan Request — ${data.name} (${data.plan})`,
+      subject: `🏋️ New Plan Request — ${data.name} (${data.plan})`,
       from_name: data.name,
-      email: data.email || 'no-email@coachakash.in',
-      Plan: data.plan, Price: data.price,
-      Payment_ID: paymentId || 'Free / Pending',
-      Name: data.name, Phone: data.phone, Email: data.email,
-      Age: data.age, Gender: data.gender,
-      Weight_kg: data.weight, Height_cm: data.height,
-      Goal: data.goal, Training: data.training,
-      Diet: data.diet, Whey: data.whey,
-      Waist_cm: data.waist, Neck_cm: data.neck, Hips_cm: data.hips,
-      Activity: data.activity, Health_Notes: data.health,
-      Message: data.message,
+      email: data.email,
+      message: emailBody,
+      Plan: data.plan,
+      Price: data.price,
+      Payment_ID: paymentId || 'Free',
+      Name: data.name,
+      Phone: data.phone,
+      Email: data.email,
+      Age: data.age,
+      Gender: data.gender,
+      Weight_kg: data.weight,
+      Height_cm: data.height,
+      Goal: data.goal,
+      Training: data.training,
+      Diet: data.diet,
+      Whey: data.whey,
+      Waist_cm: data.waist,
+      Neck_cm: data.neck,
+      Hips_cm: data.hips,
+      Activity: data.activity,
+      Health_Notes: data.health,
+      Client_Message: data.message,
     }),
   });
 
