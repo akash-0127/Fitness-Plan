@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Get Your Plan — Coach Akash Singh</title>
+<title>Get Your Plan — FitPlan</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -16,11 +16,15 @@
     --border: rgba(255,255,255,0.06);
     --text: #f2f2f5;
     --muted: #7a7a8e;
-    --accent: #ff5a3c;
-    --accent2: #ff8a4c;
+    --accent: #7c3aed;
+    --accent2: #a78bfa;
     --gold: #fbbf24;
     --gold-dim: rgba(251,191,36,0.12);
     --success: #34d399;
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.12);
+    --cyan: #22d3ee;
+    --cyan-dim: rgba(34,211,238,0.12);
     --radius: 14px;
     --radius-sm: 10px;
   }
@@ -38,20 +42,36 @@
   /* ── ANIMATIONS ── */
   @keyframes fadeInUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
   @keyframes fadeInScale { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
-  @keyframes pulseGlow { 0%,100% { box-shadow:0 0 0 0 rgba(255,90,60,0); } 50% { box-shadow:0 0 20px 2px rgba(255,90,60,0.08); } }
+  @keyframes pulseGlow { 0%,100% { box-shadow:0 0 0 0 rgba(124,58,237,0); } 50% { box-shadow:0 0 20px 2px rgba(124,58,237,0.08); } }
   @keyframes shimmer { 0% { background-position:-200% center; } 100% { background-position:200% center; } }
-  @keyframes borderGlow { 0%,100% { border-color:rgba(255,90,60,0.15); } 50% { border-color:rgba(255,90,60,0.35); } }
+  @keyframes borderGlow { 0%,100% { border-color:rgba(124,58,237,0.15); } 50% { border-color:rgba(124,58,237,0.35); } }
   @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
   @keyframes checkPop { 0% { transform:scale(0); opacity:0; } 60% { transform:scale(1.3); } 100% { transform:scale(1); opacity:1; } }
   @keyframes gradientShift { 0% { background-position:0% 50%; } 50% { background-position:100% 50%; } 100% { background-position:0% 50%; } }
   @keyframes breathe { 0%,100% { transform:scale(1); } 50% { transform:scale(1.03); } }
   @keyframes iconBounce { 0%,100% { transform:translateY(0) rotate(0deg); } 25% { transform:translateY(-3px) rotate(-2deg); } 75% { transform:translateY(-3px) rotate(2deg); } }
+  @keyframes cardReveal1 { 0% { opacity:0; transform:translateY(40px) scale(0.95); } 60% { transform:translateY(-4px) scale(1.01); } 100% { opacity:1; transform:translateY(0) scale(1); } }
+  @keyframes cardReveal2 { 0% { opacity:0; transform:translateY(40px) scale(0.95); } 60% { transform:translateY(-4px) scale(1.01); } 100% { opacity:1; transform:translateY(0) scale(1); } }
+  @keyframes cardReveal3 { 0% { opacity:0; transform:translateY(40px) scale(0.95); } 60% { transform:translateY(-4px) scale(1.01); } 100% { opacity:1; transform:translateY(0) scale(1); } }
+  @keyframes iconFloat { 0%,100% { transform:translateY(0) scale(1); } 50% { transform:translateY(-8px) scale(1.08); } }
+  @keyframes ringPulse { 0% { transform:scale(1); opacity:0.6; } 100% { transform:scale(1.8); opacity:0; } }
+  @keyframes badgeSlide { 0% { opacity:0; transform:translateX(-12px); } 100% { opacity:1; transform:translateX(0); } }
+  @keyframes featureSlide { 0% { opacity:0; transform:translateX(-8px); } 100% { opacity:1; transform:translateX(0); } }
+  @keyframes glowPulse { 0%,100% { box-shadow:0 0 20px rgba(124,58,237,0.0); } 50% { box-shadow:0 0 30px rgba(124,58,237,0.12); } }
+  @keyframes particleDrift1 { 0% { transform:translate(0,0) scale(1); opacity:0.3; } 50% { opacity:0.6; } 100% { transform:translate(30px,-60px) scale(0.5); opacity:0; } }
+  @keyframes particleDrift2 { 0% { transform:translate(0,0) scale(1); opacity:0.2; } 50% { opacity:0.5; } 100% { transform:translate(-20px,-50px) scale(0.4); opacity:0; } }
+  @keyframes particleDrift3 { 0% { transform:translate(0,0) scale(1); opacity:0.4; } 50% { opacity:0.7; } 100% { transform:translate(15px,-70px) scale(0.3); opacity:0; } }
+  @keyframes slideInLeft { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
+  @keyframes scaleIn { from { opacity:0; transform:scale(0.8); } to { opacity:1; transform:scale(1); } }
+  @keyframes borderFlow { 0% { background-position:0% 50%; } 50% { background-position:100% 50%; } 100% { background-position:0% 50%; } }
+  @keyframes popularBounce { 0%,100% { transform:translateY(-1px) scale(1); } 50% { transform:translateY(-3px) scale(1.02); } }
+  @keyframes textGlow { 0%,100% { text-shadow:0 0 0 transparent; } 50% { text-shadow:0 0 12px rgba(124,58,237,0.3); } }
 
   /* ── BACKGROUND GLOW ── */
   .bg-glow {
     position: fixed; top: -20%; left: 50%; transform: translateX(-50%);
     width: 800px; height: 800px;
-    background: radial-gradient(circle, rgba(255,90,60,0.05) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(124,58,237,0.05) 0%, transparent 70%);
     pointer-events: none; z-index: 0;
     animation: breathe 8s ease-in-out infinite;
   }
@@ -59,7 +79,7 @@
   /* ── HEADER ── */
   .header {
     background: rgba(5,5,8,0.9); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(255,90,60,0.15);
+    border-bottom: 1px solid rgba(124,58,237,0.15);
     padding: 1rem 2rem;
     display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;
     position: sticky; top: 0; z-index: 100;
@@ -73,12 +93,12 @@
   .header-sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; font-style: italic; }
   .header-ig a {
     font-size: 0.8rem; color: var(--accent); text-decoration: none; font-weight: 600;
-    border: 1px solid rgba(255,90,60,0.25); padding: 6px 16px; border-radius: 999px;
+    border: 1px solid rgba(124,58,237,0.25); padding: 6px 16px; border-radius: 999px;
     transition: all 0.25s;
   }
   .header-ig a:hover {
-    background: rgba(255,90,60,0.1); border-color: rgba(255,90,60,0.5);
-    transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,90,60,0.15);
+    background: rgba(124,58,237,0.1); border-color: rgba(124,58,237,0.5);
+    transform: translateY(-1px); box-shadow: 0 4px 12px rgba(124,58,237,0.15);
   }
 
   /* ═══════════════════════════════════════════
@@ -104,7 +124,7 @@
   }
   .hero-pill {
     display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(255,90,60,0.08); border: 1px solid rgba(255,90,60,0.2);
+    background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.2);
     color: var(--accent); font-size: 0.72rem; font-weight: 700;
     letter-spacing: 0.1em; text-transform: uppercase;
     padding: 6px 18px; border-radius: 999px; margin-bottom: 1.25rem;
@@ -124,7 +144,46 @@
     font-size: 0.9rem; color: var(--accent2); font-weight: 700;
     display: inline-flex; align-items: center; gap: 5px;
   }
-  .hero-nogimmick::before { content: '⚡'; animation: iconBounce 2s ease-in-out infinite; }
+  .hero-nogimmick::before { content: '\26A1'; animation: iconBounce 2s ease-in-out infinite; }
+
+  /* ── HERO CTA ── */
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 1.75rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    background-size: 200% 200%; color: #fff; border: none;
+    border-radius: 999px; padding: 14px 36px; font-size: 1.05rem;
+    font-weight: 800; letter-spacing: 0.02em; cursor: pointer;
+    transition: all 0.3s; position: relative; overflow: hidden;
+    box-shadow: 0 4px 24px rgba(124,58,237,0.3);
+    animation: fadeInUp 0.6s ease-out 0.4s both;
+  }
+  .hero-cta::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transition: left 0.6s;
+  }
+  .hero-cta:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 8px 36px rgba(124,58,237,0.4);
+  }
+  .hero-cta:hover::before { left: 100%; }
+  .hero-cta:active { transform: scale(0.97); }
+  .hero-cta.hidden { display: none; }
+
+  /* ── REVEAL SECTION ── */
+  .reveal-wrap {
+    max-height: 0; overflow: hidden; opacity: 0;
+    transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease-out;
+  }
+  .reveal-wrap.show {
+    max-height: 5000px; opacity: 1;
+  }
+  .reveal-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 1.5rem;
+    display: grid; grid-template-columns: 1fr; gap: 0;
+  }
 
   /* ── TRUST BADGES ── */
   .trust {
@@ -137,58 +196,20 @@
   .trust-item:hover { color: #ccc; }
   .trust-dot {
     width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
-    box-shadow: 0 0 6px rgba(255,90,60,0.4);
+    box-shadow: 0 0 6px rgba(124,58,237,0.4);
   }
-
-  /* ── SCARCITY BAR ── */
-  .scarcity-bar {
-    max-width: 700px; margin: 0 auto 0.75rem; padding: 0 0.5rem;
-    animation: fadeInUp 0.6s ease-out 0.25s both;
-  }
-  .scarcity-inner {
-    background: linear-gradient(135deg, rgba(251,191,36,0.06), rgba(255,90,60,0.06));
-    border: 1px solid rgba(251,191,36,0.25);
-    border-radius: var(--radius-sm); padding: 12px 20px;
-    text-align: center; font-size: 0.85rem; color: var(--gold); font-weight: 600;
-    animation: borderGlow 3s ease-in-out infinite;
-  }
-
-  /* ── SPOT COUNTER ── */
-  .spot-counter {
-    max-width: 700px; margin: 0 auto 0.75rem; padding: 0 0.5rem;
-    animation: fadeInUp 0.6s ease-out 0.3s both;
-  }
-  .spot-inner {
-    background: var(--card); border: 1px solid rgba(255,90,60,0.12);
-    border-radius: var(--radius-sm); padding: 14px 20px;
-  }
-  .spot-label {
-    display: flex; justify-content: space-between; font-size: 0.8rem;
-    margin-bottom: 10px; flex-wrap: wrap; gap: 4px;
-  }
-  .spot-label-left { color: var(--muted); }
-  .spot-label-right { color: var(--accent); font-weight: 700; }
-  .spot-bar-bg { background: rgba(255,255,255,0.05); border-radius: 999px; height: 8px; overflow: hidden; }
-  .spot-bar-fill {
-    height: 100%; border-radius: 999px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--gold));
-    background-size: 200% 100%;
-    animation: gradientShift 4s ease infinite;
-    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .spot-text { margin-top: 8px; font-size: 0.76rem; color: var(--gold); font-weight: 600; text-align: center; }
 
   /* ── TRANSFORMATION HOOK ── */
   .hook-box {
     max-width: 700px; margin: 0 auto; padding: 0 0.5rem;
-    animation: fadeInUp 0.6s ease-out 0.35s both;
+    animation: fadeInUp 0.6s ease-out 0.25s both;
   }
   .hook-inner {
     background: var(--card); border: 1px solid var(--border);
     border-left: 3px solid var(--accent); border-radius: var(--radius);
     padding: 1.25rem 1.5rem; transition: all 0.3s;
   }
-  .hook-inner:hover { border-left-color: var(--accent2); box-shadow: -4px 0 20px rgba(255,90,60,0.06); }
+  .hook-inner:hover { border-left-color: var(--accent2); box-shadow: -4px 0 20px rgba(124,58,237,0.06); }
   .hook-inner p { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.75rem; line-height: 1.65; }
   .hook-checks { display: flex; flex-direction: column; gap: 6px; }
   .hook-check { font-size: 0.85rem; color: #ccc; display: flex; align-items: center; gap: 10px; }
@@ -199,93 +220,264 @@
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
 
-  /* ── PLAN SECTION ── */
+  /* ═══════════════════════════════════════════
+     PROFESSIONAL PLAN CARDS SECTION
+     ═══════════════════════════════════════════ */
   .plan-section {
-    max-width: 700px; margin: 0 auto; padding: 1.5rem 0.5rem 2rem;
-    animation: fadeInUp 0.6s ease-out 0.4s both;
+    max-width: 700px; margin: 0 auto; padding: 2rem 0.5rem 2rem;
+    animation: fadeInUp 0.6s ease-out 0.3s both;
   }
   .plan-section-title {
     font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em;
     text-transform: uppercase; color: var(--accent);
-    margin-bottom: 1rem; display: flex; align-items: center; gap: 10px;
+    margin-bottom: 1.25rem; display: flex; align-items: center; gap: 10px;
   }
   .plan-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-  .plan-cards { display: flex; flex-direction: column; gap: 12px; }
 
+  .plan-cards { display: flex; flex-direction: column; gap: 16px; }
+
+  /* ── BASE CARD ── */
   .plan-card {
     background: var(--card); border: 1.5px solid var(--border);
-    border-radius: var(--radius); padding: 1.25rem 1.5rem;
-    cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 18px; padding: 1.5rem 1.75rem;
+    cursor: pointer; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative; user-select: none; overflow: hidden;
   }
   .plan-card::before {
     content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(135deg, rgba(255,90,60,0.04), transparent);
-    opacity: 0; transition: opacity 0.3s;
+    background: linear-gradient(135deg, rgba(124,58,237,0.04), transparent);
+    opacity: 0; transition: opacity 0.4s; pointer-events: none;
+  }
+  .plan-card::after {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: conic-gradient(from 0deg, transparent 0%, rgba(124,58,237,0.03) 10%, transparent 20%);
+    animation: borderFlow 6s linear infinite;
+    opacity: 0; transition: opacity 0.4s; pointer-events: none;
   }
   .plan-card:hover::before { opacity: 1; }
+  .plan-card:hover::after { opacity: 1; }
   .plan-card:hover {
-    border-color: rgba(255,90,60,0.3); transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.4), 0 0 20px rgba(255,90,60,0.04);
+    border-color: rgba(124,58,237,0.3); transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 0 24px rgba(124,58,237,0.06);
   }
   .plan-card.selected {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(255,90,60,0.1), 0 12px 32px rgba(0,0,0,0.3);
-    background: rgba(255,90,60,0.03);
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.12), 0 16px 40px rgba(0,0,0,0.3);
+    background: rgba(124,58,237,0.03);
+    animation: glowPulse 3s ease-in-out infinite;
   }
   .plan-card.selected::before { opacity: 1; }
+
+  /* ── STAGGERED ENTRANCE ── */
+  .plan-card.card-meal { animation: cardReveal1 0.7s ease-out 0.4s both; }
+  .plan-card.card-workout { animation: cardReveal2 0.7s ease-out 0.55s both; }
+  .plan-card.card-combo { animation: cardReveal3 0.7s ease-out 0.7s both; }
+
+  /* ── CARD TOP ROW ── */
   .plan-card-top { display: flex; align-items: flex-start; gap: 14px; position: relative; z-index: 1; }
-  .plan-card-left { flex: 1; }
-  .plan-name { font-size: 1rem; font-weight: 800; color: #fff; }
-  .plan-desc { font-size: 0.8rem; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+
+  /* ── ICON AREA ── */
+  .plan-icon-wrap {
+    width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; position: relative; transition: all 0.3s;
+  }
+  .plan-icon-wrap::after {
+    content: ''; position: absolute; inset: -4px; border-radius: 18px;
+    opacity: 0; transition: opacity 0.3s; pointer-events: none;
+  }
+  .plan-card:hover .plan-icon-wrap { animation: iconFloat 2s ease-in-out infinite; }
+  .plan-card.selected .plan-icon-wrap::after { opacity: 1; }
+
+  .plan-card.card-meal .plan-icon-wrap {
+    background: linear-gradient(135deg, rgba(52,211,153,0.15), rgba(52,211,153,0.05));
+    border: 1px solid rgba(52,211,153,0.2);
+  }
+  .plan-card.card-meal.selected .plan-icon-wrap {
+    box-shadow: 0 0 20px rgba(52,211,153,0.15);
+  }
+  .plan-card.card-meal.selected .plan-icon-wrap::after {
+    background: radial-gradient(circle, rgba(52,211,153,0.1) 0%, transparent 70%);
+  }
+
+  .plan-card.card-workout .plan-icon-wrap {
+    background: linear-gradient(135deg, rgba(167,139,250,0.15), rgba(167,139,250,0.05));
+    border: 1px solid rgba(167,139,250,0.2);
+  }
+  .plan-card.card-workout.selected .plan-icon-wrap {
+    box-shadow: 0 0 20px rgba(167,139,250,0.15);
+  }
+  .plan-card.card-workout.selected .plan-icon-wrap::after {
+    background: radial-gradient(circle, rgba(167,139,250,0.1) 0%, transparent 70%);
+  }
+
+  .plan-card.card-combo .plan-icon-wrap {
+    background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(124,58,237,0.05));
+    border: 1px solid rgba(124,58,237,0.2);
+  }
+  .plan-card.card-combo.selected .plan-icon-wrap {
+    box-shadow: 0 0 20px rgba(124,58,237,0.15);
+  }
+  .plan-card.card-combo.selected .plan-icon-wrap::after {
+    background: radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%);
+  }
+
+  /* ── RING PULSE ON SELECT ── */
+  .plan-icon-ring {
+    position: absolute; inset: -6px; border-radius: 18px;
+    border: 2px solid var(--accent); opacity: 0;
+    pointer-events: none; transition: opacity 0.3s;
+  }
+  .plan-card.selected .plan-icon-ring { opacity: 1; animation: ringPulse 1.5s ease-out infinite; }
+
+  /* ── CARD CONTENT ── */
+  .plan-card-left { flex: 1; min-width: 0; }
+  .plan-name { font-size: 1.05rem; font-weight: 800; color: #fff; margin-bottom: 2px; }
+  .plan-card.card-meal .plan-name { color: #e2e8f0; }
+  .plan-card.card-workout .plan-name { color: #e2e8f0; }
+  .plan-card.card-combo .plan-name {
+    background: linear-gradient(135deg, #fff, var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .plan-tagline {
+    font-size: 0.78rem; color: var(--muted); margin-bottom: 10px; line-height: 1.5;
+  }
+
+  /* ── FEATURE LIST ── */
+  .plan-features { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+  .plan-feature {
+    font-size: 0.78rem; color: #999; display: flex; align-items: center; gap: 8px;
+    opacity: 0; animation: featureSlide 0.4s ease-out forwards;
+  }
+  .plan-card.card-meal .plan-feature:nth-child(1) { animation-delay: 0.5s; }
+  .plan-card.card-meal .plan-feature:nth-child(2) { animation-delay: 0.6s; }
+  .plan-card.card-meal .plan-feature:nth-child(3) { animation-delay: 0.7s; }
+  .plan-card.card-workout .plan-feature:nth-child(1) { animation-delay: 0.65s; }
+  .plan-card.card-workout .plan-feature:nth-child(2) { animation-delay: 0.75s; }
+  .plan-card.card-workout .plan-feature:nth-child(3) { animation-delay: 0.85s; }
+  .plan-card.card-combo .plan-feature:nth-child(1) { animation-delay: 0.8s; }
+  .plan-card.card-combo .plan-feature:nth-child(2) { animation-delay: 0.9s; }
+  .plan-card.card-combo .plan-feature:nth-child(3) { animation-delay: 1.0s; }
+  .plan-card.card-combo .plan-feature:nth-child(4) { animation-delay: 1.1s; }
+  .plan-feature-icon {
+    width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.55rem; font-weight: 800;
+  }
+  .plan-card.card-meal .plan-feature-icon { background: rgba(52,211,153,0.15); color: var(--success); }
+  .plan-card.card-workout .plan-feature-icon { background: rgba(167,139,250,0.15); color: var(--purple); }
+  .plan-card.card-combo .plan-feature-icon { background: rgba(124,58,237,0.15); color: var(--accent); }
+
+  /* ── BOTTOM ROW ── */
+  .plan-card-bottom {
+    display: flex; align-items: center; justify-content: space-between;
+    position: relative; z-index: 1;
+  }
+
+  /* ── BADGES ── */
   .plan-badge {
-    display: inline-block; background: var(--gold-dim);
-    border: 1px solid rgba(251,191,36,0.25); color: var(--gold);
+    display: inline-flex; align-items: center; gap: 4px;
     font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em;
-    text-transform: uppercase; padding: 3px 10px; border-radius: 999px; margin-top: 6px;
+    text-transform: uppercase; padding: 4px 12px; border-radius: 999px;
+    opacity: 0; animation: badgeSlide 0.4s ease-out forwards;
   }
-  .plan-price-wrap { text-align: right; flex-shrink: 0; }
-  .plan-original { font-size: 0.75rem; color: #444; text-decoration: line-through; }
-  .plan-launch { font-size: 1.2rem; font-weight: 800; color: var(--accent); line-height: 1.1; }
-  .plan-launch.free-tag { font-size: 0.95rem; }
-  .plan-popular {
-    position: absolute; top: -1px; right: 14px;
+  .plan-card.card-combo .plan-badge {
+    background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(167,139,250,0.15));
+    border: 1px solid rgba(124,58,237,0.25); color: var(--accent);
+    animation-delay: 0.9s;
+  }
+  .plan-card.card-meal .plan-badge {
+    background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.2); color: var(--success);
+    animation-delay: 0.7s;
+  }
+  .plan-card.card-workout .plan-badge {
+    background: rgba(167,139,250,0.1); border: 1px solid rgba(167,139,250,0.2); color: var(--purple);
+    animation-delay: 0.8s;
+  }
+  .plan-card.card-combo .plan-badge.popular-badge {
     background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #fff; font-size: 0.6rem; font-weight: 800;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    padding: 4px 14px; border-radius: 0 0 8px 8px;
-    box-shadow: 0 4px 12px rgba(255,90,60,0.25);
+    color: #fff; border: none; animation: badgeSlide 0.4s ease-out 0.9s forwards, popularBounce 2s ease-in-out 1.3s infinite;
   }
+
+  /* ── PRICE ── */
+  .plan-price-area { text-align: right; display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+  .plan-dur-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 1.5px solid rgba(255,255,255,0.06); border-radius: 10px;
+    padding: 6px 12px; cursor: pointer; transition: all 0.25s; user-select: none;
+    background: var(--card2);
+  }
+  .plan-dur-btn:hover { border-color: rgba(255,255,255,0.12); }
+  .plan-dur-btn.active { border-color: var(--accent); background: rgba(124,58,237,0.06); }
+  .plan-card.card-meal .plan-dur-btn.active { border-color: var(--success); background: rgba(52,211,153,0.06); }
+  .plan-card.card-workout .plan-dur-btn.active { border-color: var(--purple); background: rgba(167,139,250,0.06); }
+  .plan-dur-label { font-size: 0.65rem; color: var(--muted); font-weight: 600; white-space: nowrap; }
+  .plan-dur-price { font-size: 0.95rem; font-weight: 800; color: #fff; white-space: nowrap; }
+  .plan-card.card-meal .plan-dur-price { color: var(--success); }
+  .plan-card.card-workout .plan-dur-price { color: var(--purple); }
+  .plan-card.card-combo .plan-dur-price {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .plan-dur-original { font-size: 0.65rem; color: #444; text-decoration: line-through; }
+  .plan-dur-save {
+    font-size: 0.58rem; font-weight: 700; color: var(--success);
+    background: rgba(52,211,153,0.1); padding: 1px 6px; border-radius: 999px;
+  }
+  .plan-card.card-combo .plan-dur-save { color: var(--accent); background: rgba(124,58,237,0.1); }
+  .plan-card.card-workout .plan-dur-save { color: var(--purple); background: rgba(167,139,250,0.1); }
+
+  /* ── CHECK CIRCLE ── */
   .plan-check {
     width: 22px; height: 22px; border-radius: 50%;
     border: 1.5px solid var(--border);
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0; margin-top: 2px; transition: all 0.25s;
   }
-  .plan-card.selected .plan-check {
-    background: var(--accent); border-color: var(--accent);
-    box-shadow: 0 0 10px rgba(255,90,60,0.3);
-  }
+  .plan-card.card-meal.selected .plan-check { background: var(--success); border-color: var(--success); box-shadow: 0 0 10px rgba(52,211,153,0.3); }
+  .plan-card.card-workout.selected .plan-check { background: var(--purple); border-color: var(--purple); box-shadow: 0 0 10px rgba(167,139,250,0.3); }
+  .plan-card.card-combo.selected .plan-check { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 10px rgba(124,58,237,0.3); }
   .plan-check-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; display: none; }
   .plan-card.selected .plan-check-dot { display: block; animation: checkPop 0.3s ease-out; }
+
+  /* ── PARTICLES ── */
+  .plan-particles {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; overflow: hidden; z-index: 0;
+  }
+  .plan-particle {
+    position: absolute; width: 4px; height: 4px; border-radius: 50%;
+    opacity: 0;
+  }
+  .plan-card.selected .plan-particle { opacity: 1; }
+  .plan-card.card-meal .plan-particle { background: var(--success); }
+  .plan-card.card-workout .plan-particle { background: var(--purple); }
+  .plan-card.card-combo .plan-particle { background: var(--accent); }
+  .plan-particle:nth-child(1) { top: 20%; left: 10%; animation: particleDrift1 4s ease-in-out 0s infinite; }
+  .plan-particle:nth-child(2) { top: 60%; left: 85%; animation: particleDrift2 5s ease-in-out 1s infinite; }
+  .plan-particle:nth-child(3) { top: 40%; left: 50%; animation: particleDrift3 3.5s ease-in-out 0.5s infinite; }
+  .plan-particle:nth-child(4) { top: 80%; left: 30%; animation: particleDrift1 4.5s ease-in-out 1.5s infinite; }
+  .plan-particle:nth-child(5) { top: 10%; left: 70%; animation: particleDrift2 3.8s ease-in-out 0.8s infinite; }
 
   /* ═══════════════════════════════════════════
      FORM — RIGHT COLUMN
      ═══════════════════════════════════════════ */
-  .form-wrap { padding: 0 0 4rem; }
+  .form-wrap { padding: 0 0 4rem; max-height: 0; opacity: 0; overflow: hidden;
+    transition: max-height 0.7s cubic-bezier(0.4,0,0.2,1), opacity 0.5s ease-out, padding 0.5s; }
+  .form-wrap.show { max-height: 5000px; opacity: 1; }
   .form-card {
     background: var(--card); border: 1px solid var(--border);
     border-radius: 18px; padding: 2rem;
-    box-shadow: 0 0 0 1px rgba(255,90,60,0.04), 0 24px 64px rgba(0,0,0,0.5);
+    box-shadow: 0 0 0 1px rgba(124,58,237,0.04), 0 24px 64px rgba(0,0,0,0.5);
     animation: fadeInScale 0.6s ease-out 0.5s both;
   }
   .plan-summary {
-    background: rgba(255,90,60,0.04); border: 1px solid rgba(255,90,60,0.12);
+    background: rgba(124,58,237,0.04); border: 1px solid rgba(124,58,237,0.12);
     border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 1.5rem;
     display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;
     transition: all 0.25s;
   }
-  .plan-summary:hover { background: rgba(255,90,60,0.06); border-color: rgba(255,90,60,0.2); }
+  .plan-summary:hover { background: rgba(124,58,237,0.06); border-color: rgba(124,58,237,0.2); }
   .plan-summary-name { color: #ccc; font-weight: 600; }
   .plan-summary-price { color: var(--accent); font-weight: 800; font-size: 1rem; }
 
@@ -309,7 +501,7 @@
     -webkit-appearance: none;
   }
   .field input:focus, .field textarea:focus {
-    border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,90,60,0.1), 0 0 16px rgba(255,90,60,0.05);
+    border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,58,237,0.1), 0 0 16px rgba(124,58,237,0.05);
     background: var(--card-hover);
   }
   .field input::placeholder, .field textarea::placeholder { color: #444; }
@@ -322,10 +514,10 @@
     padding: 7px 16px; font-size: 0.82rem; cursor: pointer; color: var(--muted);
     background: var(--card2); transition: all 0.25s; font-weight: 500; user-select: none;
   }
-  .chip-opt:hover { border-color: rgba(255,90,60,0.3); color: #ccc; transform: translateY(-1px); background: var(--card-hover); }
+  .chip-opt:hover { border-color: rgba(124,58,237,0.3); color: #ccc; transform: translateY(-1px); background: var(--card-hover); }
   .chip-opt.active {
-    background: rgba(255,90,60,0.1); border-color: var(--accent); color: var(--accent);
-    font-weight: 600; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(255,90,60,0.1);
+    background: rgba(124,58,237,0.1); border-color: var(--accent); color: var(--accent);
+    font-weight: 600; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(124,58,237,0.1);
   }
 
   .submit-btn {
@@ -335,7 +527,7 @@
     border-radius: var(--radius-sm); padding: 16px; font-size: 1.05rem;
     font-weight: 800; letter-spacing: 0.03em; cursor: pointer;
     transition: all 0.3s; position: relative; overflow: hidden;
-    box-shadow: 0 4px 20px rgba(255,90,60,0.25);
+    box-shadow: 0 4px 20px rgba(124,58,237,0.25);
   }
   .submit-btn::before {
     content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
@@ -343,11 +535,11 @@
     transition: left 0.6s;
   }
   .submit-btn:hover {
-    transform: translateY(-2px); box-shadow: 0 8px 32px rgba(255,90,60,0.35);
+    transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124,58,237,0.35);
     animation: shimmer 2s linear infinite; background-size: 200% 200%;
   }
   .submit-btn:hover::before { left: 100%; }
-  .submit-btn:active { transform: scale(0.98) translateY(0); box-shadow: 0 2px 8px rgba(255,90,60,0.2); }
+  .submit-btn:active { transform: scale(0.98) translateY(0); box-shadow: 0 2px 8px rgba(124,58,237,0.2); }
   .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
   .submit-btn:disabled::before { display: none; }
   .submit-note { text-align: center; font-size: 0.74rem; color: var(--muted); margin-top: 0.75rem; }
@@ -399,7 +591,7 @@
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: #333; }
-  ::selection { background: rgba(255,90,60,0.25); color: #fff; }
+  ::selection { background: rgba(124,58,237,0.25); color: #fff; }
 
   /* ═══════════════════════════════════════════
      RESPONSIVE — TABLET
@@ -409,7 +601,7 @@
     .hero { padding: 4rem 2rem 2.5rem; }
     .hero-sub { font-size: 1.1rem; }
     .hook-inner p { font-size: 0.92rem; }
-    .plan-card { padding: 1.4rem 1.75rem; }
+    .plan-card { padding: 1.6rem 2rem; }
     .form-card { padding: 2.5rem; }
   }
 
@@ -417,13 +609,15 @@
      RESPONSIVE — DESKTOP (TWO-COLUMN)
      ═══════════════════════════════════════════ */
   @media (min-width: 900px) {
-    .page-wrap {
+    .page-wrap { padding: 0 2rem; }
+
+    .reveal-inner {
       grid-template-columns: 1fr 420px;
       gap: 2.5rem;
       align-items: start;
       padding: 0 2rem;
     }
-    .col-right { position: sticky; top: 80px; }
+    .form-wrap { position: sticky; top: 80px; }
 
     .hero { text-align: left; padding: 4rem 0 2rem; max-width: none; }
     .hero h1 { font-size: 2.8rem; letter-spacing: -1px; }
@@ -431,15 +625,15 @@
     .hero-nogimmick { font-size: 0.95rem; }
 
     .trust { justify-content: flex-start; padding: 0 0 1.5rem; max-width: none; gap: 2rem; }
-    .scarcity-bar, .spot-counter, .hook-box, .plan-section { max-width: none; padding-left: 0; padding-right: 0; }
+    .hook-box, .plan-section { max-width: none; padding-left: 0; padding-right: 0; }
     .plan-section { padding-bottom: 3rem; }
 
-    .plan-card { padding: 1.5rem 1.75rem; }
-    .plan-name { font-size: 1.05rem; }
-    .plan-desc { font-size: 0.82rem; }
-    .plan-launch { font-size: 1.3rem; }
+    .plan-card { padding: 1.75rem 2.25rem; }
+    .plan-name { font-size: 1.1rem; }
+    .plan-tagline { font-size: 0.82rem; }
+    .plan-launch { font-size: 1.5rem; }
     .plan-original { font-size: 0.78rem; }
-    .plan-badge { font-size: 0.68rem; padding: 3px 10px; }
+    .plan-badge { font-size: 0.68rem; padding: 4px 12px; }
 
     .form-card { padding: 2.5rem; border-radius: 20px; }
     .form-section-label { margin: 2rem 0 1.25rem; }
@@ -456,12 +650,12 @@
      RESPONSIVE — LARGE DESKTOP
      ═══════════════════════════════════════════ */
   @media (min-width: 1100px) {
-    .page-wrap { max-width: 1100px; grid-template-columns: 1fr 460px; gap: 3rem; }
+    .reveal-inner { max-width: 1100px; grid-template-columns: 1fr 460px; gap: 3rem; padding: 0 2rem; }
     .hero h1 { font-size: 3.2rem; }
     .hero-sub { font-size: 1.2rem; }
-    .plan-card { padding: 1.6rem 2rem; }
-    .plan-name { font-size: 1.1rem; }
-    .plan-desc { font-size: 0.85rem; }
+    .plan-card { padding: 1.85rem 2.5rem; }
+    .plan-name { font-size: 1.15rem; }
+    .plan-tagline { font-size: 0.85rem; }
     .form-card { padding: 2.75rem; }
   }
 
@@ -471,6 +665,7 @@
   @media (max-width: 639px) {
     .header { padding: 0.85rem 1.25rem; }
     .page-wrap { padding: 0 0.75rem; }
+    .reveal-inner { padding: 0 0.75rem; }
     .hero { padding: 2.5rem 0.5rem 1.5rem; }
     .hero h1 { font-size: 1.7rem; }
     .hero-pill { animation: none; }
@@ -478,12 +673,14 @@
     .trust-item { font-size: 0.74rem; }
     .field-row { grid-template-columns: 1fr; }
     .form-card { padding: 1.5rem; border-radius: 14px; }
-    .plan-card { padding: 1.1rem 1.25rem; }
+    .plan-card { padding: 1.25rem 1.25rem; border-radius: 14px; }
     .plan-card:hover { transform: none; }
     .chip-opt:hover { transform: none; }
     .submit-btn:hover { transform: none; }
     .success-tg:hover { transform: none; }
-    .scarcity-inner { font-size: 0.78rem; padding: 10px 14px; }
+    .plan-icon-wrap { width: 44px; height: 44px; font-size: 1.3rem; border-radius: 12px; }
+    .plan-name { font-size: 0.95rem; }
+    .plan-launch { font-size: 1.2rem; }
   }
 </style>
 </head>
@@ -493,7 +690,7 @@
 
 <header class="header">
   <div>
-    <div class="header-brand"><span>Akash Singh</span></div>
+    <div class="header-brand"><span>FitPlan</span></div>
     <div class="header-sub">"Consistency over perfection — every single day."</div>
   </div>
   <div class="header-ig">
@@ -512,34 +709,14 @@
       <h1>Get Your Custom <em>Fat Loss / Muscle</em> Plan</h1>
       <p class="hero-sub">Built for YOUR body, schedule &amp; diet</p>
       <p class="hero-nogimmick">No generic plans. No guesswork.</p>
+      <button class="hero-cta" id="heroCta" onclick="revealPlans()">Get My Plan &#8594;</button>
     </div>
 
     <!-- TRUST -->
     <div class="trust">
       <div class="trust-item"><div class="trust-dot"></div> 100% personalised</div>
       <div class="trust-item"><div class="trust-dot"></div> Responds within 24 hrs</div>
-      <div class="trust-item"><div class="trust-dot"></div> Coach reviews personally</div>
-    </div>
-
-    <!-- SCARCITY -->
-    <div class="scarcity-bar">
-      <div class="scarcity-inner" id="scarcityText">
-        🎁 First <strong>100 people get their plan FREE</strong> &nbsp;·&nbsp; After that, normal prices apply
-      </div>
-    </div>
-
-    <!-- SPOT COUNTER -->
-    <div class="spot-counter">
-      <div class="spot-inner">
-        <div class="spot-label">
-          <span class="spot-label-left" id="spotLabel">🎁 Free spots remaining</span>
-          <span class="spot-label-right" id="spotsLeft">31 spots left</span>
-        </div>
-        <div class="spot-bar-bg">
-          <div class="spot-bar-fill" id="spotBar" style="width:0%"></div>
-        </div>
-        <div class="spot-text" id="spotText">69 of 100 free spots taken</div>
-      </div>
+      <div class="trust-item"><div class="trust-dot"></div> Reviewed personally</div>
     </div>
 
     <!-- TRANSFORMATION HOOK -->
@@ -548,77 +725,135 @@
         <p>Most people fail because they follow random YouTube workouts.</p>
         <p style="margin-bottom:0.5rem;">This plan is built based on:</p>
         <div class="hook-checks">
-          <div class="hook-check"><span class="tick">✔</span> Your body stats</div>
-          <div class="hook-check"><span class="tick">✔</span> Your lifestyle</div>
-          <div class="hook-check"><span class="tick">✔</span> Your diet preference</div>
+          <div class="hook-check"><span class="tick">&#10003;</span> Your body stats</div>
+          <div class="hook-check"><span class="tick">&#10003;</span> Your lifestyle</div>
+          <div class="hook-check"><span class="tick">&#10003;</span> Your diet preference</div>
         </div>
         <div class="hook-result">So you actually see results.</div>
       </div>
     </div>
 
-    <!-- PLAN SELECTION -->
-    <div class="plan-section">
-      <div class="plan-section-title" id="planSectionTitle">Choose your plan</div>
-      <div class="plan-cards">
+  </div><!-- /col-left -->
 
-        <!-- FREE PLAN (shown while spots < 100) -->
-        <div class="plan-card selected" id="card-free" onclick="selectPlan('free')">
-          <div class="plan-popular" id="freePopularBadge" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1200;">🎁 Free for first 100</div>
-          <div class="plan-card-top">
-            <div class="plan-check" id="check-free"><div class="plan-check-dot"></div></div>
-            <div class="plan-card-left">
-              <div class="plan-name">🆓 Full Custom Plan — Free</div>
-              <div class="plan-desc">Diet + Workout plan personalised to your body, goal &amp; diet. Completely free — first 100 only.</div>
-            </div>
-            <div class="plan-price-wrap">
-              <div class="plan-original" style="color:#555;">₹249</div>
-              <div class="plan-launch free-tag">FREE</div>
-            </div>
+  </div><!-- /page-wrap -->
+
+  <!-- REVEAL: Plans + Form -->
+  <div class="reveal-wrap" id="revealWrap">
+    <div class="reveal-inner">
+
+      <!-- PLAN SELECTION -->
+      <div class="plan-section">
+        <div class="plan-section-title" id="planSectionTitle">Choose your plan</div>
+        <div class="plan-cards">
+
+        <!-- MEAL PLAN -->
+        <div class="plan-card card-meal" id="card-diet" onclick="selectPlan('diet')">
+          <div class="plan-particles">
+            <div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div>
           </div>
-        </div>
-
-        <div class="plan-card" id="card-diet" onclick="selectPlan('diet')">
           <div class="plan-card-top">
             <div class="plan-check" id="check-diet"><div class="plan-check-dot"></div></div>
-            <div class="plan-card-left">
-              <div class="plan-name">🥗 Custom Diet Plan</div>
-              <div class="plan-desc">Indian meal plan (veg/non-veg) built for your goal + body stats</div>
-              <div class="plan-badge">90% off — launch price</div>
+            <div class="plan-icon-wrap">
+              <div class="plan-icon-ring"></div>
+              &#127823;
             </div>
-            <div class="plan-price-wrap">
-              <div class="plan-original">₹149</div>
-              <div class="plan-launch">₹15</div>
+            <div class="plan-card-left">
+              <div class="plan-name">Custom Meal Plan</div>
+              <div class="plan-tagline">Indian meal plan built for your goal &amp; body stats</div>
+              <div class="plan-features">
+                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Veg / Non-veg options</div>
+                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Calorie &amp; macro counted</div>
+                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Daily meal schedule</div>
+              </div>
+            </div>
+          </div>
+          <div class="plan-card-bottom">
+            <div class="plan-badge">Launch pricing</div>
+            <div class="plan-price-area">
+              <div class="plan-dur-btn active" data-plan="diet" data-dur="1" data-price="49" onclick="selectDuration(this, event)">
+                <div class="plan-dur-label">1 mo</div>
+                <div class="plan-dur-price">&#8377;49</div>
+              </div>
+              <div class="plan-dur-btn" data-plan="diet" data-dur="3" data-price="99" onclick="selectDuration(this, event)">
+                <div class="plan-dur-label">3 mo</div>
+                <div class="plan-dur-price">&#8377;99</div>
+                <div class="plan-dur-save">SAVE 3 mo</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="plan-card" id="card-workout" onclick="selectPlan('workout')">
+        <!-- WORKOUT PLAN -->
+        <div class="plan-card card-workout" id="card-workout" onclick="selectPlan('workout')">
+          <div class="plan-particles">
+            <div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div>
+          </div>
           <div class="plan-card-top">
             <div class="plan-check" id="check-workout"><div class="plan-check-dot"></div></div>
-            <div class="plan-card-left">
-              <div class="plan-name">🏋️ Custom Workout Plan</div>
-              <div class="plan-desc">4–5 day gym or home workout plan based on your goal</div>
-              <div class="plan-badge">90% off — launch price</div>
+            <div class="plan-icon-wrap">
+              <div class="plan-icon-ring"></div>
+              &#127947;&#65039;
             </div>
-            <div class="plan-price-wrap">
-              <div class="plan-original">₹149</div>
-              <div class="plan-launch">₹15</div>
+            <div class="plan-card-left">
+              <div class="plan-name">Custom Workout Plan</div>
+              <div class="plan-tagline">4&#8211;5 day gym or home plan based on your goal</div>
+              <div class="plan-features">
+                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Gym or home setup</div>
+                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Reps, sets &amp; rest timed</div>
+                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Progressive overload built in</div>
+              </div>
+            </div>
+          </div>
+          <div class="plan-card-bottom">
+            <div class="plan-badge">Launch pricing</div>
+            <div class="plan-price-area">
+              <div class="plan-dur-btn active" data-plan="workout" data-dur="1" data-price="49" onclick="selectDuration(this, event)">
+                <div class="plan-dur-label">1 mo</div>
+                <div class="plan-dur-price">&#8377;49</div>
+              </div>
+              <div class="plan-dur-btn" data-plan="workout" data-dur="3" data-price="99" onclick="selectDuration(this, event)">
+                <div class="plan-dur-label">3 mo</div>
+                <div class="plan-dur-price">&#8377;99</div>
+                <div class="plan-dur-save">SAVE 3 mo</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="plan-card" id="card-combo" onclick="selectPlan('combo')">
-          <div class="plan-popular">⭐ Most Popular</div>
+        <!-- COMBO -->
+        <div class="plan-card card-combo" id="card-combo" onclick="selectPlan('combo')">
+          <div class="plan-particles">
+            <div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div>
+          </div>
           <div class="plan-card-top">
             <div class="plan-check" id="check-combo"><div class="plan-check-dot"></div></div>
-            <div class="plan-card-left">
-              <div class="plan-name">🔥 Diet + Workout Combo</div>
-              <div class="plan-desc">Full package — custom meal plan + workout plan together. Best value.</div>
-              <div class="plan-badge">90% off — launch price</div>
+            <div class="plan-icon-wrap">
+              <div class="plan-icon-ring"></div>
+              &#128293;
             </div>
-            <div class="plan-price-wrap">
-              <div class="plan-original">₹249</div>
-              <div class="plan-launch">₹25</div>
+            <div class="plan-card-left">
+              <div class="plan-name">Meal + Workout Combo</div>
+              <div class="plan-tagline">Full package &#8212; custom meal plan + workout plan together. Best value.</div>
+              <div class="plan-features">
+                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Everything in Meal Plan</div>
+                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Everything in Workout Plan</div>
+                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Diet + training synced</div>
+                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Priority support</div>
+              </div>
+            </div>
+          </div>
+          <div class="plan-card-bottom">
+            <div class="plan-badge popular-badge">&#11088; Most Popular</div>
+            <div class="plan-price-area">
+              <div class="plan-dur-btn active" data-plan="combo" data-dur="1" data-price="79" onclick="selectDuration(this, event)">
+                <div class="plan-dur-label">1 mo</div>
+                <div class="plan-dur-price">&#8377;79</div>
+              </div>
+              <div class="plan-dur-btn" data-plan="combo" data-dur="3" data-price="149" onclick="selectDuration(this, event)">
+                <div class="plan-dur-label">3 mo</div>
+                <div class="plan-dur-price">&#8377;149</div>
+                <div class="plan-dur-save">SAVE 3 mo</div>
+              </div>
             </div>
           </div>
         </div>
@@ -626,20 +861,16 @@
       </div>
     </div>
 
-  </div>
-
-  <!-- RIGHT COLUMN -->
-  <div class="col-right">
-
+    <!-- FORM (inside reveal) -->
     <div class="form-wrap">
 
       <!-- SUCCESS -->
       <div class="success-card" id="successCard">
-        <div class="success-icon">✓</div>
+        <div class="success-icon">&#10003;</div>
         <h2>Request received!</h2>
-        <p>Coach Akash will review your details and send your personalised plan within <strong>24 hours</strong>.</p>
+        <p>Your plan will be reviewed and sent within <strong>24 hours</strong>.</p>
         <a class="success-tg" href="https://instagram.com/akash.liftsup" target="_blank" style="background:#E1306C;">
-          📸 DM on Instagram @akash.liftsup
+          &#128248; DM on Instagram @akash.liftsup
         </a>
         <div class="success-wa-note" style="margin-top:0.75rem;color:var(--muted);font-size:0.8rem;">
           Drop a DM if you have any questions!
@@ -650,8 +881,8 @@
       <div class="form-card" id="formCard">
 
         <div class="plan-summary">
-          <span class="plan-summary-name" id="summaryName">🆓 Full Custom Plan — Free</span>
-          <span class="plan-summary-price" id="summaryPrice">FREE</span>
+          <span class="plan-summary-name" id="summaryName">&#127823; Custom Meal Plan &#8212; 1 month</span>
+          <span class="plan-summary-price" id="summaryPrice">&#8377;49</span>
         </div>
 
         <div class="form-section-label">Personal info</div>
@@ -680,8 +911,8 @@
           <div class="field">
             <label>Gender <span class="req">*</span></label>
             <div class="chips" style="margin-top:4px;">
-              <div class="chip-opt active" data-group="gender" data-val="Male">♂ Male</div>
-              <div class="chip-opt" data-group="gender" data-val="Female">♀ Female</div>
+              <div class="chip-opt active" data-group="gender" data-val="Male">&#9794; Male</div>
+              <div class="chip-opt" data-group="gender" data-val="Female">&#9792; Female</div>
             </div>
             <input type="hidden" id="f_gender" value="Male"/>
           </div>
@@ -703,18 +934,29 @@
         <div class="field">
           <label>Primary goal <span class="req">*</span></label>
           <div class="chips">
-            <div class="chip-opt active" data-group="goal" data-val="Weight Loss">⚖️ Weight Loss</div>
-            <div class="chip-opt" data-group="goal" data-val="Fat Loss">🔥 Fat Loss</div>
-            <div class="chip-opt" data-group="goal" data-val="Weight Gain / Muscle">💪 Weight Gain</div>
+            <div class="chip-opt active" data-group="goal" data-val="Weight Loss">&#9878;&#65039; Weight Loss</div>
+            <div class="chip-opt" data-group="goal" data-val="Fat Loss">&#128293; Fat Loss</div>
+            <div class="chip-opt" data-group="goal" data-val="Weight Gain / Muscle">&#128170; Weight Gain</div>
           </div>
           <input type="hidden" id="f_goal" value="Weight Loss"/>
         </div>
 
         <div class="field">
+          <label>Current activity level <span class="req">*</span></label>
+          <div class="chips">
+            <div class="chip-opt active" data-group="activity" data-val="Sedentary (desk job)">Sedentary</div>
+            <div class="chip-opt" data-group="activity" data-val="Lightly active">Lightly active</div>
+            <div class="chip-opt" data-group="activity" data-val="Moderately active">Moderate</div>
+            <div class="chip-opt" data-group="activity" data-val="Very active">Very active</div>
+          </div>
+          <input type="hidden" id="f_activity" value="Sedentary (desk job)"/>
+        </div>
+
+        <div class="field" id="trainingField">
           <label>Where do you train? <span class="req">*</span></label>
           <div class="chips">
-            <div class="chip-opt active" data-group="training" data-val="Gym">🏋️ Gym</div>
-            <div class="chip-opt" data-group="training" data-val="Home">🏠 Home</div>
+            <div class="chip-opt active" data-group="training" data-val="Gym">&#127947;&#65039; Gym</div>
+            <div class="chip-opt" data-group="training" data-val="Home">&#127968; Home</div>
           </div>
           <input type="hidden" id="f_training" value="Gym"/>
         </div>
@@ -722,8 +964,8 @@
         <div class="field">
           <label>Diet preference <span class="req">*</span></label>
           <div class="chips">
-            <div class="chip-opt active" data-group="diet" data-val="Vegetarian">🥦 Vegetarian</div>
-            <div class="chip-opt" data-group="diet" data-val="Non-Veg">🍗 Non-Veg</div>
+            <div class="chip-opt active" data-group="diet" data-val="Vegetarian">&#129382; Vegetarian</div>
+            <div class="chip-opt" data-group="diet" data-val="Non-Veg">&#127837; Non-Veg</div>
           </div>
           <input type="hidden" id="f_diet" value="Vegetarian"/>
         </div>
@@ -763,158 +1005,130 @@
         </div>
 
         <div class="field">
-          <label>Current activity level</label>
-          <div class="chips">
-            <div class="chip-opt active" data-group="activity" data-val="Sedentary (desk job)">Sedentary</div>
-            <div class="chip-opt" data-group="activity" data-val="Lightly active">Lightly active</div>
-            <div class="chip-opt" data-group="activity" data-val="Moderately active">Moderate</div>
-            <div class="chip-opt" data-group="activity" data-val="Very active">Very active</div>
-          </div>
-          <input type="hidden" id="f_activity" value="Sedentary (desk job)"/>
-        </div>
-
-        <div class="field">
-          <label>Message to Coach Akash</label>
+          <label>Message to your trainer</label>
           <textarea id="f_message" placeholder="Anything specific you want in your plan, your schedule, budget, etc..."></textarea>
         </div>
 
         <div class="form-error" id="formError">Please fill in all required fields</div>
 
         <button class="submit-btn" id="submitBtn" onclick="submitForm()">
-          Get My Free Plan Now →
+          Pay &#8377;49 &amp; Get My Plan &#8594;
         </button>
-        <div class="submit-note">Coach Akash reviews personally — no bots, no auto-replies.</div>
+        <div class="submit-note">Reviews personally &#8212; no bots, no auto-replies.</div>
 
       </div>
     </div>
 
-  </div>
+  </div><!-- /reveal-inner -->
+  </div><!-- /reveal-wrap -->
 
 </div>
 
 <div class="footer">
-  Designed by <a href="https://instagram.com/akash.liftsup">Akash Singh</a> · @akash.liftsup · Personal Coaching
+  Designed by <a href="https://instagram.com/akash.liftsup">FitPlan</a> &middot; @akash.liftsup &middot; Personal Coaching
 </div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script>
 /* ================================================================
-   CONFIG — update before going live
+   CONFIG
    ================================================================ */
 const WEB3FORMS_KEY   = '1af83a9e-c1c8-443b-8cad-e47575ad3bab';
 const TG_BOT_TOKEN    = '8323966181:AAHkRHr-JXaEK_yVv1kG-fRXbtta4BBgT_8';
 const TG_CHAT_ID      = '676917032';
 const TG_BOT_USERNAME = 'AkashCoachBot';
-const RAZORPAY_KEY_ID = 'YOUR_RAZORPAY_KEY_ID'; // ← Add your Razorpay Key ID here
-const WHATSAPP_NUMBER = '919999999999';           // ← Your WhatsApp number with country code
+const RAZORPAY_KEY_ID = 'YOUR_RAZORPAY_KEY_ID';
+const WHATSAPP_NUMBER = '919999999999';
 
 /* ── PLANS ── */
 const PLANS = {
-  free:    { name: '🆓 Full Custom Plan — Free', price: 0,  display: 'FREE', original: '₹249' },
-  diet:    { name: '🥗 Custom Diet Plan',         price: 15, display: '₹15',  original: '₹149' },
-  workout: { name: '🏋️ Custom Workout Plan',     price: 15, display: '₹15',  original: '₹149' },
-  combo:   { name: '🔥 Diet + Workout Combo',    price: 25, display: '₹25',  original: '₹249' },
+  diet:    { name: '\uD83E\uDD57 Custom Meal Plan',        icon: '\uD83C\uDF53' },
+  workout: { name: '\uD83C\uDFCB\uFE0F Custom Workout Plan', icon: '\uD83C\uDFCB\uFE0F' },
+  combo:   { name: '\uD83D\uDD25 Meal + Workout Combo',    icon: '\uD83D\uDD25' },
 };
 
-/* ── FIREBASE SPOT COUNTER ── */
-const TOTAL = 100;
-
-// Firebase config — replace with your own from Firebase Console
-const FIREBASE_CONFIG = {
-  apiKey:            "AIzaSyB7kJYXnf-eaBLQOSaF6ARAFTm-ExpvcYo",
-  authDomain:        "coach-akash-fitness-plan.firebaseapp.com",
-  databaseURL:       "https://coach-akash-fitness-plan-default-rtdb.firebaseio.com",
-  projectId:         "coach-akash-fitness-plan",
-  storageBucket:     "coach-akash-fitness-plan.firebasestorage.app",
-  messagingSenderId: "616737641311",
-  appId:             "1:616737641311:web:9b5efb31b115ef1e78dcea"
-};
-
-let firebaseDB = null;
-let spotCountRef = null;
-let freeOfferActive = true; // tracks whether free spots remain
-
-function initFirebase() {
-  try {
-    if (typeof firebase === 'undefined') return;
-    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-    firebaseDB = firebase.database();
-    spotCountRef = firebaseDB.ref('spotsTaken');
-    spotCountRef.on('value', (snapshot) => {
-      const taken = snapshot.val() || 0;
-      updateSpotUI(taken);
-    });
-  } catch(e) {
-    console.warn('Firebase not configured yet:', e.message);
-    updateSpotUI(69); // fallback
-  }
-}
-
-function updateSpotUI(taken) {
-  const left = Math.max(TOTAL - taken, 0);
-  const pct  = Math.min((taken / TOTAL) * 100, 100);
-
+/* ── REVEAL PLANS ── */
+function revealPlans() {
+  const wrap = document.getElementById('revealWrap');
+  const cta = document.getElementById('heroCta');
+  cta.classList.add('hidden');
+  wrap.classList.add('show');
   setTimeout(() => {
-    document.getElementById('spotBar').style.width = pct + '%';
-  }, 300);
-
-  if (taken < TOTAL) {
-    // ── FREE OFFER STILL ACTIVE ──
-    freeOfferActive = true;
-    document.getElementById('spotsLeft').textContent = left + ' free spots left';
-    document.getElementById('spotText').textContent = taken + ' of ' + TOTAL + ' free spots taken';
-    document.getElementById('spotLabel').textContent = '🎁 Free spots remaining';
-    document.getElementById('scarcityText').innerHTML =
-      '🎁 First <strong>100 people get their plan FREE</strong> &nbsp;·&nbsp; After that, normal prices apply';
-    document.getElementById('card-free').style.display = '';
-
-    // Default select free if not already on a paid plan
-    if (selectedPlan === 'free' || !document.getElementById('card-' + selectedPlan)) {
-      selectPlan('free');
-    }
-  } else {
-    // ── FREE OFFER CLOSED — switch to paid ──
-    freeOfferActive = false;
-    document.getElementById('spotsLeft').textContent = 'Offer closed';
-    document.getElementById('spotText').textContent = 'All 100 free spots taken — paid plans below';
-    document.getElementById('spotLabel').textContent = '✅ Free offer ended';
-    document.getElementById('spotBar').style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
-    document.getElementById('scarcityText').innerHTML =
-      '⚠️ Free spots are <strong>all taken</strong> &nbsp;·&nbsp; Choose a paid plan below';
-
-    // Hide free card, auto-select diet
-    document.getElementById('card-free').style.display = 'none';
-    if (selectedPlan === 'free') selectPlan('diet');
-  }
+    wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
 }
-
-async function incrementSpotCount() {
-  if (!spotCountRef) return;
-  try {
-    await spotCountRef.transaction(current => (current || 0) + 1);
-  } catch(e) {
-    console.warn('Could not increment spot count:', e);
-  }
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  initFirebase();
-  document.querySelector('.success-wa-note a').href = `https://wa.me/${WHATSAPP_NUMBER}`;
-});
 
 /* ── PLAN SELECTION ── */
-let selectedPlan = 'free';
+let selectedPlan = 'diet';
+let selectedDuration = 1;
+let selectedPrice = 49;
+
 function selectPlan(key) {
+  const isFirstSelect = !document.querySelector('.plan-card.selected');
   selectedPlan = key;
   document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
   document.getElementById('card-' + key).classList.add('selected');
-  const p = PLANS[key];
-  document.getElementById('summaryName').textContent = p.name;
-  document.getElementById('summaryPrice').textContent = p.display;
+  // Reset all cards' duration buttons to 1-month, then read the active one
+  document.querySelectorAll('.plan-dur-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.dur === '1');
+  });
+  const activeBtn = document.querySelector('#card-' + key + ' .plan-dur-btn.active');
+  selectedDuration = 1;
+  selectedPrice = parseInt(activeBtn.dataset.price);
+  updateSummary();
+  updateFieldVisibility();
+  // Reveal form on first plan selection
+  if (isFirstSelect) {
+    const formWrap = document.querySelector('.form-wrap');
+    formWrap.classList.add('show');
+    setTimeout(() => {
+      formWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 150);
+  }
+}
+
+function selectDuration(btn, e) {
+  e.stopPropagation();
+  const planKey = btn.dataset.plan;
+  const dur = parseInt(btn.dataset.dur);
+  const price = parseInt(btn.dataset.price);
+
+  // Select the parent card if not already selected
+  if (planKey !== selectedPlan) {
+    selectPlan(planKey);
+  }
+
+  // Update active state on duration buttons within this card
+  const card = document.getElementById('card-' + planKey);
+  card.querySelectorAll('.plan-dur-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  selectedDuration = dur;
+  selectedPrice = price;
+  updateSummary();
+}
+
+function updateSummary() {
+  const p = PLANS[selectedPlan];
+  const durLabel = selectedDuration + ' month' + (selectedDuration > 1 ? 's' : '');
+  document.getElementById('summaryName').textContent = p.name + ' \u2014 ' + durLabel;
+  document.getElementById('summaryPrice').textContent = '\u20B9' + selectedPrice;
   const btn = document.getElementById('submitBtn');
-  btn.textContent = p.price === 0 ? 'Get My Free Plan Now →' : `Pay ${p.display} & Get My Plan →`;
+  btn.textContent = `Pay \u20B9${selectedPrice} & Get My Plan \u2192`;
+}
+
+/* ── FIELD VISIBILITY ── */
+function updateFieldVisibility() {
+  const trainingField = document.getElementById('trainingField');
+  const activity = document.getElementById('f_activity').value;
+  const isWorkoutOrCombo = selectedPlan === 'workout' || selectedPlan === 'combo';
+  const isActive = activity !== 'Sedentary (desk job)';
+
+  if (isWorkoutOrCombo && isActive) {
+    trainingField.style.display = '';
+  } else {
+    trainingField.style.display = 'none';
+  }
 }
 
 /* ── CHIPS ── */
@@ -927,14 +1141,20 @@ document.querySelectorAll('.chip-opt').forEach(chip => {
     if (group === 'gender') {
       document.getElementById('hipsField').style.display = chip.dataset.val === 'Female' ? '' : 'none';
     }
+    if (group === 'activity') {
+      updateFieldVisibility();
+    }
   });
 });
 
 /* ── COLLECT DATA ── */
 function collectData() {
+  const durLabel = selectedDuration + ' month' + (selectedDuration > 1 ? 's' : '');
+  const trainingField = document.getElementById('f_training');
+  const trainingVisible = document.getElementById('trainingField').style.display !== 'none';
   return {
-    plan:     PLANS[selectedPlan].name,
-    price:    PLANS[selectedPlan].display,
+    plan:     PLANS[selectedPlan].name + ' (' + durLabel + ')',
+    price:    '\u20B9' + selectedPrice,
     name:     document.getElementById('f_name').value.trim(),
     phone:    document.getElementById('f_phone').value.trim(),
     email:    document.getElementById('f_email').value.trim() || '',
@@ -943,93 +1163,92 @@ function collectData() {
     weight:   document.getElementById('f_weight').value.trim(),
     height:   document.getElementById('f_height').value.trim(),
     goal:     document.getElementById('f_goal').value,
-    training: document.getElementById('f_training').value,
+    training: trainingVisible ? trainingField.value : 'N/A',
     diet:     document.getElementById('f_diet').value,
     whey:     document.getElementById('f_whey').value,
-    waist:    document.getElementById('f_waist').value || '—',
-    neck:     document.getElementById('f_neck').value || '—',
-    hips:     document.getElementById('f_hips').value || '—',
+    waist:    document.getElementById('f_waist').value || '\u2014',
+    neck:     document.getElementById('f_neck').value || '\u2014',
+    hips:     document.getElementById('f_hips').value || '\u2014',
     activity: document.getElementById('f_activity').value,
-    health:   document.getElementById('f_health').value.trim() || '—',
-    message:  document.getElementById('f_message').value.trim() || '—',
+    health:   document.getElementById('f_health').value.trim() || '\u2014',
+    message:  document.getElementById('f_message').value.trim() || '\u2014',
   };
 }
 
 /* ── SEND DATA ── */
 async function sendLeadData(data, paymentId = null) {
   const tgText =
-`🏋️ *New Plan Request*
-💳 *Plan:* ${data.plan} (${data.price})${paymentId ? `\n✅ *Payment ID:* \`${paymentId}\`` : ''}
+`\uD83C\uDFCB\uFE0F *New Plan Request*
+\u{1F4B3} *Plan:* ${data.plan} (${data.price})${paymentId ? `\n\u2705 *Payment ID:* \`${paymentId}\`` : ''}
 
-👤 *Name:* ${data.name}
-📱 *Phone:* ${data.phone}
-📧 *Email:* ${data.email}
+\uD83D\uDC64 *Name:* ${data.name}
+\uD83D\uDCF1 *Phone:* ${data.phone}
+\uD83D\uDCE7 *Email:* ${data.email}
 
-📊 *Stats*
-• Age: ${data.age} | Gender: ${data.gender}
-• Weight: ${data.weight} kg | Height: ${data.height} cm
+\uD83D\uDCCA *Stats*
+\u2022 Age: ${data.age} | Gender: ${data.gender}
+\u2022 Weight: ${data.weight} kg | Height: ${data.height} cm
 
-🎯 *Goal:* ${data.goal}
-🏠 *Training:* ${data.training}
-🥗 *Diet:* ${data.diet}
-🥛 *Whey:* ${data.whey}
+\uD83C\uDFAF *Goal:* ${data.goal}
+\uD83C\uDFE0 *Training:* ${data.training}
+\uD83E\uDD57 *Diet:* ${data.diet}
+\uD83E\uDD5B *Whey:* ${data.whey}
 
-📏 *Measurements*
-• Waist: ${data.waist} | Neck: ${data.neck} | Hips: ${data.hips}
+\uD83D\uDCCF *Measurements*
+\u2022 Waist: ${data.waist} | Neck: ${data.neck} | Hips: ${data.hips}
 
-🏃 *Activity:* ${data.activity}
-🩺 *Health notes:* ${data.health}
-💬 *Message:* ${data.message}`;
+\uD83C\uDFC3 *Activity:* ${data.activity}
+\uD83E\uDE7A *Health notes:* ${data.health}
+\uD83D\uDCAC *Message:* ${data.message}`;
 
   const emailBody =
 `NEW PLAN REQUEST
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📋 PLAN DETAILS
+\uD83D\uDCCB PLAN DETAILS
    Plan: ${data.plan}
    Price: ${data.price}${paymentId ? `\n   Payment ID: ${paymentId}` : ''}
 
-👤 CLIENT INFORMATION
+\uD83D\uDC64 CLIENT INFORMATION
    Name: ${data.name}
    Phone: ${data.phone}
    Email: ${data.email}
 
-📊 BODY STATS
+\uD83D\uDCCA BODY STATS
    Age: ${data.age} years  |  Gender: ${data.gender}
    Weight: ${data.weight} kg  |  Height: ${data.height} cm
 
-🎯 FITNESS GOALS
+\uD83C\uDFAF FITNESS GOALS
    Goal: ${data.goal}
    Training: ${data.training}
    Diet: ${data.diet}
    Whey Protein: ${data.whey}
 
-📏 BODY MEASUREMENTS
+\uD83D\uDCCF BODY MEASUREMENTS
    Waist: ${data.waist} cm  |  Neck: ${data.neck} cm  |  Hips: ${data.hips} cm
 
-🏃 LIFESTYLE
+\uD83C\uDFC3 LIFESTYLE
    Activity Level: ${data.activity}
    Health / Injuries: ${data.health}
 
-💬 CLIENT MESSAGE
+\uD83D\uDCAC CLIENT MESSAGE
    ${data.message}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Submitted via Akash Singh — Fitness Plan`;
+Submitted via FitPlan \u2014 Fitness Plan`;
 
-  // Submit to Web3Forms
   const formRes = await fetch('https://api.web3forms.com/submit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
     body: JSON.stringify({
       access_key: WEB3FORMS_KEY,
-      subject: `🏋️ New Plan Request — ${data.name} (${data.plan})`,
+      subject: `\uD83C\uDFCB\uFE0F New Plan Request \u2014 ${data.name} (${data.plan})`,
       from_name: data.name,
       email: data.email,
       message: emailBody,
       Plan: data.plan,
       Price: data.price,
-      Payment_ID: paymentId || 'Free',
+      Payment_ID: paymentId || 'N/A',
       Name: data.name,
       Phone: data.phone,
       Email: data.email,
@@ -1050,7 +1269,6 @@ Submitted via Akash Singh — Fitness Plan`;
     }),
   });
 
-  // Fire Telegram separately — don't let it block or break the main flow
   if (TG_BOT_TOKEN !== 'YOUR_BOT_TOKEN') {
     fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
       method: 'POST',
@@ -1070,7 +1288,7 @@ Submitted via Akash Singh — Fitness Plan`;
 function showSuccess() {
   document.getElementById('formCard').classList.add('hide');
   document.getElementById('successCard').classList.add('show');
-  document.querySelectorAll('.plan-section, .hook-box, .spot-counter, .scarcity-bar').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.plan-section, .hook-box').forEach(el => el.style.display = 'none');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1097,33 +1315,8 @@ async function submitForm() {
 
   const data = collectData();
 
-  /* FREE PLAN — no payment */
-  if (selectedPlan === 'free') {
-    btn.disabled = true;
-    btn.textContent = 'Sending...';
-    try {
-      const result = await sendLeadData(data, null);
-      if (result === true) {
-        incrementSpotCount().catch(() => {}); // fire and forget
-        showSuccess();
-      } else {
-        errEl.textContent = 'Submission failed: ' + (result || 'Unknown error');
-        errEl.classList.add('show');
-        btn.disabled = false;
-        btn.textContent = 'Get My Free Plan Now →';
-      }
-    } catch(err) {
-      errEl.textContent = 'Error: ' + err.message;
-      errEl.classList.add('show');
-      btn.disabled = false;
-      btn.textContent = 'Get My Free Plan Now →';
-    }
-    return;
-  }
-
-  /* PAID PLANS — Razorpay */
   if (RAZORPAY_KEY_ID === 'YOUR_RAZORPAY_KEY_ID') {
-    errEl.textContent = '⚠️ Payment not set up yet. Please contact Coach Akash on WhatsApp directly.';
+    errEl.textContent = '\u26A0\uFE0F Payment not set up yet. Please contact us on WhatsApp directly.';
     errEl.classList.add('show');
     return;
   }
@@ -1131,40 +1324,45 @@ async function submitForm() {
   const plan = PLANS[selectedPlan];
   const rzp = new Razorpay({
     key: RAZORPAY_KEY_ID,
-    amount: plan.price * 100,
+    amount: selectedPrice * 100,
     currency: 'INR',
-    name: 'Coach Akash Singh',
+    name: 'FitPlan',
     description: plan.name,
     prefill: {
       name: data.name,
       contact: data.phone,
-      email: data.email !== '—' ? data.email : '',
+      email: data.email !== '\u2014' ? data.email : '',
     },
-    theme: { color: '#ff5a3c' },
+    theme: { color: '#7c3aed' },
     handler: async function(response) {
       btn.disabled = true;
       btn.textContent = 'Confirming...';
       try {
         if (await sendLeadData(data, response.razorpay_payment_id)) {
-          await incrementSpotCount();
           showSuccess();
         } else throw new Error();
       } catch {
-        errEl.textContent = `Payment done ✓ (ID: ${response.razorpay_payment_id}) — but form failed. Send this ID to Coach Akash on WhatsApp.`;
+        errEl.textContent = `Payment done \u2713 (ID: ${response.razorpay_payment_id}) \u2014 but form failed. Send this ID to us on WhatsApp.`;
         errEl.classList.add('show');
         btn.disabled = false;
-        btn.textContent = `Pay ${plan.display} & Get My Plan →`;
+        btn.textContent = `Pay \u20B9${selectedPrice} & Get My Plan \u2192`;
       }
     },
     modal: {
       ondismiss: () => {
         btn.disabled = false;
-        btn.textContent = `Pay ${plan.display} & Get My Plan →`;
+        btn.textContent = `Pay \u20B9${selectedPrice} & Get My Plan \u2192`;
       }
     }
   });
   rzp.open();
 }
+
+/* ── INIT ── */
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('.success-wa-note a').href = `https://wa.me/${WHATSAPP_NUMBER}`;
+  updateFieldVisibility();
+});
 </script>
 </body>
 </html>
