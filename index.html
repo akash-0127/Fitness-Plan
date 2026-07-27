@@ -9,24 +9,44 @@
   html { scroll-behavior: smooth; }
 
   :root {
-    --bg: #050508;
-    --card: #0e0e14;
-    --card2: #14141c;
-    --card-hover: #1a1a28;
-    --border: rgba(255,255,255,0.06);
-    --text: #f2f2f5;
-    --muted: #7a7a8e;
+    --bg: #f5f5f7;
+    --card: #ffffff;
+    --card2: #f0f0f3;
+    --card-hover: #eaeaef;
+    --border: rgba(0,0,0,0.08);
+    --text: #1a1a2e;
+    --muted: #6b6b80;
     --accent: #7c3aed;
-    --accent2: #a78bfa;
-    --gold: #fbbf24;
-    --gold-dim: rgba(251,191,36,0.12);
-    --success: #34d399;
-    --purple: #a78bfa;
-    --purple-dim: rgba(167,139,250,0.12);
-    --cyan: #22d3ee;
-    --cyan-dim: rgba(34,211,238,0.12);
+    --accent2: #6d28d9;
+    --gold: #d97706;
+    --gold-dim: rgba(217,119,6,0.1);
+    --success: #059669;
+    --purple: #7c3aed;
+    --purple-dim: rgba(124,58,237,0.1);
+    --cyan: #0891b2;
+    --cyan-dim: rgba(8,145,178,0.1);
     --radius: 14px;
     --radius-sm: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #050508;
+      --card: #0e0e14;
+      --card2: #14141c;
+      --card-hover: #1a1a28;
+      --border: rgba(255,255,255,0.06);
+      --text: #f2f2f5;
+      --muted: #7a7a8e;
+      --accent: #7c3aed;
+      --accent2: #a78bfa;
+      --gold: #fbbf24;
+      --gold-dim: rgba(251,191,36,0.12);
+      --success: #34d399;
+      --purple: #a78bfa;
+      --purple-dim: rgba(167,139,250,0.12);
+      --cyan: #22d3ee;
+      --cyan-dim: rgba(34,211,238,0.12);
+    }
   }
 
   body {
@@ -72,22 +92,22 @@
   .bg-glow {
     position: fixed; top: -20%; left: 50%; transform: translateX(-50%);
     width: 800px; height: 800px;
-    background: radial-gradient(circle, rgba(124,58,237,0.05) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(124,58,237,0.06) 0%, transparent 70%);
     pointer-events: none; z-index: 0;
     animation: breathe 8s ease-in-out infinite;
   }
 
   /* ── PORTAL NAV ── */
-  .portal-nav{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 2rem;background:rgba(5,5,8,0.95);backdrop-filter:blur(10px);border-bottom:1px solid #1a1a24;position:sticky;top:0;z-index:200}
+  .portal-nav{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 2rem;background:var(--card);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200}
   .portal-nav .nav-brand{font-size:1.1rem;font-weight:800;color:#7c3aed;text-decoration:none}
   .portal-nav .nav-links{display:flex;gap:1.5rem}
-  .portal-nav .nav-links a{color:#888;text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}
-  .portal-nav .nav-links a:hover,.portal-nav .nav-links a.active{color:#a78bfa}
+  .portal-nav .nav-links a{color:var(--muted);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}
+  .portal-nav .nav-links a:hover,.portal-nav .nav-links a.active{color:var(--accent)}
 
   /* ── HEADER ── */
   .header {
-    background: rgba(5,5,8,0.9); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(124,58,237,0.15);
+    background: var(--card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
     padding: 1rem 2rem;
     display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;
     animation: fadeInUp 0.5s ease-out;
@@ -132,14 +152,14 @@
   }
   .hero h1 {
     font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800;
-    line-height: 1.15; letter-spacing: -0.8px; margin-bottom: 0.7rem; color: #fff;
+    line-height: 1.15; letter-spacing: -0.8px; margin-bottom: 0.7rem; color: var(--text);
   }
   .hero h1 em {
     font-style: normal;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
-  .hero-sub { font-size: 1.05rem; color: #aaa; margin-bottom: 0.3rem; animation: fadeInUp 0.6s ease 0.1s both; }
+  .hero-sub { font-size: 1.05rem; color: var(--muted); margin-bottom: 0.3rem; animation: fadeInUp 0.6s ease 0.1s both; }
   .hero-nogimmick {
     font-size: 0.9rem; color: var(--accent2); font-weight: 700;
     display: inline-flex; align-items: center; gap: 5px;
@@ -187,7 +207,7 @@
     animation: fadeInUp 0.6s ease-out 0.2s both;
   }
   .trust-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--muted); transition: color 0.2s; }
-  .trust-item:hover { color: #ccc; }
+  .trust-item:hover { color: var(--text); }
   .trust-dot {
     width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
     box-shadow: 0 0 6px rgba(124,58,237,0.4);
@@ -206,7 +226,7 @@
   .hook-inner:hover { border-left-color: var(--accent2); box-shadow: -4px 0 20px rgba(124,58,237,0.06); }
   .hook-inner p { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.75rem; line-height: 1.65; }
   .hook-checks { display: flex; flex-direction: column; gap: 6px; }
-  .hook-check { font-size: 0.85rem; color: #ccc; display: flex; align-items: center; gap: 10px; }
+  .hook-check { font-size: 0.85rem; color: var(--text); display: flex; align-items: center; gap: 10px; }
   .hook-check span.tick { color: var(--accent); font-weight: 800; font-size: 0.95rem; }
   .hook-result {
     margin-top: 0.9rem; font-size: 0.88rem; font-weight: 700;
@@ -310,11 +330,11 @@
 
   /* ── CARD CONTENT ── */
   .plan-card-left { flex: 1; min-width: 0; }
-  .plan-name { font-size: 1.05rem; font-weight: 800; color: #fff; margin-bottom: 2px; }
-  .plan-card.card-meal .plan-name { color: #e2e8f0; }
-  .plan-card.card-workout .plan-name { color: #e2e8f0; }
+  .plan-name { font-size: 1.05rem; font-weight: 800; color: var(--text); margin-bottom: 2px; }
+  .plan-card.card-meal .plan-name { color: var(--text); }
+  .plan-card.card-workout .plan-name { color: var(--text); }
   .plan-card.card-combo .plan-name {
-    background: linear-gradient(135deg, #fff, var(--accent2));
+    background: linear-gradient(135deg, var(--text), var(--accent2));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
   .plan-tagline {
@@ -324,7 +344,7 @@
   /* ── FEATURE LIST ── */
   .plan-features { display: flex; flex-direction: column; gap: 5px; margin-bottom: 4px; }
   .plan-feature {
-    font-size: 0.78rem; color: #999; display: flex; align-items: center; gap: 8px;
+    font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; gap: 8px;
     opacity: 0; animation: featureSlide 0.4s ease-out forwards;
   }
   .plan-card.card-meal .plan-feature:nth-child(1) { animation-delay: 0.5s; }
@@ -413,7 +433,7 @@
 
   /* ── FOOTER ── */
   .footer {
-    text-align: center; padding: 2rem 1.5rem; font-size: 0.74rem; color: #333;
+    text-align: center; padding: 2rem 1.5rem; font-size: 0.74rem; color: var(--muted);
     border-top: 1px solid var(--border); position: relative; z-index: 1;
   }
   .footer a { color: var(--accent); text-decoration: none; font-weight: 600; transition: color 0.2s; }
@@ -422,9 +442,9 @@
   /* ── SCROLLBAR ── */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #333; }
-  ::selection { background: rgba(124,58,237,0.25); color: #fff; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+  ::selection { background: rgba(124,58,237,0.25); color: var(--text); }
 
   /* ═══════════════════════════════════════════
      RESPONSIVE — TABLET
@@ -502,16 +522,6 @@
 </nav>
 
 <div class="bg-glow"></div>
-
-<header class="header">
-  <div>
-    <div class="header-brand"><span>FitPlan</span></div>
-    <div class="header-sub">"Consistency over perfection — every single day."</div>
-  </div>
-  <div class="header-ig">
-    <a href="https://instagram.com/akash.liftsup" target="_blank">@akash.liftsup</a>
-  </div>
-</header>
 
 <div class="page-wrap">
 
@@ -645,9 +655,8 @@
   <div style="margin-bottom:0.5rem">
     <a href="about.html" style="color:#a78bfa;text-decoration:none;margin:0 0.75rem">About</a>
     <a href="contact.html" style="color:#a78bfa;text-decoration:none;margin:0 0.75rem">Contact</a>
-    <a href="https://instagram.com/akash.liftsup" target="_blank" style="color:#a78bfa;text-decoration:none;margin:0 0.75rem">Instagram</a>
   </div>
-  Designed by <a href="https://instagram.com/akash.liftsup" style="color:#a78bfa">FitPlan</a> &middot; @akash.liftsup &middot; Personal Training
+  Designed by FitPlan &middot; Personal Training
 </div>
 
 <script>
