@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>About — FitPlan</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --green:#7eca5a;--gl:#1a2e12;--orange:#f97316;--ol:#2a1a08;
+  --blue:#3b82f6;--bl:#0c1a2e;--red:#ef4444;--rl:#2a0c0c;
+  --gold:#fbbf24;--goldl:#2a2008;--bg:#050508;--card:#0e0e14;
+  --card2:#14141c;--card-hover:#1a1a28;
+  --text:#f2f2f5;--muted:#7a7a8e;--border:rgba(255,255,255,0.06);
+  --border-solid:#1a1a24;--r:14px;--rs:10px;
+  --accent:#7c3aed;--accent2:#a78bfa;--accent-dim:rgba(124,58,237,0.15);
+  --success:#34d399;--purple:#a78bfa;--cyan:#22d3ee
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+@keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes cardGlass{from{opacity:0;transform:translateY(16px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.mesh-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.mesh-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.04;animation:breathe 8s ease-in-out infinite}
+.mesh-orb:nth-child(1){width:600px;height:600px;background:#7c3aed;top:-10%;left:30%}
+.mesh-orb:nth-child(2){width:500px;height:500px;background:#3b82f6;bottom:10%;right:10%;animation-delay:2s}
+.mesh-orb:nth-child(3){width:400px;height:400px;background:#22d3ee;top:40%;left:5%;animation-delay:4s}
+
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 2rem;border-bottom:1px solid var(--border-solid);position:sticky;top:0;z-index:200;background:rgba(5,5,8,0.95);backdrop-filter:blur(10px)}
+.nav-brand{font-size:1.2rem;font-weight:800;color:var(--accent);text-decoration:none}
+.nav-links{display:flex;gap:1.2rem}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:500;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--accent2)}
+
+.content{max-width:750px;margin:0 auto;padding:3rem 1.5rem;position:relative;z-index:1}
+h1{font-size:2rem;font-weight:800;margin-bottom:0.5rem}
+h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{color:var(--muted);font-size:0.95rem;margin-bottom:2.5rem}
+h2{font-size:1.1rem;font-weight:700;color:var(--accent2);margin:2rem 0 0.75rem;text-transform:uppercase;letter-spacing:0.05em}
+p{color:#ccc;font-size:0.9rem;margin-bottom:1rem}
+.card-about{background:rgba(14,14,20,0.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:18px;padding:1.5rem;margin-bottom:1.25rem;box-shadow:0 4px 24px rgba(0,0,0,0.3);transition:border-color 0.3s}
+.card-about:hover{border-color:rgba(124,58,237,0.2)}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.5rem 0}
+.feature-item{background:var(--card2);border:1px solid var(--border-solid);border-radius:var(--rs);padding:1.25rem;text-align:center;transition:transform 0.2s,border-color 0.2s}
+.feature-item:hover{transform:translateY(-2px);border-color:rgba(124,58,237,0.3)}
+.feature-icon{font-size:1.5rem;margin-bottom:0.5rem}
+.feature-title{font-size:0.85rem;font-weight:700;margin-bottom:0.25rem}
+.feature-desc{font-size:0.75rem;color:var(--muted)}
+.step-list{list-style:none;counter-reset:steps}
+.step-list li{counter-increment:steps;display:flex;gap:12px;align-items:flex-start;margin-bottom:1rem;color:#ccc;font-size:0.9rem}
+.step-list li::before{content:counter(steps);display:flex;align-items:center;justify-content:center;min-width:28px;height:28px;background:var(--accent);color:#fff;border-radius:50%;font-size:0.8rem;font-weight:700}
+.cta-section{text-align:center;margin:3rem 0 1rem;padding:2rem;background:rgba(14,14,20,0.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:18px}
+.cta-section h2{color:var(--text);margin-top:0}
+.cta-section p{color:var(--muted)}
+.cta-btn{display:inline-block;margin-top:1rem;padding:12px 32px;background:linear-gradient(135deg,var(--accent),#6d28d9);color:#fff;text-decoration:none;border-radius:var(--rs);font-weight:700;font-size:0.9rem;transition:transform 0.2s,box-shadow 0.3s;box-shadow:0 4px 16px rgba(124,58,237,0.25)}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(124,58,237,0.4)}
+.footer{text-align:center;padding:2rem;color:var(--muted);font-size:0.75rem;border-top:1px solid var(--border-solid);margin-top:2rem}
+.footer a{color:var(--accent2);text-decoration:none}
+.content{animation:cardGlass 0.6s ease}
+
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#222;border-radius:3px}
+::selection{background:rgba(124,58,237,0.25);color:#fff}
+</style>
+</head>
+<body>
+
+<div class="mesh-bg">
+  <div class="mesh-orb"></div>
+  <div class="mesh-orb"></div>
+  <div class="mesh-orb"></div>
+</div>
+
+<nav class="nav">
+  <a href="index.html" class="nav-brand">FitPlan</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html" class="active">About</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</nav>
+
+<div class="content">
+  <h1>About <span>FitPlan</span></h1>
+  <p class="subtitle">Science-based fitness plans — personalised for your body, your goals, your life.</p>
+
+  <div class="card-about">
+    <h2>What is FitPlan?</h2>
+    <p>FitPlan is a free fitness plan generator that creates personalised nutrition and workout plans based on your unique body metrics, goals, and lifestyle. No generic templates. No cookie-cutter programs.</p>
+    <p>Every plan is calculated using proven formulas — Mifflin-St Jeor for BMR, evidence-based macro splits, and progressive overload principles — to give you a plan that actually works.</p>
+  </div>
+
+  <h2>How It Works</h2>
+  <ol class="step-list">
+    <li>Fill in your details — name, age, weight, height, goal, and preferences</li>
+    <li>Click Generate — your personalised plan is created instantly</li>
+    <li>Follow the plan — daily meal schedules, workout splits, and progress tracking built in</li>
+  </ol>
+
+  <h2>Why FitPlan?</h2>
+  <div class="feature-grid">
+    <div class="feature-item">
+      <div class="feature-icon">🧮</div>
+      <div class="feature-title">Science-Based</div>
+      <div class="feature-desc">All calculations use evidence-based formulas. No guesswork.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">🎯</div>
+      <div class="feature-title">Fully Personalised</div>
+      <div class="feature-desc">Plans adapt to your body, goals, diet type, and schedule.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">📱</div>
+      <div class="feature-title">Works Offline</div>
+      <div class="feature-desc">Generate and use your plan without internet. No data collected.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">🔒</div>
+      <div class="feature-title">100% Private</div>
+      <div class="feature-desc">Everything runs in your browser. Your data never leaves your device.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">💰</div>
+      <div class="feature-title">Free Forever</div>
+      <div class="feature-desc">No hidden fees. No subscriptions. Free fitness planning for everyone.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Instant Results</div>
+      <div class="feature-desc">Get your complete plan in under 5 seconds. No waiting.</div>
+    </div>
+  </div>
+
+  <div class="card-about">
+    <h2>Meet Akash Singh</h2>
+    <p>Fitness enthusiast and certified nutrition advisor with a passion for making science-based fitness accessible to everyone. With years of experience in strength training, nutrition planning, and body composition, Akash built FitPlan to bridge the gap between expensive personal coaching and generic online programs.</p>
+    <p>The goal is simple: give everyone access to the same quality of fitness planning that was once only available through premium personal training — for free.</p>
+  </div>
+
+  <div class="cta-section">
+    <h2>Ready to Start?</h2>
+    <p>Generate your personalised fitness plan in under 5 seconds.</p>
+    <a href="index.html" class="cta-btn">Get My Plan →</a>
+  </div>
+</div>
+
+<div class="footer">
+  FitPlan · Designed by Akash Singh · <a href="https://instagram.com/akash.liftsup" target="_blank">@akash.liftsup</a> · All plans are for educational purposes
+</div>
+
+</body>
+</html>

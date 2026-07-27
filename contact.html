@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contact — FitPlan</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --green:#7eca5a;--gl:#1a2e12;--orange:#f97316;--ol:#2a1a08;
+  --blue:#3b82f6;--bl:#0c1a2e;--red:#ef4444;--rl:#2a0c0c;
+  --gold:#fbbf24;--goldl:#2a2008;--bg:#050508;--card:#0e0e14;
+  --card2:#14141c;--card-hover:#1a1a28;
+  --text:#f2f2f5;--muted:#7a7a8e;--border:rgba(255,255,255,0.06);
+  --border-solid:#1a1a24;--r:14px;--rs:10px;
+  --accent:#7c3aed;--accent2:#a78bfa;--accent-dim:rgba(124,58,237,0.15);
+  --success:#34d399;--purple:#a78bfa;--cyan:#22d3ee
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+@keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes cardGlass{from{opacity:0;transform:translateY(16px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.mesh-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.mesh-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.04;animation:breathe 8s ease-in-out infinite}
+.mesh-orb:nth-child(1){width:600px;height:600px;background:#7c3aed;top:-10%;left:30%}
+.mesh-orb:nth-child(2){width:500px;height:500px;background:#3b82f6;bottom:10%;right:10%;animation-delay:2s}
+.mesh-orb:nth-child(3){width:400px;height:400px;background:#22d3ee;top:40%;left:5%;animation-delay:4s}
+
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 2rem;border-bottom:1px solid var(--border-solid);position:sticky;top:0;z-index:200;background:rgba(5,5,8,0.95);backdrop-filter:blur(10px)}
+.nav-brand{font-size:1.2rem;font-weight:800;color:var(--accent);text-decoration:none}
+.nav-links{display:flex;gap:1.2rem}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:500;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--accent2)}
+
+.content{max-width:650px;margin:0 auto;padding:3rem 1.5rem;position:relative;z-index:1}
+h1{font-size:2rem;font-weight:800;margin-bottom:0.5rem}
+h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{color:var(--muted);font-size:0.95rem;margin-bottom:2.5rem}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}
+.contact-card{background:rgba(14,14,20,0.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:18px;padding:1.5rem;text-align:center;text-decoration:none;color:var(--text);transition:transform 0.2s,border-color 0.3s,box-shadow 0.3s}
+.contact-card:hover{transform:translateY(-3px);border-color:rgba(124,58,237,0.3);box-shadow:0 8px 32px rgba(0,0,0,0.4),0 0 16px rgba(124,58,237,0.1)}
+.contact-icon{font-size:2rem;margin-bottom:0.5rem}
+.contact-title{font-size:1rem;font-weight:700;margin-bottom:0.25rem}
+.contact-desc{font-size:0.78rem;color:var(--muted)}
+.form-card{background:rgba(14,14,20,0.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:18px;padding:1.75rem;box-shadow:0 4px 24px rgba(0,0,0,0.3);transition:border-color 0.3s}
+.form-card:hover{border-color:rgba(124,58,237,0.2)}
+.form-card h2{font-size:1.1rem;font-weight:700;margin-bottom:1rem;color:var(--accent2)}
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:4px}
+.fg input,.fg textarea{width:100%;border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:10px 14px;font-size:0.85rem;background:var(--card2);color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s;font-family:inherit}
+.fg input:focus,.fg textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,0.1)}
+.fg textarea{resize:vertical;min-height:100px}
+.submit-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),#6d28d9);color:#fff;border:none;border-radius:var(--rs);font-size:0.9rem;font-weight:700;cursor:pointer;transition:transform 0.2s,box-shadow 0.3s;box-shadow:0 4px 16px rgba(124,58,237,0.25)}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(124,58,237,0.4)}
+.footer{text-align:center;padding:2rem;color:var(--muted);font-size:0.75rem;border-top:1px solid var(--border-solid);margin-top:2rem}
+.footer a{color:var(--accent2);text-decoration:none}
+.content{animation:cardGlass 0.6s ease}
+
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#222;border-radius:3px}
+::selection{background:rgba(124,58,237,0.25);color:#fff}
+</style>
+</head>
+<body>
+
+<div class="mesh-bg">
+  <div class="mesh-orb"></div>
+  <div class="mesh-orb"></div>
+  <div class="mesh-orb"></div>
+</div>
+
+<nav class="nav">
+  <a href="index.html" class="nav-brand">FitPlan</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html" class="active">Contact</a>
+  </div>
+</nav>
+
+<div class="content">
+  <h1>Get in <span>Touch</span></h1>
+  <p class="subtitle">Questions, feedback, or just want to say hi? We would love to hear from you.</p>
+
+  <div class="contact-grid">
+    <a href="https://t.me/akash.liftsup" target="_blank" class="contact-card">
+      <div class="contact-icon">✈️</div>
+      <div class="contact-title">Telegram</div>
+      <div class="contact-desc">Message us directly on Telegram for quick responses</div>
+    </a>
+    <a href="https://instagram.com/akash.liftsup" target="_blank" class="contact-card">
+      <div class="contact-icon">📸</div>
+      <div class="contact-title">Instagram</div>
+      <div class="contact-desc">Follow @akash.liftsup for fitness tips and updates</div>
+    </a>
+  </div>
+
+  <div class="form-card">
+    <h2>Send Us a Message</h2>
+    <div class="fg">
+      <label>Your Name</label>
+      <input type="text" id="cName" placeholder="e.g. Rahul Sharma"/>
+    </div>
+    <div class="fg">
+      <label>Email Address</label>
+      <input type="email" id="cEmail" placeholder="you@example.com"/>
+    </div>
+    <div class="fg">
+      <label>Message</label>
+      <textarea id="cMsg" placeholder="How can we help you?"></textarea>
+    </div>
+    <button class="submit-btn" onclick="sendMsg()">Send Message →</button>
+  </div>
+</div>
+
+<div class="footer">
+  FitPlan · Designed by Akash Singh · <a href="https://instagram.com/akash.liftsup" target="_blank">@akash.liftsup</a> · All plans are for educational purposes
+</div>
+
+<script>
+function sendMsg() {
+  var n = document.getElementById('cName').value.trim();
+  var e = document.getElementById('cEmail').value.trim();
+  var m = document.getElementById('cMsg').value.trim();
+  if (!n || !m) { alert('Please enter your name and message.'); return; }
+  var text = '📩 NEW CONTACT FORM MESSAGE\n━━━━━━━━━━━━━━━━━━\nName: ' + n + '\nEmail: ' + (e || 'Not provided') + '\nMessage: ' + m + '\n━━━━━━━━━━━━━━━━━━';
+  fetch('https://api.telegram.org/bot8323966181:AAHkRHr-JXaEK_yVv1kG-fRXbtta4BBgT_8/sendMessage', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({chat_id: '676917032', text: text})
+  }).then(function() {
+    alert('Message sent! We will get back to you soon.');
+    document.getElementById('cName').value = '';
+    document.getElementById('cEmail').value = '';
+    document.getElementById('cMsg').value = '';
+  }).catch(function() {
+    alert('Failed to send. Please try messaging us on Telegram or Instagram.');
+  });
+}
+</script>
+
+</body>
+</html>

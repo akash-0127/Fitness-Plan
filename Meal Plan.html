@@ -1,0 +1,2613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Akash Singh — Personalised Meal Plan Generator v1.0</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --green:#7eca5a;--gl:#1a2e12;--orange:#f97316;--ol:#2a1a08;
+  --blue:#3b82f6;--bl:#0c1a2e;--red:#ef4444;--rl:#2a0c0c;
+  --gold:#fbbf24;--goldl:#2a2008;--bg:#050508;--card:#0e0e14;
+  --card2:#14141c;--card-hover:#1a1a28;
+  --text:#f2f2f5;--muted:#7a7a8e;--border:rgba(255,255,255,0.06);
+  --border-solid:#1a1a24;--r:14px;--rs:10px;
+  --accent:#7c3aed;--accent2:#a78bfa;--accent-dim:rgba(124,58,237,0.15);
+  --success:#34d399;--purple:#a78bfa;--cyan:#22d3ee
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeInScale{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,0)}50%{box-shadow:0 0 20px 4px rgba(124,58,237,0.3)}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes borderGlow{0%,100%{border-color:rgba(124,58,237,0.15)}50%{border-color:rgba(124,58,237,0.35)}}
+@keyframes iconBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes brainPulse{0%,100%{transform:scale(1);opacity:0.7}50%{transform:scale(1.1);opacity:1}}
+@keyframes thinkingDots{0%,20%{opacity:0.3}50%{opacity:1}80%,100%{opacity:0.3}}
+@keyframes aiGlow{0%,100%{box-shadow:0 0 30px rgba(124,58,237,0.1)}50%{box-shadow:0 0 60px rgba(124,58,237,0.25)}}
+@keyframes progressStep{from{width:0}to{width:100%}}
+@keyframes cardGlass{from{opacity:0;transform:translateY(16px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* ── MESH GRADIENT BG ── */
+.mesh-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.mesh-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.04;animation:breathe 8s ease-in-out infinite}
+.mesh-orb:nth-child(1){width:600px;height:600px;background:#7c3aed;top:-10%;left:30%;animation-delay:0s}
+.mesh-orb:nth-child(2){width:500px;height:500px;background:#3b82f6;bottom:10%;right:10%;animation-delay:2s}
+.mesh-orb:nth-child(3){width:400px;height:400px;background:#22d3ee;top:40%;left:5%;animation-delay:4s}
+
+/* ── TOP NAV ── */
+.topnav{position:sticky;top:0;z-index:200;background:rgba(5,5,8,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-solid);padding:0.75rem 2rem;display:flex;align-items:center;justify-content:space-between}
+.topnav .nav-brand{font-size:1rem;font-weight:800;color:var(--accent);text-decoration:none}
+.topnav .nav-links{display:flex;gap:1.2rem;align-items:center}
+.topnav .nav-links a{color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:500;transition:color 0.2s}
+.topnav .nav-links a:hover{color:var(--accent2)}
+.back-link{color:var(--accent2);text-decoration:none;font-size:0.85rem;font-weight:600;transition:color 0.2s;display:flex;align-items:center;gap:6px}
+.back-link:hover{color:var(--accent)}
+
+/* ── HEADER ── */
+.header{background:rgba(14,14,20,0.8);backdrop-filter:blur(16px);color:#fff;padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;border-bottom:1px solid rgba(124,58,237,0.15);animation:fadeIn 0.5s ease}
+.hl h1{font-size:1.5rem;font-weight:800}.hl h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hl p{font-size:0.78rem;color:var(--muted);margin-top:3px;font-style:italic}
+.hbadge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:0.7rem;padding:5px 14px;border-radius:999px;font-weight:700;margin-top:8px;display:inline-block;box-shadow:0 2px 12px rgba(124,58,237,0.3)}
+.hr{font-size:0.82rem;color:var(--muted);text-align:right}
+.hr a{color:var(--accent2);text-decoration:none;font-weight:600;transition:color 0.2s}
+.hr a:hover{color:var(--accent)}
+
+/* ── STAT CARDS ── */
+.stat-cards{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.stat-card{background:var(--accent-dim);border:1px solid rgba(124,58,237,0.3);border-radius:var(--rs);padding:6px 12px;text-align:center;min-width:70px;transition:transform 0.2s,border-color 0.2s}
+.stat-card:hover{transform:translateY(-2px);border-color:rgba(124,58,237,0.5)}
+.sc-v{font-size:1rem;font-weight:800;color:var(--accent2)}
+.sc-l{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
+
+/* ── LAYOUT ── */
+.wrap{max-width:1000px;margin:0 auto;padding:2rem 1.25rem;position:relative;z-index:1}
+.card{background:rgba(14,14,20,0.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:18px;padding:1.75rem;margin-bottom:1.75rem;box-shadow:0 4px 24px rgba(0,0,0,0.3);animation:cardGlass 0.6s ease 0.1s both;transition:border-color 0.3s,box-shadow 0.3s}
+.card:hover{border-color:rgba(124,58,237,0.2);box-shadow:0 8px 32px rgba(0,0,0,0.4),0 0 16px rgba(124,58,237,0.05)}
+.stitle{font-size:0.7rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:0.9rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+
+/* ── FORM ── */
+.row{display:flex;flex-wrap:wrap;gap:1.25rem;align-items:flex-end;margin-bottom:1.25rem}
+.fg{display:flex;flex-direction:column;gap:6px}
+.fg label{font-size:0.68rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em}
+.req{color:var(--red)}
+input[type=text],input[type=number]{border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:10px 14px;font-size:0.85rem;background:var(--card2);color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s}
+input[type=text]:focus,input[type=number]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,0.1)}
+input[type=text]{width:170px}
+input[type=number]{width:85px}
+input.err{border-color:var(--red);background:var(--rl)!important}
+.ferr{font-size:0.68rem;color:var(--red);display:none;margin-top:2px;font-weight:600}
+.ferr.on{display:block}
+input[type=tel],input[type=email]{border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:10px 14px;font-size:0.85rem;background:var(--card2);color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s;width:170px}
+input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,0.1)}
+
+/* ── CHIPS ── */
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--border-solid);border-radius:999px;padding:7px 16px;font-size:0.78rem;cursor:pointer;background:var(--card2);color:var(--text);transition:all 0.2s;font-weight:500;user-select:none}
+.chip:hover{border-color:var(--accent);color:var(--accent2);transform:translateY(-1px)}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 12px rgba(124,58,237,0.3)}
+.hchip{border:1.5px solid var(--border-solid);border-radius:999px;padding:7px 16px;font-size:0.78rem;cursor:pointer;background:var(--card2);color:var(--text);transition:all 0.2s;font-weight:500;user-select:none}
+.hchip:hover{border-color:var(--accent);color:var(--accent2);transform:translateY(-1px)}
+.hchip.on{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 12px rgba(124,58,237,0.3)}
+
+/* ── DIET CHIPS ── */
+.dchips{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px}
+.dchip{border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:9px 16px;font-size:0.78rem;cursor:pointer;background:var(--card2);color:var(--text);transition:all 0.2s;font-weight:500;user-select:none;line-height:1.3}
+.dchip:hover{border-color:var(--accent);color:var(--accent2);transform:translateY(-1px)}
+.dchip.on{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 12px rgba(124,58,237,0.3)}
+.dchip-sub{display:block;font-size:0.61rem;opacity:0.65;margin-top:2px;font-weight:400}
+.dchip.on .dchip-sub{opacity:0.8}
+
+/* ── UNIT TOGGLE ── */
+.unit-row{display:flex;gap:8px;align-items:center}
+.unit-toggle{display:flex;border:1.5px solid var(--border-solid);border-radius:var(--rs);overflow:hidden}
+.unit-btn{padding:7px 12px;font-size:0.72rem;cursor:pointer;background:var(--card2);color:var(--text);transition:all 0.2s;font-weight:600;border:none}
+.unit-btn.active{background:var(--accent);color:#fff}
+.unit-btn:hover:not(.active){background:var(--accent);color:#fff}
+
+/* ── NAVY PANEL ── */
+.navy{margin-top:1rem;background:var(--card2);border:1.5px solid rgba(124,58,237,0.15);border-radius:var(--rs);padding:1rem 1.25rem}
+.navy-t{font-size:0.67rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:0.65rem}
+.navy-h{font-size:0.7rem;color:var(--muted);margin-top:0.5rem}
+
+/* ── BMI PANEL ── */
+#bmiPanel{display:none;margin-top:1.25rem;background:rgba(14,14,20,0.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:var(--rs);padding:1rem 1.25rem}
+.bmi-inner{display:flex;flex-wrap:wrap;gap:1rem;align-items:center}
+.bmi-s{text-align:center}
+.bmi-v{font-size:1.6rem;font-weight:800;color:var(--text)}
+.bmi-l{font-size:0.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
+.bmi-c{font-size:0.7rem;font-weight:700;margin-top:2px}
+.bmi-div{width:1px;height:45px;background:var(--border-solid)}
+.bmi-bw{flex:1;min-width:200px}
+.bmi-bar{background:var(--border-solid);border-radius:99px;height:8px;position:relative;overflow:hidden}
+.bmi-fill{position:absolute;left:0;top:0;height:100%;border-radius:99px;transition:width 0.6s cubic-bezier(0.4,0,0.2,1);background:linear-gradient(90deg,var(--accent),var(--accent2));width:0}
+.bmi-labs{display:flex;justify-content:space-between;font-size:0.58rem;color:var(--muted);margin-top:3px}
+
+/* ── VALIDATION BANNER ── */
+.vbanner{display:none;background:var(--goldl);border:1px solid var(--gold);border-radius:var(--rs);padding:10px 14px;font-size:0.82rem;color:var(--gold);margin-bottom:1.25rem;font-weight:500}
+.vbanner.on{display:block;animation:fadeInUp 0.3s ease}
+
+/* ── BUTTONS ── */
+.gbtn{background:linear-gradient(135deg,var(--accent),#6d28d9);color:#fff;border:none;border-radius:var(--rs);padding:12px 28px;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(124,58,237,0.25)}
+.gbtn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);transition:left 0.5s}
+.gbtn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(124,58,237,0.4)}
+.gbtn:hover::before{left:100%}
+.gbtn:active{transform:scale(0.97)}
+.pbtn{background:linear-gradient(135deg,var(--gold),#f59e0b);color:#1a1200;border:none;border-radius:var(--rs);padding:12px 28px;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.25s;box-shadow:0 4px 16px rgba(251,191,36,0.2)}
+.pbtn:hover{filter:brightness(1.07);transform:translateY(-2px);box-shadow:0 6px 24px rgba(251,191,36,0.35)}
+
+/* ── AI LOADING OVERLAY ── */
+.loading{display:none;position:fixed;inset:0;background:rgba(5,5,8,0.92);backdrop-filter:blur(12px);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem}
+.loading.on{display:flex;animation:fadeIn 0.3s ease}
+.ai-brain{width:72px;height:72px;border-radius:50%;background:var(--accent-dim);border:2px solid rgba(124,58,237,0.3);display:flex;align-items:center;justify-content:center;font-size:2rem;animation:brainPulse 2s ease-in-out infinite}
+.ai-steps{display:flex;flex-direction:column;gap:10px;min-width:280px}
+.ai-step{display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--muted);transition:color 0.3s}
+.ai-step.active{color:var(--text)}
+.ai-step.done{color:var(--success)}
+.ai-step-dot{width:8px;height:8px;border-radius:50%;background:var(--border-solid);flex-shrink:0;transition:all 0.3s}
+.ai-step.active .ai-step-dot{background:var(--accent);box-shadow:0 0 8px rgba(124,58,237,0.5);animation:brainPulse 1s ease-in-out infinite}
+.ai-step.done .ai-step-dot{background:var(--success)}
+.ai-progress{width:280px;height:3px;background:var(--border-solid);border-radius:99px;overflow:hidden}
+.ai-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:width 0.5s cubic-bezier(0.4,0,0.2,1);width:0}
+
+/* ── OUTPUT ── */
+.output{display:none;background:rgba(14,14,20,0.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:18px;padding:2rem;box-shadow:0 8px 40px rgba(0,0,0,0.4);margin-top:1.5rem}
+.output.show{display:block;animation:fadeInUp 0.5s ease}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;padding-bottom:1.25rem;border-bottom:2px solid var(--border);margin-bottom:1.5rem}
+.pbrand{font-size:0.68rem;color:var(--muted);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px}
+.ptitle{font-size:1.4rem;font-weight:800;color:var(--text)}
+.psub{font-size:0.76rem;color:var(--muted);margin-top:3px}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.badge{font-size:0.68rem;padding:4px 12px;border-radius:999px;font-weight:700}
+.b-green{background:var(--gl);color:var(--green)}
+.b-orange{background:var(--ol);color:var(--orange)}
+.b-blue{background:var(--bl);color:var(--blue)}
+.b-gold{background:var(--goldl);color:var(--gold);border:1px solid rgba(251,191,36,0.3)}
+.b-red{background:var(--rl);color:var(--red)}
+
+/* ── STAT GRID ── */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:1.5rem}
+.stat{background:var(--card2);border:1px solid var(--border-solid);border-radius:var(--rs);padding:14px;text-align:center;animation:popIn 0.3s ease both;transition:transform 0.2s,border-color 0.2s}
+.stat:hover{transform:translateY(-2px);border-color:rgba(124,58,237,0.3)}
+.stat-v{font-size:1.1rem;font-weight:800;color:var(--text)}
+.stat-l{font-size:0.62rem;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:0.05em}
+.stat:nth-child(1){animation-delay:0s}
+.stat:nth-child(2){animation-delay:0.05s}
+.stat:nth-child(3){animation-delay:0.1s}
+.stat:nth-child(4){animation-delay:0.15s}
+.stat:nth-child(5){animation-delay:0.2s}
+
+/* ── CALC TABLE ── */
+.slbl{font-size:0.67rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin:1.5rem 0 0.75rem;display:flex;align-items:center;gap:10px}
+.slbl::after{content:'';flex:1;height:1px;background:var(--border)}
+.slbl.gold{color:var(--gold)}
+.sf{border:1px solid var(--border);border-radius:var(--rs);overflow:hidden;margin-bottom:1.25rem}
+.sh{background:var(--card);color:var(--text);font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:10px 16px;display:flex;align-items:center;gap:8px}
+.ptag{background:linear-gradient(135deg,var(--gold),#f59e0b);color:#1a1200;font-size:0.58rem;padding:2px 8px;border-radius:999px;font-weight:800}
+.ctbl{width:100%;border-collapse:collapse;font-size:0.82rem}
+.ctbl th{background:var(--card2);font-size:0.63rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--accent2);padding:8px 14px;text-align:left;border-bottom:1px solid var(--border-solid)}
+.ctbl td{padding:8px 14px;border-bottom:1px solid var(--border-solid);color:var(--text)}
+.ctbl tr:last-child td{border-bottom:none}
+
+/* ── MEAL SLOTS ── */
+.mslot{padding:0}
+.mslot-hd{padding:10px 16px 0;font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;border-top:1px solid var(--border-solid)}
+.mslot-hd:first-child{border-top:none}
+.mslot-macro{font-size:0.62rem;color:var(--blue);font-weight:700;margin-left:8px;text-transform:none;letter-spacing:0}
+.mopt{padding:6px 16px 6px 28px;font-size:0.82rem;line-height:1.5;border-bottom:1px dashed rgba(255,255,255,0.04);position:relative;color:#d0d0d5}
+.mopt:last-of-type{border-bottom:none;padding-bottom:10px}
+.mopt::before{content:"";position:absolute;left:16px;top:50%;width:5px;height:5px;border-radius:50%;background:var(--accent);transform:translateY(-50%)}
+
+/* ── INFO BOXES ── */
+.ib{border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:1.25rem}
+.ib h3{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
+.ib-green{background:var(--gl);border:1px solid #3a5a20}.ib-green h3{color:var(--green)}
+.ib-red{background:var(--rl);border:1px solid #712B13}.ib-red h3{color:var(--red)}
+.ib-blue{background:var(--bl);border:1px solid #185FA5}.ib-blue h3{color:var(--blue)}
+.ib-orange{background:var(--ol);border:1px solid #b96b10}.ib-orange h3{color:var(--orange)}
+.ib-dark{background:var(--card);color:#f0f0f0;border-left:4px solid var(--gold)}.ib-dark h3{color:var(--gold)}
+.ib ul{list-style:none;padding:0}
+.ib ul li{font-size:0.82rem;padding:3px 0;display:flex;gap:7px;line-height:1.5}
+.ib-green ul li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:7px}
+.ib-red ul li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:7px}
+.ib-blue ul li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:7px}
+.ib-dark ul li{color:#ddd}
+.ib-dark ul li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:7px}
+
+/* ── SEED & SUPP GRID ── */
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:8px;margin-bottom:1.25rem}
+.si{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 14px;transition:border-color 0.2s,transform 0.2s}
+.si:hover{border-color:rgba(124,58,237,0.2);transform:translateY(-1px)}
+.si-t{font-size:0.72rem;font-weight:700;color:var(--text);margin-bottom:2px}
+.si-d{font-size:0.74rem;color:var(--muted);line-height:1.45}
+
+/* ── BONUS 2-col ── */
+.bonus-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
+.bonus-card{background:var(--card2);border:1px solid var(--border);border-radius:var(--rs);padding:1rem 1.1rem;transition:border-color 0.2s}
+.bonus-card:hover{border-color:rgba(124,58,237,0.2)}
+.bonus-head{font-size:0.67rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:6px}
+.bonus-body{font-size:0.82rem;color:#d0d0d5;line-height:1.55}
+.bonus-body li{list-style:none;padding:2px 0}
+.bonus-body li::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--orange);margin-right:8px;vertical-align:middle}
+
+/* ── COACH NOTE ── */
+.cnote{background:var(--card);color:#f0f0f0;border-radius:var(--rs);padding:1.1rem 1.35rem;font-size:0.84rem;line-height:1.7;margin-bottom:1.25rem;border:1px solid var(--border);border-left:3px solid var(--accent)}
+.cnote strong{color:var(--accent2)}
+
+/* ── REST DAY ── */
+.rest-badge{display:inline-block;background:var(--bl);color:var(--blue);font-size:0.63rem;font-weight:700;padding:2px 9px;border-radius:999px;margin-left:8px;vertical-align:middle}
+
+/* ── BUTTONS ROW ── */
+.btn{border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:10px 22px;font-size:0.81rem;cursor:pointer;background:var(--card2);color:var(--text);font-weight:600;transition:all 0.2s}
+.btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(124,58,237,0.2)}
+.btn-p{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ── FOOTER ── */
+.footer{text-align:center;margin-top:2.5rem;padding:1.5rem 1.25rem;border-top:1px solid var(--border-solid);font-size:0.75rem;color:var(--muted)}
+.footer a{color:var(--accent2);font-weight:600;text-decoration:none;transition:color 0.2s}
+.footer a:hover{color:var(--accent)}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#222;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#333}
+::selection{background:rgba(124,58,237,0.25);color:#fff}
+
+/* ── AI GENERATED BADGE ── */
+.ai-badge{display:none;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(167,139,250,0.15));border:1px solid rgba(124,58,237,0.25);border-radius:999px;padding:4px 14px;font-size:0.68rem;font-weight:700;color:var(--accent2);margin-top:8px;animation:fadeInUp 0.4s ease}
+.ai-badge.show{display:inline-flex}
+.ai-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:brainPulse 1.5s ease-in-out infinite}
+
+/* ── PREMIUM PRICING OVERLAY ── */
+.prem-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:500;justify-content:center;align-items:center;padding:1rem}
+.prem-overlay.on{display:flex}
+.prem-modal{background:rgba(14,14,20,0.95);border:1px solid rgba(251,191,36,0.3);border-radius:18px;padding:2rem 1.75rem;max-width:420px;width:100%;text-align:center;animation:fadeInScale 0.35s ease;box-shadow:0 8px 48px rgba(251,191,36,0.12),0 0 80px rgba(124,58,237,0.08)}
+.prem-modal h2{font-size:1.2rem;font-weight:800;margin-bottom:0.3rem;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.prem-modal .pm-sub{font-size:0.78rem;color:var(--muted);margin-bottom:1.25rem}
+.prem-plan{background:var(--bg);border:1px solid var(--border-solid);border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:1rem;text-align:left}
+.prem-plan h4{font-size:0.85rem;font-weight:800;color:var(--gold);margin-bottom:0.4rem}
+.prem-plan ul{list-style:none;padding:0}
+.prem-plan li{font-size:0.78rem;color:var(--text);padding:4px 0;display:flex;align-items:flex-start;gap:6px}
+.prem-plan li::before{content:'✓';color:var(--success);font-weight:800;flex-shrink:0}
+.prem-price{font-size:1.5rem;font-weight:800;color:var(--gold);margin:0.5rem 0 0.25rem}
+.prem-price-note{font-size:0.7rem;color:var(--muted);margin-bottom:1rem}
+.pm-btns{display:flex;gap:10px;justify-content:center}
+.pm-btn{padding:10px 28px;border-radius:var(--rs);border:none;font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.2s}
+.pm-btn-primary{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000}
+.pm-btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(251,191,36,0.3)}
+.pm-btn-cancel{background:var(--card2);color:var(--muted);border:1px solid var(--border-solid)}
+.pm-btn-cancel:hover{color:var(--text);border-color:rgba(255,255,255,0.15)}
+.qr-wrap{background:#fff;border-radius:14px;padding:16px;display:inline-block;margin:0.75rem 0}
+.qr-wrap img{display:block;width:200px;height:200px;border-radius:10px}
+.qr-upi{font-size:0.75rem;color:var(--muted);margin-top:8px;word-break:break-all}
+
+/* ── SUCCESS BANNER ── */
+.success-banner{display:none;background:rgba(16,185,129,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:1.25rem;animation:fadeInScale 0.3s ease}
+.success-banner.on{display:block}
+.success-banner h4{font-size:0.88rem;font-weight:800;color:var(--success);margin-bottom:0.3rem}
+.success-banner p{font-size:0.78rem;color:var(--text);line-height:1.5}
+.success-banner .sb-close{float:right;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;padding:0 4px}
+.success-banner .sb-close:hover{color:var(--text)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .bonus-grid{grid-template-columns:1fr}
+  .sg{grid-template-columns:1fr 1fr}
+  .progress-2col{grid-template-columns:1fr!important}
+  .topnav{padding:0.6rem 1rem}
+  .header{padding:1rem 1.25rem}
+  .wrap{padding:1.25rem 0.75rem}
+  .card{padding:1.25rem}
+  .output{padding:1.25rem}
+}
+@media print{
+  .card,.gbtn,.pbtn,.header,.footer,.navy,#bmiPanel,.vbanner,#printWrap,.topnav,.mesh-bg,.ai-badge{display:none!important}
+  body{background:#fff}
+  .output{box-shadow:none;border:none;background:#fff}
+  @page{margin:14mm;size:A4}
+}
+</style>
+</head>
+<body>
+
+<div class="mesh-bg">
+  <div class="mesh-orb"></div>
+  <div class="mesh-orb"></div>
+  <div class="mesh-orb"></div>
+</div>
+
+<nav class="topnav">
+  <a href="index.html" class="back-link">← Back to FitPlan</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</nav>
+
+<div class="loading" id="loading">
+  <div class="ai-brain">🧠</div>
+  <div class="ai-steps">
+    <div class="ai-step" id="aiStep1"><div class="ai-step-dot"></div>Calculating your BMR & TDEE</div>
+    <div class="ai-step" id="aiStep2"><div class="ai-step-dot"></div>Optimising macro split</div>
+    <div class="ai-step" id="aiStep3"><div class="ai-step-dot"></div>Building personalised meals</div>
+    <div class="ai-step" id="aiStep4"><div class="ai-step-dot"></div>Adding supplements & guidelines</div>
+  </div>
+  <div class="ai-progress"><div class="ai-progress-fill" id="aiProgressFill"></div></div>
+  <div class="lt" id="lt" style="color:var(--muted);font-size:0.82rem">Preparing your plan...</div>
+</div>
+
+<div class="prem-overlay" id="premOverlay">
+  <div class="prem-modal">
+    <h2>⭐ Premium Meal Plan</h2>
+    <div class="pm-sub">Custom-crafted by Akash Singh — personally tailored to your body, goals & lifestyle</div>
+    <div class="prem-plan">
+      <h4>What's Included</h4>
+      <ul>
+        <li>Personalised 7-day meal plan with carb cycling strategy</li>
+        <li>Exact portion sizes & timing for every meal</li>
+        <li>Premium supplement stack (8-10 supplements)</li>
+        <li>Weekly batch cooking & meal prep schedule</li>
+        <li>Refeed day & calorie cycling protocols</li>
+        <li>1-on-1 WhatsApp/Instagram support for 30 days</li>
+        <li>Monthly plan adjustments based on progress</li>
+      </ul>
+    </div>
+    <div class="prem-price">₹99</div>
+    <div class="prem-price-note">One-time payment · Lifetime plan · Free revisions</div>
+    <div class="pm-btns">
+      <button class="pm-btn pm-btn-primary" onclick="confirmPremium()">Proceed — Pay ₹99</button>
+      <button class="pm-btn pm-btn-cancel" onclick="closePremOverlay()">Go Back</button>
+    </div>
+  </div>
+</div>
+
+<div class="prem-overlay" id="qrOverlay">
+  <div class="prem-modal">
+    <h2>📱 Scan to Pay</h2>
+    <div class="pm-sub">Scan the QR code below with any UPI app to complete payment</div>
+    <div class="qr-wrap">
+      <img id="qrImage" src="" alt="UPI QR Code"/>
+    </div>
+    <div class="prem-price" id="qrAmount">₹99</div>
+    <div class="qr-upi">UPI ID: skyce@ybl</div>
+    <div class="prem-price-note">One-time payment · Lifetime plan · Free revisions</div>
+    <div class="pm-btns">
+      <button class="pm-btn pm-btn-primary" onclick="confirmPayment()">I've Paid — Confirm</button>
+      <button class="pm-btn pm-btn-cancel" onclick="closeQrOverlay()">Go Back</button>
+    </div>
+  </div>
+</div>
+
+<div class="success-banner" id="successBanner">
+  <button class="sb-close" onclick="this.parentElement.classList.remove('on')">&times;</button>
+  <h4>✅ Payment Confirmed!</h4>
+  <p id="successMsg">Your premium meal plan request has been received. Akash will contact you within 24 hours via WhatsApp/Instagram.</p>
+</div>
+
+<div class="header">
+  <div class="hl">
+    <h1><span>FitPlan</span></h1>
+    <div class="stat-cards">
+      <div class="stat-card"><div class="sc-v">1000+</div><div class="sc-l">Plans Generated</div></div>
+      <div class="stat-card"><div class="sc-v">15+</div><div class="sc-l">Diet Types</div></div>
+      <div class="stat-card"><div class="sc-v">5</div><div class="sc-l">Goal Categories</div></div>
+      <div class="stat-card"><div class="sc-v">0</div><div class="sc-l">Internet Needed</div></div>
+    </div>
+    <div class="hbadge">🥗 Personalised Meal Plan Generator</div>
+    <div class="ai-badge" id="aiGeneratedBadge"><div class="ai-badge-dot"></div>AI Generated Plan</div>
+  </div>
+  <div class="hr">
+    <a href="https://instagram.com/akash.liftsup" target="_blank">@akash.liftsup</a>
+    <div style="font-size:0.7rem;color:var(--muted);margin-top:3px">Science-Based Nutrition · No Fluff</div>
+  </div>
+</div>
+
+<div class="wrap">
+<div class="vbanner" id="vbanner"></div>
+
+<!-- FORM CARD -->
+<div class="card">
+
+  <!-- PERSONAL -->
+  <div class="stitle">👤 Personal Details</div>
+  <div class="row">
+    <div class="fg">
+      <label>Client Name <span class="req">*</span></label>
+      <input type="text" id="cName" placeholder="e.g. Rahul Sharma"/>
+      <span class="ferr" id="eName">Name is required</span>
+    </div>
+    <div class="fg">
+      <label>Phone (+91) <span class="req">*</span></label>
+      <input type="tel" id="phone" placeholder="98765 43210" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'')"/>
+      <span class="ferr" id="ePhone">Enter valid 10-digit Indian number</span>
+    </div>
+    <div class="fg">
+      <label>Email <span class="req">*</span></label>
+      <input type="email" id="email" placeholder="rahul@email.com"/>
+      <span class="ferr" id="eEmail">Enter valid email address</span>
+    </div>
+    <div class="fg">
+      <label>Age <span class="req">*</span></label>
+      <input type="number" id="age" placeholder="25" min="15" max="80"/>
+      <span class="ferr" id="eAge">Enter age (15–80)</span>
+    </div>
+    <div class="fg">
+      <label>Weight <span class="req">*</span></label>
+      <div class="unit-row">
+        <input type="number" id="wt" placeholder="70" min="15" max="450"/>
+        <div class="unit-toggle" id="weightUnit">
+          <div class="unit-btn active" data-val="kg" onclick="setUnit('weight',this)">kg</div>
+          <div class="unit-btn" data-val="lbs" onclick="setUnit('weight',this)">lbs</div>
+        </div>
+      </div>
+      <span class="ferr" id="eWt">Enter realistic weight</span>
+    </div>
+    <div class="fg">
+      <label>Height <span class="req">*</span></label>
+      <div class="unit-row">
+        <input type="number" id="ht" placeholder="170" min="36" max="300"/>
+        <div class="unit-toggle" id="heightUnit">
+          <div class="unit-btn active" data-val="cm" onclick="setUnit('height',this)">cm</div>
+          <div class="unit-btn" data-val="in" onclick="setUnit('height',this)">in</div>
+        </div>
+      </div>
+      <span class="ferr" id="eHt">Enter realistic height</span>
+    </div>
+    <div class="fg">
+      <label>Gender</label>
+      <div class="chips">
+        <div class="chip on" data-g="gender" data-v="male">♂ Male</div>
+        <div class="chip" data-g="gender" data-v="female">♀ Female</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOAL & ACTIVITY -->
+  <div class="stitle">🎯 Goal & Activity</div>
+  <div class="row">
+    <div class="fg">
+      <label>Fitness Goal</label>
+      <div class="chips">
+        <div class="chip on" data-g="goal" data-v="fatloss">🔥 Fat Loss</div>
+        <div class="chip" data-g="goal" data-v="musclegain">💪 Muscle Gain</div>
+        <div class="chip" data-g="goal" data-v="recomp">⚖️ Recomposition</div>
+        <div class="chip" data-g="goal" data-v="maintenance">🔄 Maintenance</div>
+        <div class="chip" data-g="goal" data-v="strength">🏋️ Strength</div>
+        <div class="chip" data-g="goal" data-v="endurance">🏃 Endurance</div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="fg">
+      <label>Activity Level</label>
+      <div class="chips">
+        <div class="chip" data-g="activity" data-v="sedentary">Sedentary</div>
+        <div class="chip on" data-g="activity" data-v="lightly">Lightly Active</div>
+        <div class="chip" data-g="activity" data-v="moderate">Moderately Active</div>
+        <div class="chip" data-g="activity" data-v="very">Very Active</div>
+        <div class="chip" data-g="activity" data-v="extreme">Athlete</div>
+      </div>
+    </div>
+    <div class="fg">
+      <label>Training Days/Week</label>
+      <div class="chips">
+        <div class="chip" data-g="tdays" data-v="3">3 Days</div>
+        <div class="chip on" data-g="tdays" data-v="4">4 Days</div>
+        <div class="chip" data-g="tdays" data-v="5">5 Days</div>
+        <div class="chip" data-g="tdays" data-v="6">6 Days</div>
+      </div>
+    </div>
+    <div class="fg">
+      <label>Workout Timing</label>
+      <div class="chips">
+        <div class="chip on" data-g="timing" data-v="morning">🌅 Morning</div>
+        <div class="chip" data-g="timing" data-v="evening">🌆 Evening</div>
+        <div class="chip" data-g="timing" data-v="flexible">🕐 Flexible</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIET PREFERENCE -->
+  <div class="stitle">🥗 Diet Preference</div>
+  <div class="dchips" id="dietChips">
+    <div class="dchip on" data-diet="veg_dairy">🥦 Vegetarian<span class="dchip-sub">Dairy ok · No eggs · No meat</span></div>
+    <div class="dchip" data-diet="veg_nodairy">🥦 Veg + Lactose-Free<span class="dchip-sub">No dairy · No eggs · No meat</span></div>
+    <div class="dchip" data-diet="eggetarian">🥚 Eggetarian<span class="dchip-sub">Eggs + dairy ok · No meat</span></div>
+    <div class="dchip" data-diet="egge_nodairy">🥚 Eggetarian + LF<span class="dchip-sub">Eggs ok · No dairy · No meat</span></div>
+    <div class="dchip" data-diet="nonveg">🍗 Non-Veg<span class="dchip-sub">Chicken · Fish · Eggs · Dairy</span></div>
+    <div class="dchip" data-diet="nonveg_nodairy">🍗 Non-Veg + LF<span class="dchip-sub">Meat &amp; eggs ok · No dairy</span></div>
+    <div class="dchip" data-diet="vegan">🌱 Vegan<span class="dchip-sub">No animal products</span></div>
+    <div class="dchip" data-diet="pescatarian">🐟 Pescatarian<span class="dchip-sub">Fish &amp; eggs ok · No meat</span></div>
+    <div class="dchip" data-diet="keto">🥑 Keto<span class="dchip-sub">High fat · Very low carb</span></div>
+  </div>
+
+  <!-- LIFESTYLE -->
+  <div class="stitle" style="margin-top:1.25rem">⚙️ Lifestyle & Health</div>
+  <div class="row">
+    <div class="fg">
+      <label>Meals Per Day</label>
+      <div class="chips">
+        <div class="chip" data-g="meals" data-v="3">3 Meals</div>
+        <div class="chip on" data-g="meals" data-v="4">4 Meals</div>
+        <div class="chip" data-g="meals" data-v="5">5 Meals</div>
+        <div class="chip" data-g="meals" data-v="6">6 Meals</div>
+      </div>
+    </div>
+    <div class="fg">
+      <label>Budget</label>
+      <div class="chips">
+        <div class="chip" data-g="budget" data-v="low">💰 Low (₹100–200/day)</div>
+        <div class="chip on" data-g="budget" data-v="medium">💰💰 Medium (₹200–400)</div>
+        <div class="chip" data-g="budget" data-v="high">💎 High (₹400+)</div>
+      </div>
+    </div>
+    <div class="fg">
+      <label>Cooking Time</label>
+      <div class="chips">
+        <div class="chip" data-g="cooktime" data-v="15">15 min</div>
+        <div class="chip on" data-g="cooktime" data-v="30">30 min</div>
+        <div class="chip" data-g="cooktime" data-v="60">60 min</div>
+        <div class="chip" data-g="cooktime" data-v="prep">Meal Prep</div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="fg">
+      <label>Health Conditions <span style="font-weight:400;color:#aaa;font-size:0.62rem">(select all that apply)</span></label>
+      <div class="chips" id="healthChips">
+        <div class="hchip on" data-v="none">None</div>
+        <div class="hchip" data-v="diabetes">Diabetes/IR</div>
+        <div class="hchip" data-v="thyroid">Thyroid</div>
+        <div class="hchip" data-v="pcos">PCOS/PCOD</div>
+        <div class="hchip" data-v="cholesterol">High Cholesterol</div>
+        <div class="hchip" data-v="bp">Hypertension</div>
+        <div class="hchip" data-v="ibs">IBS/Gut Issues</div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="fg">
+      <label>Stress Level</label>
+      <div class="chips">
+        <div class="chip on" data-g="stress" data-v="low">Low</div>
+        <div class="chip" data-g="stress" data-v="medium">Medium</div>
+        <div class="chip" data-g="stress" data-v="high">High</div>
+      </div>
+    </div>
+    <div class="fg">
+      <label>Budget Version</label>
+      <div class="chips">
+        <div class="chip on" data-g="plantype" data-v="normal">Normal Plan</div>
+        <div class="chip" data-g="plantype" data-v="premium">⭐ Premium Plan</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVY METHOD -->
+  <div class="navy">
+    <div class="navy-t">📏 Body Measurements — Navy Method (Optional · More Accurate Body Fat %)</div>
+    <div class="row" style="gap:1rem;margin-bottom:0">
+      <div class="fg">
+        <label>Waist (cm)</label>
+        <input type="number" id="waist" placeholder="e.g. 85" style="width:100px"/>
+      </div>
+      <div class="fg">
+        <label>Neck (cm)</label>
+        <input type="number" id="neck" placeholder="e.g. 38" style="width:100px"/>
+      </div>
+      <div class="fg" id="hipGrp">
+        <label>Hip (cm) <span style="font-weight:400;color:#aaa;font-size:0.62rem">females only</span></label>
+        <input type="number" id="hip" placeholder="e.g. 95" style="width:100px"/>
+      </div>
+    </div>
+    <div class="navy-h">💡 Fill waist + neck for precise body fat via Navy Method. Otherwise BMI-based estimate is used.</div>
+  </div>
+
+  <!-- BMI PANEL -->
+  <div id="bmiPanel">
+    <div class="bmi-inner">
+      <div class="bmi-s">
+        <div class="bmi-v" id="bmiV">—</div>
+        <div class="bmi-l">BMI</div>
+        <div class="bmi-c" id="bmiC">—</div>
+      </div>
+      <div class="bmi-div"></div>
+      <div class="bmi-s">
+        <div class="bmi-v" id="fatV">—</div>
+        <div class="bmi-l">Body Fat</div>
+        <div class="bmi-c" id="fatC">—</div>
+      </div>
+      <div class="bmi-div"></div>
+      <div class="bmi-s">
+        <div class="bmi-v" id="leanV">—</div>
+        <div class="bmi-l">Lean Mass</div>
+        <div class="bmi-c" id="leanC">—</div>
+      </div>
+      <div class="bmi-div"></div>
+      <div class="bmi-bw">
+        <div style="font-size:0.68rem;color:var(--muted);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em">BMI Scale</div>
+        <div class="bmi-bar"><div class="bmi-fill" id="bmiFill"></div></div>
+        <div class="bmi-labs"><span>Underweight</span><span>Normal</span><span>Overweight</span><span>Obese</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:10px;margin-top:1.5rem;flex-wrap:wrap;align-items:center">
+    <button class="gbtn" onclick="generate('normal')">🥗 Generate Meal Plan</button>
+    <button class="pbtn" onclick="generate('premium')">⭐ Generate Premium Plan</button>
+    <span style="font-size:0.72rem;color:var(--muted)">Works offline · No internet needed</span>
+  </div>
+
+</div><!-- /card -->
+
+<!-- OUTPUT -->
+<div class="output" id="output">
+
+  <!-- PLAN HEADER -->
+  <div class="ph">
+    <div>
+      <div class="pbrand">Akash Singh · Personalised Nutrition Plan</div>
+      <div class="ptitle" id="outTitle"></div>
+      <div class="psub" id="outSub"></div>
+      <div class="badges" id="outBadges"></div>
+    </div>
+    <div style="text-align:right;font-size:0.72rem;color:var(--muted)">
+      <div style="font-size:1.5rem">🥗</div>
+    </div>
+  </div>
+
+  <!-- MACRO STATS -->
+  <div class="stats" id="outStats"></div>
+
+  <!-- BODY COMP ROW -->
+  <div id="bcRow" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:0.85rem 1.1rem;margin-bottom:1.25rem">
+    <div id="bcContent" style="display:flex;flex-wrap:wrap;gap:1.25rem"></div>
+  </div>
+
+  <!-- CALCULATIONS -->
+  <div class="slbl">📊 Your Calculations</div>
+  <div class="sf">
+    <div class="sh">BMR → TDEE → Target Calories → Macros</div>
+    <div id="outCalc"></div>
+  </div>
+
+  <!-- TRAINING DAY MEALS -->
+  <div class="slbl" id="trainingDayLbl">🏋️ Training Day Meal Plan</div>
+  <div class="sf" id="outMealsWrap">
+    <div class="sh" id="mealPlanHead">Daily Meal Schedule — Pick Any 1 Option Per Meal</div>
+    <div id="outMeals"></div>
+  </div>
+
+  <!-- REST DAY MEALS -->
+  <div class="slbl">😴 Rest Day Meal Plan <span style="font-size:0.62rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--blue)">Carbs reduced 20–25% · Same protein · Slight calorie drop</span></div>
+  <div class="sf">
+    <div class="sh">Rest Day Schedule <span class="rest-badge">REST DAY</span></div>
+    <div id="outRestMeals"></div>
+  </div>
+
+  <!-- SEEDS -->
+  <div class="slbl">🌱 Power Seeds — Add Daily</div>
+  <div class="sg" id="outSeeds"></div>
+
+  <!-- SUPPLEMENTS -->
+  <div class="slbl" id="suppLbl">💊 Recommended Supplements</div>
+  <div class="sg" id="outSupps"></div>
+
+  <!-- BONUS -->
+  <div class="slbl">📌 Bonus Guidelines</div>
+  <div class="bonus-grid" id="outBonus"></div>
+
+  <!-- RULES & AVOID -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem">
+    <div class="ib ib-green"><h3>✅ Rules to Follow</h3><ul id="outRules"></ul></div>
+    <div class="ib ib-red"><h3>❌ Strictly Avoid</h3><ul id="outAvoid"></ul></div>
+  </div>
+
+  <!-- SMART SWAPS -->
+  <div class="slbl">🔄 Smart Food Swaps</div>
+  <div class="ib ib-blue" id="outSwaps"><h3>If you don't have X → use Y</h3><ul></ul></div>
+
+  <!-- HEALTH CONDITION NOTE -->
+  <div id="healthNote" style="display:none"></div>
+
+  <!-- COACH NOTE -->
+  <div class="cnote" id="outNote"></div>
+
+  <!-- CARB CYCLING TABLE (premium) -->
+  <div class="slbl" id="carbCycleLbl" style="display:none">🔄 Carb Cycling Weekly Overview <span style="font-size:0.62rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--gold)">Premium Strategy</span></div>
+  <div id="carbCycleWrap" style="display:none;margin-bottom:1.25rem"></div>
+
+  <!-- WEEKLY MEAL PREP GUIDE -->
+  <div class="slbl">📦 Weekly Meal Prep Guide</div>
+  <div class="sf">
+    <div class="sh">Sunday Batch Cook — Save 45 Min Every Day</div>
+    <div id="outPrepGuide"></div>
+  </div>
+
+  <!-- PROGRESS TRACKING -->
+  <div class="slbl">📈 Progress Tracking Protocol</div>
+  <div id="outProgress"></div>
+
+  <!-- PREMIUM PANEL -->
+  <div id="premiumPanel" style="display:none;margin-bottom:1.25rem">
+    <div class="slbl" style="color:var(--gold)">⭐ Premium Nutrition Strategies</div>
+    <div id="premiumContent"></div>
+  </div>
+
+  <!-- PRINT / COPY -->
+  <div id="printWrap" style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn btn-p" onclick="doCopy(this)">📋 Copy Plan</button>
+    <button class="btn" onclick="window.print()">🖨️ Print / Save PDF</button>
+  </div>
+
+</div><!-- /output -->
+
+<div class="footer">
+  Designed by <a href="https://instagram.com/akash.liftsup">Akash Singh</a> · @akash.liftsup · Personal Training Use Only · v1.0 · No internet required
+</div>
+</div><!-- /wrap -->
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+var S = {
+  gender:'male', goal:'fatloss', activity:'lightly',
+  tdays:'4', timing:'morning', diet:'veg_dairy',
+  meals:'4', budget:'medium', cooktime:'30',
+  health:['none'], stress:'low', plantype:'normal'
+};
+
+// ============================================================
+// CHIP HANDLERS
+// ============================================================
+var chips = document.querySelectorAll('.chip');
+for (var ci=0; ci<chips.length; ci++) {
+  (function(c) {
+    c.onclick = function() {
+      var g=c.getAttribute('data-g'), v=c.getAttribute('data-v');
+      var grp=document.querySelectorAll('[data-g="'+g+'"]');
+      for (var gi=0; gi<grp.length; gi++) grp[gi].classList.remove('on');
+      c.classList.add('on');
+      S[g]=v;
+      if (g==='gender') document.getElementById('hipGrp').style.display = v==='female'?'':'none';
+      calcBMI();
+    };
+  })(chips[ci]);
+}
+// Health chips — multi-select
+var hchips = document.querySelectorAll('.hchip');
+for (var hi=0; hi<hchips.length; hi++) {
+  (function(c) {
+    c.onclick = function() {
+      var v = c.getAttribute('data-v');
+      if (v === 'none') {
+        for (var i=0;i<hchips.length;i++) hchips[i].classList.remove('on');
+        c.classList.add('on');
+        S.health = ['none'];
+      } else {
+        var noneChip = document.querySelector('.hchip[data-v="none"]');
+        if (noneChip) noneChip.classList.remove('on');
+        S.health = S.health.filter(function(x){ return x !== 'none'; });
+        if (c.classList.contains('on')) {
+          c.classList.remove('on');
+          S.health = S.health.filter(function(x){ return x !== v; });
+          if (S.health.length === 0) {
+            if (noneChip) noneChip.classList.add('on');
+            S.health = ['none'];
+          }
+        } else {
+          c.classList.add('on');
+          if (S.health.indexOf(v) === -1) S.health.push(v);
+        }
+      }
+    };
+  })(hchips[hi]);
+}
+
+var dchips = document.querySelectorAll('.dchip');
+for (var di=0; di<dchips.length; di++) {
+  (function(c) {
+    c.onclick = function() {
+      for (var i=0;i<dchips.length;i++) dchips[i].classList.remove('on');
+      c.classList.add('on');
+      S.diet = c.getAttribute('data-diet');
+    };
+  })(dchips[di]);
+}
+
+// INIT
+document.getElementById('hipGrp').style.display='none';
+['wt','ht','age','waist','neck','hip'].forEach(function(id){
+  var el=document.getElementById(id);
+  if(el) el.addEventListener('input', calcBMI);
+});
+
+// ============================================================
+// BMI / BODY FAT CALCULATOR
+// ============================================================
+function calcBMI() {
+  var wt=parseFloat(document.getElementById('wt').value)||0;
+  var ht=parseFloat(document.getElementById('ht').value)||0;
+  var age=parseFloat(document.getElementById('age').value)||25;
+  var waist=parseFloat(document.getElementById('waist').value)||0;
+  var neck=parseFloat(document.getElementById('neck').value)||0;
+  var hip=parseFloat(document.getElementById('hip').value)||0;
+  if (!wt||!ht) { document.getElementById('bmiPanel').style.display='none'; return; }
+
+  var g=S.gender, htM=ht/100;
+  var bmi=wt/(htM*htM);
+  var fat;
+  if (g==='male'&&waist>0&&neck>0) {
+    fat=86.010*Math.log10(waist-neck)-70.041*Math.log10(ht)+36.76;
+  } else if (g==='female'&&waist>0&&neck>0&&hip>0) {
+    fat=163.205*Math.log10(waist+hip-neck)-97.684*Math.log10(ht)-78.387;
+  } else {
+    fat=(1.20*bmi)+(0.23*age)-(10.8*(g==='male'?1:0))-5.4;
+  }
+  fat=Math.max(3,Math.min(60,fat));
+  var lean=wt-(fat/100*wt);
+  var bmiCat=bmi<18.5?'Underweight':bmi<25?'Normal Weight':bmi<30?'Overweight':'Obese';
+  var bmiCol=bmi<18.5?'#185FA5':bmi<25?'#2d6a0f':bmi<30?'#b96b10':'#712B13';
+  var fatCat,fatCol;
+  if (g==='male') { fatCat=fat<14?'Athletic':fat<18?'Fitness':fat<25?'Average':'High'; fatCol=fat<18?'#2d6a0f':fat<25?'#b96b10':'#712B13'; }
+  else { fatCat=fat<21?'Athletic':fat<25?'Fitness':fat<32?'Average':'High'; fatCol=fat<25?'#2d6a0f':fat<32?'#b96b10':'#712B13'; }
+
+  document.getElementById('bmiPanel').style.display='block';
+  document.getElementById('bmiV').textContent=bmi.toFixed(1);
+  document.getElementById('bmiC').textContent=bmiCat;
+  document.getElementById('bmiC').style.color=bmiCol;
+  document.getElementById('fatV').textContent=fat.toFixed(1)+'%';
+  document.getElementById('fatC').textContent=fatCat;
+  document.getElementById('fatC').style.color=fatCol;
+  document.getElementById('leanV').textContent=lean.toFixed(1)+' kg';
+  document.getElementById('leanC').textContent='Fat: '+(wt-lean).toFixed(1)+' kg';
+  var fillPct=Math.min(100,Math.max(0,((bmi-14)/22)*100));
+  document.getElementById('bmiFill').style.width=fillPct+'%';
+}
+
+// ============================================================
+// VALIDATION
+// ============================================================
+function validate() {
+  var ok=true;
+  function chk(id,eid,bad) {
+    var el=document.getElementById(id), er=document.getElementById(eid);
+    if(!el||!er) return;
+    if(bad){el.classList.add('err');er.classList.add('on');ok=false;}
+    else{el.classList.remove('err');er.classList.remove('on');}
+  }
+  chk('cName','eName',!document.getElementById('cName').value.trim());
+
+  var phone=document.getElementById('phone').value.replace(/\s/g,'');
+  chk('phone','ePhone',!/^[6-9]\d{9}$/.test(phone));
+
+  var email=document.getElementById('email').value.trim();
+  chk('email','eEmail',!email||!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email));
+
+  var age=parseFloat(document.getElementById('age').value);
+  chk('age','eAge',!age||age<15||age>80);
+
+  var wt=parseFloat(document.getElementById('wt').value);
+  var wtU=document.querySelector('#weightUnit .unit-btn.active');
+  var wtKg=(wtU&&wtU.dataset.val==='lbs')?wt/2.205:wt;
+  chk('wt','eWt',!wt||wtKg<20||wtKg>300);
+
+  var ht=parseFloat(document.getElementById('ht').value);
+  var htU=document.querySelector('#heightUnit .unit-btn.active');
+  var htCm=(htU&&htU.dataset.val==='in')?ht*2.54:ht;
+  chk('ht','eHt',!ht||htCm<100||htCm>260);
+
+  var b=document.getElementById('vbanner');
+  if(!ok){b.textContent='\u26A0\uFE0F Please fill all required fields correctly.';b.classList.add('on');}
+  else b.classList.remove('on');
+  return ok;
+}
+
+// ============================================================
+// METRICS CALCULATION
+// ============================================================
+function calcMetrics() {
+  var wt=parseFloat(document.getElementById('wt').value)||70;
+  var ht=parseFloat(document.getElementById('ht').value)||170;
+  var age=parseFloat(document.getElementById('age').value)||25;
+  var waist=parseFloat(document.getElementById('waist').value)||0;
+  var neck=parseFloat(document.getElementById('neck').value)||0;
+  var hip=parseFloat(document.getElementById('hip').value)||0;
+  var g=S.gender;
+
+  // BMR Mifflin-St Jeor
+  var bmr = g==='male' ? (10*wt)+(6.25*ht)-(5*age)+5 : (10*wt)+(6.25*ht)-(5*age)-161;
+  bmr=Math.round(bmr);
+
+  // TDEE
+  var multMap={sedentary:1.2,lightly:1.375,moderate:1.55,very:1.725,extreme:1.9};
+  var mult=multMap[S.activity]||1.375;
+  var tdee=Math.round(bmr*mult);
+
+  // Target calories
+  var tgt;
+  if(S.goal==='fatloss') tgt=tdee-400;
+  else if(S.goal==='musclegain') tgt=tdee+275;
+  else if(S.goal==='recomp') tgt=tdee-150;
+  else if(S.goal==='strength') tgt=tdee+225;
+  else if(S.goal==='endurance') tgt=tdee+300;
+  else tgt=tdee;
+  tgt=Math.max(1200,Math.round(tgt));
+
+  // Body fat & lean mass
+  var bf;
+  if(g==='male'&&waist>0&&neck>0) bf=86.010*Math.log10(waist-neck)-70.041*Math.log10(ht)+36.76;
+  else if(g==='female'&&waist>0&&neck>0&&hip>0) bf=163.205*Math.log10(waist+hip-neck)-97.684*Math.log10(ht)-78.387;
+  else { var bmi2=wt/((ht/100)**2); bf=(1.20*bmi2)+(0.23*age)-(10.8*(g==='male'?1:0))-5.4; }
+  bf=Math.max(3,Math.min(60,bf));
+  var lbm=wt*(1-bf/100); // lean body mass in kg
+
+  // Macros based on LBM
+  var pp,cp,fp;
+  if(S.goal==='fatloss'){pp=2.2;cp=0.35;fp=0.27;}
+  else if(S.goal==='musclegain'){pp=2.0;cp=0.45;fp=0.25;}
+  else if(S.goal==='recomp'){pp=2.4;cp=0.40;fp=0.27;}
+  else if(S.goal==='strength'){pp=2.0;cp=0.45;fp=0.25;}
+  else if(S.goal==='endurance'){pp=1.6;cp=0.55;fp=0.22;}
+  else{pp=1.8;cp=0.45;fp=0.28;}
+
+  var protG=Math.round(pp*lbm);
+  var fatG=Math.round((tgt*fp)/9);
+  var carbG=Math.max(20,Math.round((tgt-(protG*4)-(fatG*9))/4));
+  var bmi=Math.round((wt/((ht/100)**2))*10)/10;
+  var leanKg=Math.round(lbm*10)/10;
+  var fatKg=Math.round((wt-lbm)*10)/10;
+
+  // Rest day: reduce carbs 22%, same protein, fat fills
+  var carbGRest=S.goal==='keto'?carbG:Math.max(20,Math.round(carbG*0.78));
+  var fatGRest=Math.round((tgt-50-(protG*4)-(carbGRest*4))/9);
+  var tgtRest=Math.round(protG*4+carbGRest*4+fatGRest*9);
+
+  return {wt,ht,age,g,bmr,tdee,tgt,tgtRest,mult,
+          protG,carbG,fatG,carbGRest,fatGRest,
+          bf:Math.round(bf*10)/10,lbm:Math.round(lbm*10)/10,
+          leanKg,fatKg,bmi,pp,cp,fp};
+}
+
+// ============================================================
+// MEAL DATA — FULLY HARDCODED, NO API NEEDED
+// ============================================================
+
+// PROTEIN SOURCES per 100g raw: {name, prot, carb, fat, kcal}
+var PROTEINS = {
+  nonveg: [
+    {n:'Chicken breast (grilled)',p:31,c:0,f:3.6,k:165},
+    {n:'Eggs (whole)',p:13,c:1,f:11,k:155},
+    {n:'Egg whites',p:11,c:0.7,f:0.2,k:52},
+    {n:'Fish (rohu/tilapia)',p:17,c:0,f:2,k:97},
+    {n:'Tuna (canned in water)',p:26,c:0,f:1,k:116},
+    {n:'Paneer',p:18,c:3,f:21,k:265},
+    {n:'Curd/Yogurt',p:4,c:5,f:4,k:60}
+  ],
+  veg: [
+    {n:'Paneer',p:18,c:3,f:21,k:265},
+    {n:'Curd/Yogurt',p:4,c:5,f:4,k:60},
+    {n:'Tofu (firm)',p:8,c:2,f:5,k:76},
+    {n:'Toor/Masoor dal (cooked)',p:9,c:20,f:0.4,k:116},
+    {n:'Rajma (cooked)',p:9,c:22,f:0.5,k:127},
+    {n:'Chana/Chickpea (cooked)',p:9,c:27,f:3,k:164},
+    {n:'Moong dal (cooked)',p:7,c:20,f:0.4,k:105},
+    {n:'Greek yogurt',p:10,c:4,f:0.7,k:59}
+  ],
+  vegan: [
+    {n:'Tofu (firm)',p:8,c:2,f:5,k:76},
+    {n:'Toor/Masoor dal (cooked)',p:9,c:20,f:0.4,k:116},
+    {n:'Chana/Chickpea (cooked)',p:9,c:27,f:3,k:164},
+    {n:'Rajma (cooked)',p:9,c:22,f:0.5,k:127},
+    {n:'Tempeh',p:19,c:9,f:11,k:193},
+    {n:'Moong dal (cooked)',p:7,c:20,f:0.4,k:105},
+    {n:'Edamame',p:11,c:9,f:5,k:122}
+  ]
+};
+
+// CARB SOURCES per serving
+var CARBS = [
+  {n:'Brown rice (cooked 150g)',c:35,p:3,f:1,k:165},
+  {n:'White rice (cooked 150g)',c:42,p:3,f:0.4,k:195},
+  {n:'Roti (2 medium, ~70g)',c:36,p:5,f:2,k:190},
+  {n:'Oats (dry 50g)',c:33,p:6,f:3,k:194},
+  {n:'Sweet potato (150g, boiled)',c:30,p:2,f:0.1,k:129},
+  {n:'Banana (1 medium, 120g)',c:27,p:1,f:0.4,k:107},
+  {n:'Whole wheat bread (2 slices)',c:26,p:6,f:2,k:138},
+  {n:'Poha (cooked 150g)',c:33,p:3,f:2,k:164},
+  {n:'Upma (cooked 150g)',c:28,p:4,f:4,k:162},
+  {n:'Makhana (30g)',c:20,p:4,f:0.5,k:105},
+  {n:'Roasted chana (30g)',c:17,p:6,f:2.5,k:113},
+  {n:'Quinoa (cooked 150g)',c:30,p:6,f:2,k:165}
+];
+
+// FAT SOURCES per serving
+var FATS = [
+  {n:'Almonds (20g)',f:10,p:4,c:3,k:116},
+  {n:'Walnuts (20g)',f:13,p:3,c:2,k:131},
+  {n:'Peanut butter (15g)',f:8,p:4,c:2,k:94},
+  {n:'Ghee (1 tsp, 5g)',f:5,p:0,c:0,k:45},
+  {n:'Olive oil (1 tsp, 5g)',f:5,p:0,c:0,k:44},
+  {n:'Coconut oil (1 tsp, 5g)',f:5,p:0,c:0,k:45},
+  {n:'Avocado (50g)',f:7.5,p:1,c:3,k:80}
+];
+
+// VEG/FIBRE additions
+var VEGS = [
+  '1 cup mixed salad (cucumber, tomato, onion)',
+  '100g spinach (sauteed)',
+  '100g broccoli (steamed)',
+  '1 cup sabzi (any seasonal vegetable)',
+  '½ cup dal as side',
+  '1 cup green beans',
+  '100g capsicum + onion stir-fry'
+];
+
+// ============================================================
+// MEAL PLAN DATA — HARDCODED BY DIET × GOAL × TIMING
+// ============================================================
+
+var MEAL_PLANS = {
+
+  // ── VEGETARIAN (WITH DAIRY) ────────────────────────────────
+  veg_dairy: {
+    early: [
+      'Warm water with lemon + ½ tsp jeera seeds — kickstart digestion',
+      '1 glass warm water + 4 soaked almonds + 2 walnuts — anti-inflammatory start',
+      '1 glass methi-soaked water (overnight) — blood sugar control',
+      'Green tea / black coffee (no sugar) + 5 soaked almonds',
+      'Lukewarm water + 1 tsp apple cider vinegar + ½ tsp cinnamon'
+    ],
+    breakfast: {
+      fatloss: [
+        '3 egg whites + 1 whole egg omelette (no oil, Teflon pan) + 1 multigrain roti + mixed greens',
+        '1 cup moong dal chilla (batter with grated veggies) + 2 tbsp green chutney + 1 cup curd',
+        'Oats upma (50g oats, onion, tomato, mustard seeds) + 1 cup low-fat curd',
+        'Paneer bhurji (80g paneer, no oil, dry spices) + 1 roti + 1 small cucumber',
+        'Greek yogurt parfait (150g yogurt, 30g oats, 1 tbsp chia seeds, berries)'
+      ],
+      musclegain: [
+        '4 whole eggs scrambled + 2 multigrain rotis + 1 banana + 1 glass full-fat milk',
+        'Oats porridge (80g oats, 300ml milk, 1 scoop whey, 1 banana, honey)',
+        'Paneer paratha (100g paneer filling, 2 rotis, 1 tsp ghee) + 200g curd + fruit',
+        '3 eggs + 100g paneer sauteed with vegetables + 2 rotis + 1 glass milk',
+        'Massive smoothie (300ml milk, 2 bananas, 50g oats, 2 tbsp peanut butter, honey)'
+      ],
+      recomp: [
+        '2 whole eggs + 2 whites scrambled + 1 roti + salad + 100g curd',
+        'Moong dal chilla (50g batter) + 1 tbsp green chutney + 1 cup curd',
+        'Oats (50g) with milk + 1 boiled egg + mixed nuts (15g)',
+        '80g paneer sauteed (minimal oil) + 1 roti + 1 cup curd',
+        'Besan chilla (50g besan) + green chutney + salad + curd'
+      ],
+      maintenance: [
+        '2 whole eggs + 1 roti + 1 cup curd + 1 fruit of choice',
+        'Oats porridge (50g, milk) + mixed nuts + 1 banana',
+        'Paneer paratha (80g paneer, 1 roti, ½ tsp ghee) + curd',
+        'Idli (3) + sambar + coconut chutney + 1 cup curd',
+        'Dosa (2, thin) + sambar + curd'
+      ],
+      strength: [
+        '4 whole eggs + 2 rotis + 1 glass milk + 1 banana (pre-workout fuel)',
+        '100g paneer + 2 rotis + 1 glass milk + fruits',
+        'Oats (70g) + milk + 2 boiled eggs + nuts',
+        'Paneer bhurji (100g) + 2 rotis + curd + banana',
+        'Smoothie (milk, banana, peanut butter, oats) + 2 boiled eggs'
+      ],
+      endurance: [
+        'Oats (70g) + milk + banana + honey (high carb for energy)',
+        '2 rotis + dal + curd + fruit (balanced complex carbs)',
+        'Poha (150g) + curd + fruit',
+        'Upma (150g, semolina) + curd + banana',
+        'Bread (2 slices whole wheat) + peanut butter + banana + milk'
+      ]
+    },
+    midmorning: [
+      '1 cup green tea + 20g mixed nuts (almonds + walnuts)',
+      '1 small bowl roasted chana (30g) + 1 fruit (apple/pear)',
+      '150g Greek yogurt + 1 tbsp flaxseeds',
+      '1 cup buttermilk (chaas) + 10 almonds',
+      '1 fruit + 1 small paneer cube (30g)',
+      'Makhana (30g, roasted) + 1 cup green tea',
+      '½ cup sprouts + lemon + chaat masala'
+    ],
+    lunch: {
+      fatloss: [
+        '1 cup dal + 2 rotis + 1 cup sabzi + salad + 1 cup curd (300ml water before meal)',
+        'Paneer curry (100g) + 1 roti + salad + curd — high protein, moderate carb',
+        'Rajma (1 cup cooked) + brown rice (100g cooked) + salad + raita',
+        'Mixed dal (toor+moong, 1 cup) + 1 roti + 2 cups salad + buttermilk',
+        'Chole (¾ cup cooked) + 1 roti + salad + curd — filling, high protein'
+      ],
+      musclegain: [
+        '2 cups dal + 3 rotis + 1 cup paneer sabzi + 1 cup curd + rice (100g cooked)',
+        'Rajma (1.5 cups) + 2 cups rice + raita + sabzi + 1 glass lassi',
+        'Paneer butter masala (150g paneer) + 2 rotis + rice + dal + salad',
+        'Mixed dal (large bowl) + 3 rotis + sabzi + curd + banana',
+        'Chole bhature (2 bhature) + salad + lassi + fruit — high calorie day'
+      ],
+      recomp: [
+        '1 cup dal + 2 rotis + sabzi + salad + curd',
+        'Paneer (100g) + 1 roti + dal + salad',
+        'Rajma (¾ cup) + brown rice (75g cooked) + raita + salad',
+        'Chole (¾ cup) + 1 roti + salad + buttermilk',
+        'Mixed dal + 1 roti + sabzi + large salad + curd'
+      ],
+      maintenance: [
+        '1 cup dal + 2 rotis + sabzi + salad + curd',
+        'Paneer sabzi (80g) + 2 rotis + dal + salad',
+        'Rajma + rice + raita + salad',
+        'Chole + roti + salad + curd',
+        'Mixed dal + rice + sabzi + raita'
+      ],
+      strength: [
+        '1.5 cups dal + 3 rotis + paneer (100g) + sabzi + curd',
+        'Rajma (1.5 cups) + 2 cups rice + sabzi + raita',
+        'Paneer (120g) + 3 rotis + dal + sabzi',
+        'Mixed dal + 3 rotis + curd + sabzi + rice',
+        'Chole (1 cup) + 2 rotis + rice + salad + lassi'
+      ],
+      endurance: [
+        '3 rotis + dal + sabzi + curd + banana (high carb)',
+        '2 cups rice + dal + sabzi + raita',
+        'Rajma + 2 cups rice + raita + sabzi',
+        '3 rotis + paneer + dal + fruit',
+        '2 cups rice + chole + salad + curd'
+      ]
+    },
+    preworkout: {
+      morning: [
+        '1 banana + 1 cup curd + 5 almonds (60 min pre-workout)',
+        '1 roti + 1 tbsp peanut butter (90 min pre)',
+        '1 cup oats (dry 30g) + milk + honey (90 min pre)',
+        'Fruit (banana/mango) + 100g Greek yogurt',
+        '30g makhana + 1 banana + green tea'
+      ],
+      evening: [
+        '1 banana + 150g curd (45 min pre-workout)',
+        '1 roti + ½ cup curd (60 min pre)',
+        '30g roasted chana + 1 fruit',
+        'Fruit bowl + 10 almonds',
+        '1 cup chaas + 1 fruit + makhana (30g)'
+      ],
+      flexible: [
+        '1 banana + 100g yogurt + 10 almonds',
+        '1 roti + curd + fruit',
+        'Smoothie (150ml milk + banana + 1 tbsp peanut butter)',
+        '30g roasted chana + 1 fruit + green tea',
+        'Makhana (30g) + 1 banana + buttermilk'
+      ]
+    },
+    dinner: {
+      fatloss: [
+        'Dal (1 cup, high protein) + 1 roti + large salad — minimal rice at night',
+        'Paneer tikka (100g, grilled) + dal + salad + 1 roti',
+        'Mixed vegetable soup + paneer (80g) + 1 roti — light on carbs',
+        'Moong dal khichdi (small bowl) + 1 cup curd + salad',
+        'Sauteed tofu/paneer (100g) + sabzi + 1 roti + salad'
+      ],
+      musclegain: [
+        'Dal (large bowl) + paneer sabzi (150g) + 2 rotis + curd + salad',
+        'Rajma + rice (150g cooked) + sabzi + raita — post-workout dinner',
+        'Paneer curry (150g) + 3 rotis + dal + salad',
+        'Mixed dal (large) + 3 rotis + sabzi + curd + glass of milk',
+        'Chole (1 cup) + 2 rotis + rice + raita'
+      ],
+      recomp: [
+        'Dal + 1 roti + sabzi + salad + curd',
+        'Paneer (100g) + dal soup + salad',
+        'Rajma + 1 roti + large salad',
+        'Moong dal + 1 roti + 2 cups salad + curd',
+        'Tofu stir-fry (100g) + 1 roti + salad'
+      ],
+      maintenance: [
+        'Dal + 2 rotis + sabzi + salad + curd',
+        'Paneer + dal + 1 roti + salad',
+        'Rajma + rice + raita + salad',
+        'Mixed dal + 2 rotis + sabzi + curd',
+        'Palak paneer + 2 rotis + dal + salad'
+      ],
+      strength: [
+        'Dal + paneer (120g) + 2 rotis + sabzi + curd',
+        'Rajma + rice + paneer + salad',
+        'Mixed dal + 3 rotis + sabzi + curd',
+        'Paneer curry + 2 rotis + dal + salad + milk',
+        'Chole + 2 rotis + raita + sabzi'
+      ],
+      endurance: [
+        'Dal + 2 rotis + sabzi + rice (small) + curd',
+        'Rajma + 2 rotis + sabzi + raita',
+        '2 rotis + dal + rice + salad + curd',
+        'Paneer + 2 rotis + dal + fruit',
+        'Chole + 2 rotis + salad + lassi'
+      ]
+    },
+    nightsnack: [
+      '1 glass warm milk (low fat) + pinch of turmeric — muscle recovery',
+      '150g curd + 1 tsp honey + pinch of cinnamon',
+      '10 almonds + 1 glass warm milk',
+      '½ cup cottage cheese (paneer, 40g) + warm milk',
+      '1 small bowl curd + 1 tbsp chia seeds (soaked)'
+    ]
+  },
+
+  // ── NON-VEG ────────────────────────────────────────────────
+  nonveg: {
+    early: [
+      'Warm water with lemon + ½ tsp jeera — kickstart digestion',
+      '1 glass warm water + 4 soaked almonds + 2 walnuts',
+      '1 glass methi-soaked water (overnight) + 5 almonds',
+      'Black coffee (no sugar) + 5 soaked almonds',
+      'Green tea + 1 tsp apple cider vinegar'
+    ],
+    breakfast: {
+      fatloss: [
+        '3 egg whites + 1 whole egg omelette (spinach, onion) + 1 roti + green tea',
+        '2 boiled eggs + oats upma (40g) + 1 cup green tea',
+        'Egg bhurji (2 eggs, no oil) + 1 roti + salad',
+        '4 egg whites scrambled + multigrain toast (1 slice) + salad',
+        'Greek yogurt (150g) + 1 tbsp chia seeds + 1 fruit + green tea'
+      ],
+      musclegain: [
+        '4 whole eggs scrambled + 2 rotis + 1 glass milk + 1 banana',
+        '3 eggs + 100g chicken (leftover, grilled) + 2 rotis + milk',
+        'Oats (80g) + milk + 2 whole eggs + banana + nuts',
+        'Egg paratha (3 eggs, 2 rotis) + curd + banana + milk',
+        'Smoothie (milk, banana, peanut butter, oats) + 4 boiled eggs'
+      ],
+      recomp: [
+        '3 whole eggs scrambled + 1 roti + salad + green tea',
+        '2 eggs + oats (40g, water) + 1 fruit',
+        'Egg bhurji (3 eggs, minimal oil) + 1 roti + curd',
+        '4 egg whites + 1 roti + salad + green tea',
+        '150g Greek yogurt + 2 boiled eggs + nuts'
+      ],
+      maintenance: [
+        '2 whole eggs + 1 roti + curd + fruit',
+        'Oats porridge + 2 boiled eggs + nuts',
+        'Egg paratha (2 eggs, 1 roti) + curd',
+        '3 eggs scrambled + multigrain toast + curd',
+        'Omelette (2 eggs) + 1 roti + salad'
+      ],
+      strength: [
+        '4 eggs + 2 rotis + milk + banana',
+        '3 eggs + 100g chicken + 2 rotis + milk',
+        'Oats + milk + 3 eggs + banana',
+        'Egg paratha + milk + fruit + nuts',
+        'Smoothie (milk, oats, peanut butter) + 4 eggs'
+      ],
+      endurance: [
+        'Oats (70g) + milk + 2 eggs + banana + honey',
+        '2 rotis + eggs (2) + curd + fruit',
+        'Poha + 2 boiled eggs + fruit',
+        'Bread (2 slices) + eggs + banana + milk',
+        'Upma + 2 boiled eggs + curd'
+      ]
+    },
+    midmorning: [
+      '2 boiled eggs + green tea + 10 almonds',
+      '1 cup Greek yogurt + 1 fruit',
+      '30g roasted chana + 1 fruit + green tea',
+      '150g curd + 1 tbsp flaxseeds',
+      '1 cup chaas + 20g mixed nuts',
+      'Makhana (30g, roasted) + green tea',
+      '½ cup sprouts + lemon + 1 boiled egg'
+    ],
+    lunch: {
+      fatloss: [
+        '150g grilled chicken + 1 cup dal + 1 roti + large salad + curd',
+        'Fish curry (150g rohu/tilapia) + 1 roti + salad + dal',
+        'Chicken stir-fry (150g, minimal oil) + ½ cup rice + salad',
+        'Egg curry (2 eggs) + 1 roti + dal + salad + curd',
+        '150g baked/grilled chicken + sweet potato (100g) + salad'
+      ],
+      musclegain: [
+        '200g chicken curry + 2 cups rice + dal + salad + raita',
+        'Fish curry (200g) + 3 rotis + dal + sabzi + curd',
+        'Chicken biryani (200g chicken, 2 cups rice) + raita + salad',
+        '3 eggs + chicken (150g) + 2 rotis + dal + curd',
+        'Egg curry (3 eggs) + rice + dal + sabzi + lassi'
+      ],
+      recomp: [
+        '150g chicken + 1 roti + dal + salad + curd',
+        'Fish (150g, grilled) + 1 roti + salad + dal',
+        'Egg curry (2 eggs) + 1 roti + large salad',
+        '130g chicken + dal + salad + curd',
+        '2 eggs + chicken (100g) + roti + salad'
+      ],
+      maintenance: [
+        '150g chicken + 2 rotis + dal + salad + curd',
+        'Fish curry + 1 cup rice + salad + curd',
+        'Egg curry (2 eggs) + 2 rotis + dal + salad',
+        '150g chicken + rice + sabzi + raita',
+        'Mixed non-veg + roti + dal + salad'
+      ],
+      strength: [
+        '200g chicken + 2 rotis + dal + sabzi + curd',
+        'Fish (200g) + 2 rotis + rice + dal + salad',
+        'Egg curry (3 eggs) + 3 rotis + dal + sabzi',
+        '180g chicken + rice + dal + salad + curd',
+        'Mutton (150g) + 2 rotis + dal + salad + curd'
+      ],
+      endurance: [
+        '150g chicken + 2 rotis + rice + dal + salad',
+        'Fish + 2 cups rice + sabzi + raita',
+        'Egg curry + 3 rotis + dal + sabzi',
+        '3 eggs + 2 cups rice + dal + salad',
+        'Chicken + 3 rotis + dal + banana + curd'
+      ]
+    },
+    preworkout: {
+      morning: [
+        '1 banana + 2 boiled eggs (no yolk) + green tea (60 min pre)',
+        '1 roti + 1 tbsp peanut butter + 1 banana (90 min pre)',
+        '30g oats + water + 1 banana (90 min pre)',
+        '2 egg whites + 1 banana + black coffee',
+        '30g makhana + 1 banana + black coffee'
+      ],
+      evening: [
+        '1 banana + 2 egg whites (45 min pre)',
+        '1 roti + eggs (1 whole, 2 whites) (60 min pre)',
+        '30g roasted chana + 1 fruit + coffee',
+        '1 banana + 100g curd + coffee',
+        '2 egg whites + 1 banana + black coffee'
+      ],
+      flexible: [
+        '1 banana + 2 boiled eggs + coffee',
+        '1 roti + eggs + fruit',
+        'Smoothie (water, banana, 2 egg whites)',
+        '30g roasted chana + 1 banana + coffee',
+        'Makhana (30g) + 1 banana + black coffee'
+      ]
+    },
+    dinner: {
+      fatloss: [
+        '200g grilled chicken + 2 cups salad + 1 roti — protein-heavy, carb-light',
+        'Fish (150g, baked) + dal (½ cup) + salad + 1 roti',
+        'Egg bhurji (3 eggs, no oil) + dal + salad',
+        'Chicken soup (200ml) + chicken breast (150g) + salad',
+        'Steamed fish (150g) + sauteed veggies + 1 roti'
+      ],
+      musclegain: [
+        '250g chicken curry + 2 rotis + dal + sabzi + curd',
+        'Fish curry (200g) + 2 cups rice + dal + sabzi',
+        'Egg curry (3 eggs) + 3 rotis + dal + sabzi + milk',
+        '200g chicken + rice + dal + salad + curd',
+        'Non-veg dinner platter: chicken + eggs + dal + roti'
+      ],
+      recomp: [
+        '180g grilled chicken + 1 roti + salad + dal',
+        'Fish (150g) + dal soup + salad + 1 roti',
+        '3 eggs + dal + salad + 1 roti',
+        '150g chicken + large salad + dal soup',
+        '2 eggs + chicken (100g) + 1 roti + salad'
+      ],
+      maintenance: [
+        '150g chicken + 2 rotis + dal + salad',
+        'Fish curry + 1 roti + rice + salad',
+        '2 eggs + chicken (100g) + 2 rotis + salad',
+        'Egg curry + 2 rotis + dal + salad',
+        '150g chicken + rice + sabzi + raita'
+      ],
+      strength: [
+        '220g chicken + 2 rotis + dal + sabzi + curd',
+        'Fish (200g) + 2 rotis + dal + salad',
+        'Egg curry (3 eggs) + 2 rotis + dal + sabzi',
+        '200g chicken + rice + salad + curd',
+        'Mutton (150g) + 2 rotis + dal + salad'
+      ],
+      endurance: [
+        '150g chicken + 2 rotis + dal + sabzi + curd',
+        'Fish + 2 rotis + rice (small) + sabzi',
+        '3 eggs + 2 rotis + dal + salad',
+        '150g chicken + rice + sabzi + curd',
+        'Egg curry + 2 rotis + dal + fruit'
+      ]
+    },
+    nightsnack: [
+      '1 glass warm milk + 1 boiled egg (white only) + turmeric',
+      '150g Greek yogurt + 1 tbsp chia seeds',
+      '2 egg whites (boiled) + warm milk',
+      '100g cottage cheese (paneer) + warm milk',
+      '1 cup curd + 1 tbsp flaxseeds'
+    ]
+  },
+
+  // ── VEGAN ──────────────────────────────────────────────────
+  vegan: {
+    early: [
+      'Warm water + lemon + ½ tsp jeera',
+      '1 glass warm water + 5 soaked almonds + 2 walnuts',
+      'Green tea + 1 tsp apple cider vinegar',
+      'Methi-soaked water + 5 almonds',
+      'Black coffee + 5 soaked almonds'
+    ],
+    breakfast: {
+      fatloss:[
+        'Tofu scramble (100g, turmeric, veggies) + 1 roti + green tea',
+        'Moong dal chilla (50g) + green chutney + salad',
+        'Oats (50g, water) + 1 tbsp chia seeds + berries',
+        'Tempeh stir-fry (80g) + 1 roti + salad',
+        'Smoothie: plant milk + banana + spinach + 1 tbsp peanut butter + chia seeds'
+      ],
+      musclegain:[
+        'Tofu scramble (150g) + 2 rotis + plant milk smoothie with banana',
+        'Oats (80g, plant milk) + 1 banana + peanut butter (2 tbsp) + nuts',
+        'Tempeh (120g) + 2 rotis + plant milk shake + fruit',
+        'Moong dal chilla (100g) + 2 tbsp peanut butter + banana + plant milk',
+        'Smoothie (plant milk, oats, banana, peanut butter, hemp seeds)'
+      ],
+      recomp:[
+        'Tofu (100g) + oats (40g, water) + salad',
+        'Moong dal chilla (60g) + chutney + salad',
+        'Oats (50g) + plant milk + chia seeds + fruit',
+        'Tempeh (80g) + 1 roti + salad',
+        'Smoothie (plant milk, banana, spinach, 1 tbsp chia seeds)'
+      ],
+      maintenance:['Tofu (100g) + 1 roti + salad','Oats + plant milk + fruit','Moong dal chilla + chutney','Tempeh + roti + salad','Smoothie (plant milk, banana, peanut butter)'],
+      strength:['Tofu (150g) + 2 rotis + plant milk + banana','Oats (80g) + plant milk + nuts + fruit','Tempeh (120g) + 2 rotis + smoothie','Moong dal chilla (100g) + peanut butter + banana','Massive smoothie: plant milk, oats, peanut butter, banana, seeds'],
+      endurance:['Oats (70g) + plant milk + banana + honey','2 rotis + dal + salad + fruit','Poha (150g) + salad + banana','Upma (semolina, 150g) + salad','Bread (2, whole wheat) + peanut butter + banana + plant milk']
+    },
+    midmorning:['Green tea + 20g mixed nuts','30g roasted chana + 1 fruit','150g coconut yogurt + 1 tbsp flaxseeds','1 cup chaas (soy/oat) + 10 almonds','Makhana (30g) + green tea','½ cup sprouts + lemon','1 fruit + 15g walnuts'],
+    lunch:{
+      fatloss:['Rajma (¾ cup) + 1 roti + salad + dal soup','Tofu curry (100g) + 1 roti + salad + dal','Chole (¾ cup) + 1 roti + salad + lemon water','Moong dal (large bowl) + 1 roti + 2 cups salad','Tempeh (100g, stir-fry) + ½ cup rice + salad'],
+      musclegain:['Rajma (1.5 cups) + 2 cups rice + sabzi + dal','Tofu curry (150g) + 3 rotis + dal + sabzi','Chole (1.5 cups) + 2 rotis + rice + salad','Mixed dal (large) + 3 rotis + sabzi + avocado','Tempeh (150g) + rice + dal + salad + nuts'],
+      recomp:['Rajma (¾ cup) + 1 roti + dal soup + salad','Tofu (100g) + 1 roti + salad + dal','Chole (¾ cup) + 1 roti + large salad','Moong dal + 1 roti + 2 cups salad','Tempeh (100g) + dal + salad'],
+      maintenance:['Rajma + 2 rotis + dal + salad','Tofu curry + 1 roti + dal + salad','Chole + roti + rice + salad','Mixed dal + 2 rotis + sabzi','Dal + 2 rotis + sabzi + salad'],
+      strength:['Rajma (1.5 cups) + 2 rotis + dal + sabzi','Tofu (150g) + 3 rotis + dal + rice','Chole (1 cup) + 2 rotis + sabzi + salad','Tempeh + dal + 3 rotis + sabzi','Mixed legume bowl + rice + salad + nuts'],
+      endurance:['Rajma + 2 rotis + rice + dal + salad','Dal + 3 rotis + sabzi + curd alternative','Chole + 3 rotis + rice + salad','Tofu + 2 cups rice + dal + sabzi','Mixed dal + 3 rotis + banana + salad']
+    },
+    preworkout:{
+      morning:['1 banana + 20g almond butter + green tea','Oats (30g, water) + banana + green tea','30g makhana + 1 banana','Fruit + 20g mixed nuts + black coffee','Smoothie (banana, plant milk, oats, 1 tsp almond butter)'],
+      evening:['1 banana + 20g nuts + green tea','½ cup roasted chana + 1 banana','Smoothie (banana + plant milk)','1 fruit + 20g mixed nuts','Makhana (30g) + 1 banana'],
+      flexible:['1 banana + 20g nuts + black coffee','Oats + banana + plant milk','½ cup chana + 1 fruit','Smoothie (banana + plant milk + oats)','Makhana + banana + coffee']
+    },
+    dinner:{
+      fatloss:['Tofu (100g, sauteed) + dal + 1 roti + salad','Lentil soup (large) + 1 roti + salad','Rajma (small) + 1 roti + salad + dal soup','Moong dal (large) + salad + 1 roti','Mixed sabzi + dal + 1 roti + salad'],
+      musclegain:['Tofu (150g) + dal + 2 rotis + sabzi + rice','Rajma + 3 rotis + dal + sabzi','Chole + 2 rotis + rice + salad','Tempeh + dal + 2 rotis + sabzi + nuts','Mixed legume curry + 3 rotis + salad'],
+      recomp:['Tofu (100g) + dal + 1 roti + salad','Lentil soup + 1 roti + salad','Rajma (small) + 1 roti + salad','Moong dal + 1 roti + salad','Tempeh (80g) + dal soup + salad'],
+      maintenance:['Dal + 2 rotis + sabzi + salad','Tofu + dal + 1 roti + salad','Rajma + roti + salad','Chole + 2 rotis + salad','Mixed dal + rotis + sabzi'],
+      strength:['Tofu (150g) + dal + 2 rotis + sabzi','Rajma + 2 rotis + dal + salad','Chole + 2 rotis + sabzi + salad','Tempeh + dal + 3 rotis + sabzi','Mixed legumes + 2 rotis + salad'],
+      endurance:['Dal + 2 rotis + sabzi + salad + fruit','Rajma + 2 rotis + sabzi','Chole + 2 rotis + rice + salad','Tofu + 2 rotis + dal + salad','Mixed dal + 3 rotis + sabzi']
+    },
+    nightsnack:['Warm plant milk (oat/almond) + turmeric + cinnamon','Coconut yogurt + chia seeds + honey','20g mixed nuts + warm tea','Hemp seeds (1 tbsp) + warm plant milk','1 small fruit + 10 almonds']
+  },
+
+  // ── EGGETARIAN ─────────────────────────────────────────────
+  eggetarian: {
+    early:['Warm water + lemon + ½ tsp jeera','1 glass warm water + 5 soaked almonds','Methi-soaked water + 4 almonds','Black coffee + 5 almonds','Green tea + 1 tsp ACV'],
+    breakfast:{
+      fatloss:['3 egg whites + 1 yolk omelette + 1 roti + salad + green tea','2 boiled eggs + oats upma (40g) + green tea','Egg bhurji (2 eggs) + 1 roti + salad','4 egg whites scrambled + toast + salad','Greek yogurt (150g) + 2 boiled eggs + fruit'],
+      musclegain:['4 whole eggs + 2 rotis + milk + banana','3 eggs + oats (70g) + milk + nuts + banana','Egg paratha (3 eggs, 2 rotis) + curd + milk','Masala omelette (4 eggs) + 2 rotis + milk + fruit','Smoothie (milk, banana, oats) + 4 boiled eggs'],
+      recomp:['3 eggs scrambled + 1 roti + salad','2 eggs + oats (40g, water) + fruit','Egg bhurji (3 eggs, no oil) + 1 roti + curd','4 egg whites + 1 roti + salad','Greek yogurt + 2 boiled eggs + nuts'],
+      maintenance:['2 eggs + 1 roti + curd + fruit','Oats + 2 boiled eggs + milk','Egg paratha + curd','3 eggs scrambled + toast + curd','Omelette + roti + salad'],
+      strength:['4 eggs + 2 rotis + milk + banana','3 eggs + 100g paneer + 2 rotis + milk','Oats + milk + 3 eggs + banana','Egg paratha + milk + fruit','Smoothie + 4 eggs'],
+      endurance:['Oats (70g) + milk + 2 eggs + banana','2 rotis + eggs + curd + fruit','Poha + 2 boiled eggs + banana','Bread + eggs + banana + milk','Upma + 2 eggs + curd']
+    },
+    midmorning:['2 boiled eggs + green tea + almonds','Greek yogurt + fruit','30g roasted chana + fruit','Curd (150g) + flaxseeds','Chaas + 20g nuts','Makhana + green tea','Sprouts + 1 boiled egg'],
+    lunch:{
+      fatloss:['2 boiled eggs + dal + 1 roti + salad + curd','Egg curry (2 eggs) + 1 roti + salad + dal','Eggs (3 whites) + chole (½ cup) + salad','2 eggs + dal + salad + buttermilk','Egg masala (2 eggs) + 1 roti + large salad'],
+      musclegain:['3 eggs + dal + 2 rotis + curd + rice','Egg curry (3 eggs) + 2 cups rice + dal + salad','2 eggs + paneer (80g) + 2 rotis + dal + curd','3 eggs + rajma + rice + salad + lassi','Egg biryani (3 eggs, 2 cups rice) + raita'],
+      recomp:['2 eggs + dal + 1 roti + salad + curd','Egg curry (2 eggs) + 1 roti + salad','3 eggs + dal soup + salad','2 eggs + chole (½ cup) + 1 roti','Egg masala + 1 roti + large salad'],
+      maintenance:['2 eggs + dal + 2 rotis + salad','Egg curry + roti + salad + curd','3 eggs + dal + rice + salad','Eggs + rajma + roti + salad','Dal + eggs + 2 rotis + sabzi'],
+      strength:['3 eggs + dal + 2 rotis + paneer + curd','Egg curry (3 eggs) + 3 rotis + dal + sabzi','2 eggs + rajma + 2 rotis + rice + salad','3 eggs + chole + 2 rotis + curd','Egg + dal + 3 rotis + sabzi + milk'],
+      endurance:['3 eggs + 2 rotis + dal + sabzi + fruit','Egg curry + 2 cups rice + salad','3 eggs + 3 rotis + dal + curd','Eggs + rajma + 2 rotis + rice','2 eggs + 2 cups rice + dal + sabzi']
+    },
+    preworkout:{
+      morning:['1 banana + 2 boiled eggs (white only) + coffee','1 roti + 1 tbsp peanut butter + 1 banana','Oats (30g) + water + banana + coffee','2 egg whites + banana + black coffee','Makhana + banana + coffee'],
+      evening:['1 banana + 2 egg whites + black coffee','1 roti + 1 egg + 1 banana','30g chana + 1 fruit + coffee','Banana + curd + 2 egg whites','Makhana + banana + coffee'],
+      flexible:['Banana + 2 eggs + coffee','Roti + egg + fruit','Smoothie (milk, banana, egg whites)','Chana + banana + coffee','Makhana + banana + green tea']
+    },
+    dinner:{
+      fatloss:['3 egg whites + 1 yolk + dal + salad + 1 roti','Egg soup (2 eggs) + salad + 1 roti','2 boiled eggs + dal + large salad','Egg bhurji (no oil) + dal + salad','Steamed eggs + sauteed veggies + 1 roti'],
+      musclegain:['3 eggs + dal + 2 rotis + sabzi + curd','Egg curry (3 eggs) + rice + dal + sabzi','2 eggs + paneer (100g) + 2 rotis + dal','3 eggs + rajma + 2 rotis + curd','Egg + dal + 3 rotis + sabzi + milk'],
+      recomp:['2 eggs + dal + 1 roti + salad','Egg bhurji + dal soup + salad','3 egg whites + 1 roti + large salad','2 boiled eggs + dal + salad + curd','Egg masala + 1 roti + salad'],
+      maintenance:['2 eggs + dal + 2 rotis + salad','Egg curry + 1 roti + salad + curd','3 eggs + dal + rice + sabzi','Eggs + rajma + rotis + salad','Dal + 2 eggs + 2 rotis + sabzi'],
+      strength:['3 eggs + dal + 2 rotis + sabzi','Egg curry + 3 rotis + dal + sabzi','2 eggs + paneer + 2 rotis + curd','3 eggs + chole + 2 rotis + salad','Egg + dal + 3 rotis + sabzi'],
+      endurance:['3 eggs + 2 rotis + dal + sabzi','Egg curry + 2 rotis + rice + salad','2 eggs + 2 rotis + dal + curd','3 eggs + rajma + 2 rotis','Dal + 3 eggs + 2 rotis + sabzi']
+    },
+    nightsnack:['Warm milk + pinch turmeric + 2 egg whites (boiled)','Greek yogurt (150g) + 1 tbsp chia seeds','2 boiled eggs (whites only) + warm milk','Curd + 1 tbsp flaxseeds','1 cup warm milk + honey + cinnamon']
+  },
+
+  // ── PESCATARIAN ────────────────────────────────────────────
+  pescatarian: {
+    early:['Warm water + lemon + jeera','Warm water + 5 soaked almonds','Green tea + ACV','Methi water + almonds','Black coffee + almonds'],
+    breakfast:{
+      fatloss:['2 boiled eggs + oats (40g, water) + green tea','3 egg whites omelette + 1 roti + salad','Greek yogurt (150g) + 2 eggs + fruit','Moong dal chilla + 2 boiled eggs + salad','Oats upma + 2 eggs + green tea'],
+      musclegain:['4 eggs + 2 rotis + milk + banana','3 eggs + tuna (80g, canned) + toast + milk','Oats (80g) + milk + 3 eggs + banana','Egg paratha (3 eggs) + milk + fruit','Smoothie (milk, oats, peanut butter) + 4 eggs'],
+      recomp:['3 eggs + oats (40g) + salad','2 eggs + moong dal chilla + salad','Egg bhurji (3 eggs) + 1 roti + curd','4 egg whites + toast + salad','Greek yogurt + 2 eggs + nuts'],
+      maintenance:['2 eggs + 1 roti + curd + fruit','Oats + 2 eggs + milk','Egg omelette + roti + salad','3 eggs scrambled + toast','Moong dal chilla + 2 eggs + curd'],
+      strength:['4 eggs + 2 rotis + milk + banana','3 eggs + tuna (100g) + 2 rotis + milk','Oats + milk + 3 eggs + banana','Egg paratha + milk + nuts','Smoothie + 4 eggs + tuna'],
+      endurance:['Oats (70g) + milk + 2 eggs + banana','2 rotis + eggs + curd + fruit','Poha + 2 eggs + fruit','Bread + eggs + banana + milk','Upma + 2 eggs + curd']
+    },
+    midmorning:['2 boiled eggs + green tea','Greek yogurt + fruit','30g chana + fruit + tea','Curd + flaxseeds','Chaas + nuts','Makhana + green tea','Tuna (50g, canned) + cucumber slices'],
+    lunch:{
+      fatloss:['150g grilled fish + 1 roti + dal + salad','Tuna salad (150g) + cucumber + 1 roti','Egg curry (2 eggs) + dal + 1 roti + salad','Fish curry (150g) + 1 roti + salad','150g steamed fish + dal + salad'],
+      musclegain:['200g fish curry + 2 cups rice + dal + salad','Tuna (200g) + 3 rotis + dal + sabzi','Egg + fish combo + 2 rotis + dal + curd','Fish biryani (200g, 2 cups rice) + raita','3 eggs + 150g fish + 2 rotis + dal'],
+      recomp:['150g fish + 1 roti + dal + salad','Tuna (120g) + 1 roti + large salad','2 eggs + fish (100g) + salad + dal','Fish curry + 1 roti + salad + dal','Egg curry (2 eggs) + fish + 1 roti + salad'],
+      maintenance:['150g fish + 2 rotis + dal + salad','Tuna + 1 roti + dal + salad','Egg curry + 1 roti + dal + fish','Fish + rice + dal + salad','2 eggs + fish + 2 rotis + salad'],
+      strength:['200g fish + 2 rotis + dal + sabzi + curd','Tuna (180g) + 3 rotis + dal + salad','3 eggs + 150g fish + 2 rotis + dal','Fish curry + 3 rotis + rice + salad','2 eggs + 200g fish + dal + rotis'],
+      endurance:['150g fish + 2 rotis + rice + dal + salad','Tuna + 2 rotis + dal + sabzi + fruit','3 eggs + 2 cups rice + dal + salad','Fish + 3 rotis + dal + curd','2 eggs + fish + 2 cups rice + dal']
+    },
+    preworkout:{
+      morning:['1 banana + 2 egg whites + coffee','1 roti + peanut butter + banana','Oats (30g) + banana + coffee','2 egg whites + banana + black coffee','Tuna (50g) + banana + coffee'],
+      evening:['Banana + 2 egg whites + coffee','1 roti + egg + banana','Chana + fruit + coffee','Banana + curd + coffee','Tuna (50g) + banana'],
+      flexible:['Banana + eggs + coffee','Roti + egg + fruit','Smoothie (milk, banana, egg whites)','Chana + banana + coffee','Tuna + banana + green tea']
+    },
+    dinner:{
+      fatloss:['200g grilled fish + salad + 1 roti (protein-heavy)','Fish soup (200ml) + 1 roti + salad','2 boiled eggs + fish (100g) + salad','Egg bhurji + fish (100g) + salad','Steamed fish (150g) + sauteed veggies + 1 roti'],
+      musclegain:['250g fish curry + 2 rotis + dal + sabzi','Fish + 3 rotis + rice + dal + salad','3 eggs + 150g fish + 2 rotis + dal','Fish + egg curry + 2 rotis + sabzi','200g fish + dal + 3 rotis + salad'],
+      recomp:['150g fish + 1 roti + dal + salad','Fish soup + 1 roti + salad','2 eggs + fish (100g) + 1 roti + salad','Grilled fish (150g) + dal + salad','Egg + fish combo + salad + 1 roti'],
+      maintenance:['150g fish + 2 rotis + dal + salad','Fish curry + 1 roti + salad','2 eggs + fish + rotis + salad','Tuna + 2 rotis + salad','Dal + fish + 2 rotis + sabzi'],
+      strength:['200g fish + 2 rotis + dal + sabzi','3 eggs + fish (150g) + 2 rotis + dal','Fish curry + 3 rotis + dal + salad','Tuna (200g) + 2 rotis + dal + salad','200g fish + dal + 3 rotis + sabzi'],
+      endurance:['150g fish + 2 rotis + dal + sabzi + curd','Fish + 2 rotis + rice + salad','3 eggs + fish + 2 rotis + dal','Tuna + 2 rotis + dal + curd','Fish + 3 rotis + dal + salad']
+    },
+    nightsnack:['Warm milk + turmeric + 2 egg whites','Greek yogurt + chia seeds','2 boiled eggs (white) + warm milk','Tuna (50g) + cucumber + warm milk','Curd + flaxseeds']
+  },
+
+  // ── VEG NO DAIRY ───────────────────────────────────────────
+  veg_nodairy: {
+    early:['Warm water + lemon + jeera','Warm water + 5 soaked almonds','Green tea + ACV','Methi water + almonds','Black coffee + almonds'],
+    breakfast:{
+      fatloss:['Tofu scramble (100g) + 1 roti + salad + green tea','Moong dal chilla + green chutney + salad','Oats (50g, water/oat milk) + chia seeds + fruit','Tempeh (80g) + 1 roti + salad + green tea','Smoothie: oat milk + banana + spinach + peanut butter'],
+      musclegain:['Tofu (150g) + 2 rotis + oat milk smoothie + banana','Oats (80g, oat milk) + peanut butter + banana + nuts','Tempeh (120g) + 2 rotis + smoothie + fruit','Moong dal chilla (100g) + peanut butter + banana','Big smoothie: oat milk, oats, banana, peanut butter, hemp seeds'],
+      recomp:['Tofu (100g) + 1 roti + salad','Moong dal chilla + salad + chutney','Oats (50g, water) + chia seeds + fruit','Tempeh (80g) + 1 roti + salad','Smoothie (oat milk, banana, spinach, peanut butter)'],
+      maintenance:['Tofu + 1 roti + salad','Moong dal chilla + chutney','Oats + oat milk + fruit','Tempeh + roti + salad','Smoothie (plant milk, banana, peanut butter)'],
+      strength:['Tofu (150g) + 2 rotis + smoothie + banana','Oats (80g) + oat milk + nuts + fruit','Tempeh (120g) + 2 rotis + smoothie','Moong dal chilla + peanut butter + banana','Big smoothie + tempeh'],
+      endurance:['Oats + oat milk + banana + honey','2 rotis + dal + salad + fruit','Poha + salad + banana','Upma + salad','Bread (2, whole wheat) + peanut butter + banana + plant milk']
+    },
+    midmorning:['Green tea + 20g nuts','Roasted chana + fruit + tea','Coconut yogurt + flaxseeds','Oat milk chaas + almonds','Makhana + green tea','Sprouts + lemon','Fruit + 15g walnuts'],
+    lunch:{
+      fatloss:['Rajma + 1 roti + salad + dal','Tofu curry + 1 roti + salad','Chole + 1 roti + salad','Moong dal + 1 roti + 2 cups salad','Tempeh stir-fry + ½ cup rice + salad'],
+      musclegain:['Rajma (1.5 cups) + 2 cups rice + sabzi + dal','Tofu (150g) + 3 rotis + dal + sabzi','Chole (1.5 cups) + 2 rotis + rice + salad','Mixed dal + 3 rotis + sabzi + avocado','Tempeh + rice + dal + salad + nuts'],
+      recomp:['Rajma + 1 roti + dal soup + salad','Tofu + 1 roti + salad + dal','Chole + 1 roti + large salad','Moong dal + 1 roti + salad','Tempeh + dal + salad'],
+      maintenance:['Rajma + 2 rotis + dal + salad','Tofu curry + 1 roti + dal + salad','Chole + roti + rice + salad','Mixed dal + 2 rotis + sabzi','Dal + 2 rotis + sabzi + salad'],
+      strength:['Rajma (1.5c) + 2 rotis + dal + sabzi','Tofu (150g) + 3 rotis + dal + rice','Chole + 2 rotis + sabzi + salad','Tempeh + dal + 3 rotis + sabzi','Mixed legume + rice + salad + nuts'],
+      endurance:['Rajma + 2 rotis + rice + dal + salad','Dal + 3 rotis + sabzi','Chole + 3 rotis + rice + salad','Tofu + 2 cups rice + dal + sabzi','Mixed dal + 3 rotis + banana + salad']
+    },
+    preworkout:{
+      morning:['Banana + almond butter + green tea','Oats (30g, water) + banana','Makhana + banana + coffee','Fruit + 20g nuts + coffee','Smoothie (oat milk, banana, oats, almond butter)'],
+      evening:['Banana + 20g nuts + green tea','Chana + banana','Smoothie (banana + plant milk)','Fruit + 20g nuts','Makhana + banana'],
+      flexible:['Banana + 20g nuts + coffee','Oats + banana + oat milk','Chana + fruit','Smoothie (banana + plant milk + oats)','Makhana + banana + coffee']
+    },
+    dinner:{
+      fatloss:['Tofu (100g) + dal + 1 roti + salad','Lentil soup + 1 roti + salad','Rajma (small) + 1 roti + salad','Moong dal + salad + 1 roti','Tempeh (80g) + dal soup + salad'],
+      musclegain:['Tofu (150g) + dal + 2 rotis + sabzi + rice','Rajma + 3 rotis + dal + sabzi','Chole + 2 rotis + rice + salad','Tempeh + dal + 2 rotis + nuts','Mixed legume curry + 3 rotis + salad'],
+      recomp:['Tofu + dal + 1 roti + salad','Lentil soup + 1 roti + salad','Rajma (small) + 1 roti + salad','Moong dal + 1 roti + salad','Tempeh + dal soup + salad'],
+      maintenance:['Dal + 2 rotis + sabzi + salad','Tofu + dal + roti + salad','Rajma + roti + salad','Chole + 2 rotis + salad','Mixed dal + rotis + sabzi'],
+      strength:['Tofu (150g) + dal + 2 rotis + sabzi','Rajma + 2 rotis + dal + salad','Chole + 2 rotis + sabzi','Tempeh + dal + 3 rotis + sabzi','Mixed legume + 2 rotis + salad'],
+      endurance:['Dal + 2 rotis + sabzi + salad + fruit','Rajma + 2 rotis + sabzi','Chole + 2 rotis + rice + salad','Tofu + 2 rotis + dal + salad','Mixed dal + 3 rotis + sabzi']
+    },
+    nightsnack:['Warm oat milk + turmeric + cinnamon','Coconut yogurt + chia seeds','20g nuts + warm herbal tea','Hemp seeds + oat milk + honey','Small fruit + 10 almonds']
+  },
+
+  // ── KETO ───────────────────────────────────────────────────
+  keto: {
+    early:['Warm water + lemon (no sugar)','Black coffee (no milk, no sugar)','Green tea (no sugar) + 5 almonds','Water + 1 tsp MCT oil (optional)','Warm water + sea salt + ACV'],
+    breakfast:{
+      fatloss:['3 eggs fried in 1 tsp ghee + ½ avocado + salad greens','Egg omelette (3 eggs, butter, cheese) + spinach','Paneer (80g) + 3 eggs scrambled in ghee + salad','Chia pudding (2 tbsp seeds, coconut milk, no fruit) + eggs','Keto smoothie: coconut milk, 2 eggs, 1 tbsp MCT oil, nuts'],
+      musclegain:['4 eggs + 100g paneer in ghee + avocado','Eggs (4) + bacon/paneer + spinach + ghee','Keto shake: coconut milk, 4 eggs, nut butter, cream','Paneer (120g) + 4 eggs + veggies in ghee','Egg + paneer omelette (4 eggs, 100g paneer, ghee)'],
+      recomp:['3 eggs + 80g paneer + salad greens + ghee','3 egg omelette + spinach + avocado','Chia pudding + 2 eggs + nuts','Egg scramble (3 eggs) + paneer (60g) + ghee','Keto smoothie: coconut milk, eggs, nut butter'],
+      maintenance:['3 eggs + paneer (80g) + salad + ghee','Egg omelette + spinach + cheese','Chia pudding (coconut milk) + 2 eggs','Paneer (100g) + eggs + veggies in ghee','Keto smoothie: coconut milk, 2 eggs, nuts'],
+      strength:['4 eggs + 120g paneer + ghee + avocado','4 eggs scrambled + butter + spinach','Keto shake: coconut milk, 4 eggs, nut butter','Paneer (120g) + 4 eggs + salad + ghee','Egg + paneer combo (high fat, high protein)'],
+      endurance:['3 eggs + avocado + salad + olive oil','3 eggs + 80g paneer + nuts + salad','Egg omelette + spinach + ghee','Chia pudding (coconut milk) + eggs + nuts','Keto smoothie + avocado']
+    },
+    midmorning:['10 macadamia nuts + black coffee','¼ avocado + 10 almonds','1 boiled egg + 10 walnuts','Cheese cube (30g) + olives','Coconut cream + 10 almonds'],
+    lunch:{
+      fatloss:['Grilled paneer (120g) + salad with olive oil + sauteed spinach','Egg curry (3 eggs, ghee) + cauliflower rice + salad','Zucchini noodles + paneer + olive oil sauce','Keto sabzi (no potato) + paneer (100g) + salad','Baked paneer (100g) + greens + avocado + olive oil'],
+      musclegain:['Paneer (150g) + 3 eggs + avocado + greens in ghee','Egg curry (4 eggs, butter) + cauliflower rice + salad','Paneer tikka (150g, no marinade sugar) + sauteed greens','Keto thali: paneer + egg + sabzi (no carb) + ghee','3 eggs + 120g paneer + nuts + salad + olive oil'],
+      recomp:['Paneer (100g) + 2 eggs + salad + olive oil','Egg curry (3 eggs) + salad + greens','Keto sabzi + paneer (100g) + salad','Grilled paneer + eggs + salad + olive oil','Baked fish (keto) + greens + olive oil'],
+      maintenance:['Paneer (100g) + 2 eggs + salad + olive oil','Egg curry + salad + greens','Keto paneer sabzi + salad','Eggs + paneer + nuts + salad','Baked paneer + greens + olive oil'],
+      strength:['Paneer (150g) + 3 eggs + avocado + ghee','Egg curry (4 eggs) + cauliflower + salad','Paneer tikka + eggs + salad','Keto thali: paneer + egg + sabzi + ghee','3 eggs + 120g paneer + nuts + avocado'],
+      endurance:['Paneer (100g) + 2 eggs + nuts + salad','Egg curry + cauliflower rice','Keto sabzi + paneer + olive oil','Grilled paneer + eggs + greens','Baked paneer + avocado + salad']
+    },
+    preworkout:{
+      morning:['Black coffee + 10 almonds + 5g MCT oil','1 boiled egg + 10 walnuts + black coffee','Handful macadamia nuts + coffee','10 almonds + black coffee','Coconut cream (1 tbsp) + coffee'],
+      evening:['Black coffee + 10 almonds','1 boiled egg + 10 walnuts','Macadamia nuts + coffee','10 almonds + coffee','Cheese cube + olives + coffee'],
+      flexible:['Black coffee + 10 almonds + MCT oil','1 boiled egg + nuts + coffee','Macadamia nuts + black coffee','Almonds + coffee','Coconut cream + coffee + nuts']
+    },
+    dinner:{
+      fatloss:['Paneer (100g) + sauteed greens + salad + olive oil (no carbs)','Egg omelette (3 eggs, butter) + spinach + salad','Cauliflower rice + paneer curry (no sugar) + salad','Egg bhurji (ghee) + sauteed veggies (no potato)','Baked paneer + greens + lemon + olive oil'],
+      musclegain:['Paneer (150g) + 4 eggs + greens + ghee','Egg curry (4 eggs, butter) + cauliflower + salad','Paneer tikka (150g) + eggs + sauteed greens','Keto thali: paneer + eggs + sabzi + ghee + avocado','3 eggs + 120g paneer + nuts + greens + ghee'],
+      recomp:['Paneer (100g) + 2 eggs + salad + olive oil','Egg curry + salad + greens','Keto sabzi + paneer + salad','Eggs + paneer + greens + olive oil','Baked paneer + salad + lemon'],
+      maintenance:['Paneer (100g) + eggs + salad + olive oil','Egg curry + salad','Keto paneer sabzi + salad','Eggs + paneer + nuts + salad','Baked paneer + greens'],
+      strength:['Paneer (150g) + 3 eggs + greens + ghee','Egg curry (4 eggs) + cauliflower + salad','Paneer + eggs + avocado + greens','Keto thali: paneer + eggs + sabzi + ghee','3 eggs + 120g paneer + nuts + avocado'],
+      endurance:['Paneer + eggs + nuts + salad + olive oil','Egg curry + cauliflower rice + salad','Keto sabzi + paneer + greens','Grilled paneer + eggs + greens','Baked paneer + avocado + salad']
+    },
+    nightsnack:['1 boiled egg + 10 almonds','Cheese cube (30g) + 5 walnuts','Coconut cream (2 tbsp) + 10 macadamia nuts','¼ avocado + 10 almonds','2 tbsp nut butter (no sugar)']
+  },
+
+  // ── NON-VEG NO DAIRY & EGGE NO DAIRY (reuse nonveg/egge with dairy swaps noted) ──
+  nonveg_nodairy: {
+    early:['Warm water + lemon + jeera','Warm water + 5 soaked almonds','Green tea + ACV','Methi water + almonds','Black coffee + almonds'],
+    breakfast:{
+      fatloss:['3 egg whites + 1 yolk omelette + 1 roti + salad (no dairy)','2 boiled eggs + oats (water) + green tea','Egg bhurji (no butter/cream) + 1 roti + salad','4 egg whites + multigrain toast + salad + ACV drink','Tuna (80g) + 1 roti + salad + green tea'],
+      musclegain:['4 eggs + 2 rotis + oat milk + banana','3 eggs + 100g chicken + 2 rotis + oat milk','Oats (80g, oat milk) + 3 eggs + banana + nuts','Egg paratha (3 eggs, 2 rotis, no dairy) + oat milk + fruit','Smoothie (oat milk, banana, peanut butter) + 4 eggs'],
+      recomp:['3 eggs + 1 roti + salad + green tea','2 eggs + oats (water) + fruit','3 egg whites + 1 roti + salad','4 egg whites + toast + salad','Tuna (80g) + 2 eggs + 1 roti + salad'],
+      maintenance:['2 eggs + 1 roti + salad + oat milk','Oats + 2 eggs + oat milk + fruit','Egg omelette + roti + salad','3 eggs + toast + salad','Tuna + eggs + toast + salad'],
+      strength:['4 eggs + 2 rotis + oat milk + banana','3 eggs + 100g chicken + 2 rotis + oat milk','Oats + oat milk + 3 eggs + banana','Egg paratha + oat milk + nuts','Smoothie (oat milk, oats, peanut butter) + 4 eggs'],
+      endurance:['Oats (70g, oat milk) + 2 eggs + banana','2 rotis + eggs + salad + fruit','Poha + 2 eggs + banana','Bread + eggs + banana + oat milk','Upma + 2 eggs + salad']
+    },
+    midmorning:['2 boiled eggs + green tea + almonds','Tuna (50g) + cucumber','30g chana + fruit + tea','Coconut yogurt + flaxseeds','Oat milk chaas + nuts','Makhana + green tea','Sprouts + 1 boiled egg'],
+    lunch:{
+      fatloss:['150g grilled chicken + 1 roti + dal + salad','Fish (150g) + 1 roti + salad + dal','Tuna (150g) + salad + 1 roti','Egg curry (2 eggs, no cream) + 1 roti + dal + salad','Chicken stir-fry (150g) + ½ cup rice + salad'],
+      musclegain:['200g chicken + 2 cups rice + dal + salad','Fish (200g) + 3 rotis + dal + sabzi','Tuna (200g) + 3 rotis + dal + rice','3 eggs + chicken (150g) + 2 rotis + dal','Chicken + 2 cups rice + dal + salad + oat milk'],
+      recomp:['150g chicken + 1 roti + dal + salad','Fish (150g) + 1 roti + salad','Tuna (120g) + 1 roti + salad + dal','2 eggs + chicken (100g) + salad + roti','Fish + dal soup + salad + roti'],
+      maintenance:['150g chicken + 2 rotis + dal + salad','Fish + roti + dal + salad','Tuna + roti + dal + salad','Egg curry + roti + dal + salad','Chicken + rice + sabzi + salad'],
+      strength:['200g chicken + 2 rotis + dal + sabzi','Fish (200g) + 3 rotis + dal + salad','3 eggs + 150g chicken + 2 rotis + dal','Tuna (180g) + 3 rotis + dal + salad','Chicken + 3 rotis + dal + sabzi'],
+      endurance:['150g chicken + 2 rotis + rice + dal + salad','Fish + 3 rotis + dal + sabzi + fruit','3 eggs + 2 cups rice + dal + salad','Tuna + 3 rotis + dal + curd alternative','Chicken + 2 cups rice + dal + sabzi']
+    },
+    preworkout:{morning:['Banana + 2 egg whites + coffee','Roti + peanut butter + banana','Oats (water) + banana + coffee','2 egg whites + banana + coffee','Tuna (50g) + banana + coffee'],evening:['Banana + 2 egg whites + coffee','Roti + egg + banana','Chana + fruit + coffee','Banana + egg whites + coffee','Tuna + banana'],flexible:['Banana + eggs + coffee','Roti + egg + fruit','Smoothie (oat milk, banana, egg whites)','Chana + banana + coffee','Tuna + banana + green tea']},
+    dinner:{
+      fatloss:['200g grilled chicken + salad + 1 roti (no dairy)','Fish (150g, baked) + dal + salad + 1 roti','Egg bhurji (3 eggs, no cream) + dal + salad','Chicken soup + salad + 1 roti','Steamed fish + veggies + 1 roti'],
+      musclegain:['250g chicken + 2 rotis + dal + sabzi','Fish (200g) + 3 rotis + dal + sabzi','3 eggs + chicken (150g) + 2 rotis + dal','Tuna + 3 rotis + dal + salad','Chicken + dal + 3 rotis + sabzi'],
+      recomp:['180g chicken + 1 roti + dal + salad','Fish (150g) + dal soup + salad + 1 roti','3 eggs + 1 roti + dal + salad','150g chicken + salad + dal soup','Tuna + salad + dal + 1 roti'],
+      maintenance:['150g chicken + 2 rotis + dal + salad','Fish + roti + salad + dal','2 eggs + chicken + rotis + salad','Tuna + 2 rotis + salad','Dal + chicken + 2 rotis + sabzi'],
+      strength:['220g chicken + 2 rotis + dal + sabzi','Fish (200g) + 3 rotis + dal + salad','3 eggs + 150g chicken + 2 rotis + dal','Tuna (200g) + 2 rotis + dal + salad','Chicken + dal + 3 rotis + sabzi'],
+      endurance:['150g chicken + 2 rotis + dal + sabzi','Fish + 2 rotis + rice + salad','3 eggs + fish + 2 rotis + dal','Tuna + 2 rotis + dal + salad','Chicken + 3 rotis + dal + sabzi']
+    },
+    nightsnack:['Warm oat milk + turmeric + 2 egg whites','Coconut yogurt + chia seeds','2 boiled egg whites + oat milk','Tuna (50g) + cucumber + herbal tea','Warm herbal tea + 10 almonds']
+  },
+
+  // ── EGGE NO DAIRY ──────────────────────────────────────────
+  egge_nodairy: {
+    early:['Warm water + lemon + jeera','Warm water + 5 almonds','Green tea + ACV','Methi water + almonds','Black coffee + almonds'],
+    breakfast:{
+      fatloss:['3 egg whites + 1 yolk omelette + 1 roti + salad (no dairy)','2 boiled eggs + oats (water) + green tea','Egg bhurji (no butter/cream) + 1 roti + salad','4 egg whites + multigrain toast + salad','Moong dal chilla + 2 boiled eggs + salad'],
+      musclegain:['4 eggs + 2 rotis + oat milk + banana','Oats (80g, oat milk) + 3 eggs + banana + nuts','Egg paratha (3 eggs, 2 rotis, coconut oil) + oat milk + fruit','Smoothie (oat milk, banana, peanut butter) + 4 eggs','Moong dal chilla (100g) + 3 eggs + oat milk smoothie'],
+      recomp:['3 eggs + 1 roti + salad','Oats (water) + 2 eggs + fruit','Egg bhurji + 1 roti + salad','4 egg whites + toast + salad','Moong dal chilla + 2 eggs + salad'],
+      maintenance:['2 eggs + roti + salad + oat milk','Oats + 2 eggs + oat milk + fruit','Egg omelette + roti + salad','3 eggs + toast + salad','Moong dal chilla + 2 eggs + chutney'],
+      strength:['4 eggs + 2 rotis + oat milk + banana','Oats + oat milk + 3 eggs + banana','Egg paratha + oat milk + nuts','Smoothie (oat milk, oats, peanut butter) + 4 eggs','Moong chilla + 3 eggs + oat milk smoothie'],
+      endurance:['Oats (70g, oat milk) + 2 eggs + banana','2 rotis + eggs + salad + fruit','Poha + 2 eggs + banana','Bread + eggs + banana + oat milk','Moong chilla + 2 eggs + fruit']
+    },
+    midmorning:['2 boiled eggs + green tea + almonds','30g chana + fruit + tea','Coconut yogurt + flaxseeds','Oat milk chaas + nuts','Makhana + green tea','Sprouts + boiled egg','Fruit + walnuts'],
+    lunch:{
+      fatloss:['2 boiled eggs + dal + 1 roti + salad','Egg curry (no cream) + 1 roti + salad + dal','3 egg whites + chole + salad','2 eggs + dal + salad + lemon water','Egg masala + 1 roti + large salad'],
+      musclegain:['3 eggs + dal + 2 rotis + rice + salad','Egg curry (3 eggs) + 2 cups rice + dal + salad','3 eggs + rajma + 2 rotis + rice + salad','2 eggs + chole (1.5 cups) + 2 rotis + salad','Egg biryani (3 eggs, 2 cups rice, no dairy) + salad'],
+      recomp:['2 eggs + dal + 1 roti + salad','Egg curry + 1 roti + salad','3 egg whites + 1 roti + dal + salad','2 eggs + chole + 1 roti + salad','Egg masala + 1 roti + large salad'],
+      maintenance:['2 eggs + dal + 2 rotis + salad','Egg curry + roti + salad','3 eggs + dal + rice + salad','Eggs + rajma + roti + salad','Dal + eggs + 2 rotis + sabzi'],
+      strength:['3 eggs + dal + 2 rotis + sabzi','Egg curry (3 eggs) + 3 rotis + dal + sabzi','2 eggs + rajma + 2 rotis + rice + salad','3 eggs + chole + 2 rotis + salad','Egg + dal + 3 rotis + sabzi'],
+      endurance:['3 eggs + 2 rotis + dal + sabzi + fruit','Egg curry + 2 cups rice + salad','3 eggs + 3 rotis + dal + salad','Eggs + rajma + 2 rotis + rice','2 eggs + 2 cups rice + dal + sabzi']
+    },
+    preworkout:{morning:['Banana + 2 egg whites + coffee','Roti + peanut butter + banana','Oats (water) + banana + coffee','2 egg whites + banana + coffee','Makhana + banana + coffee'],evening:['Banana + 2 egg whites + coffee','Roti + egg + banana','Chana + fruit + coffee','Banana + egg whites + coffee','Makhana + banana'],flexible:['Banana + eggs + coffee','Roti + egg + fruit','Smoothie (oat milk, banana, egg whites)','Chana + banana + coffee','Makhana + banana + green tea']},
+    dinner:{
+      fatloss:['3 egg whites + 1 yolk + dal + salad + 1 roti (no dairy)','Egg soup (2 eggs, no cream) + salad + 1 roti','2 boiled eggs + dal + large salad','Egg bhurji (coconut oil) + dal + salad','Steamed eggs + veggies + 1 roti'],
+      musclegain:['3 eggs + dal + 2 rotis + sabzi','Egg curry (3 eggs, no cream) + 2 rotis + dal + sabzi','2 eggs + rajma + 2 rotis + salad','3 eggs + chole + 2 rotis + salad','Egg + dal + 3 rotis + sabzi'],
+      recomp:['2 eggs + dal + 1 roti + salad','Egg bhurji + dal soup + salad','3 egg whites + 1 roti + large salad','2 boiled eggs + dal + salad','Egg masala + 1 roti + salad'],
+      maintenance:['2 eggs + dal + 2 rotis + salad','Egg curry + roti + salad','3 eggs + dal + rice + sabzi','Eggs + rajma + rotis + salad','Dal + 2 eggs + 2 rotis + sabzi'],
+      strength:['3 eggs + dal + 2 rotis + sabzi','Egg curry + 3 rotis + dal + sabzi','2 eggs + rajma + 2 rotis + salad','3 eggs + chole + 2 rotis + salad','Egg + dal + 3 rotis + sabzi'],
+      endurance:['3 eggs + 2 rotis + dal + sabzi','Egg curry + 2 rotis + rice + salad','2 eggs + 2 rotis + dal + salad','3 eggs + rajma + 2 rotis','Dal + 3 eggs + 2 rotis + sabzi']
+    },
+    nightsnack:['Warm oat milk + turmeric + 2 egg whites','Coconut yogurt + chia seeds','2 boiled egg whites + oat milk','20g mixed nuts + warm herbal tea','1 small fruit + 10 almonds']
+  }
+};
+
+// HEALTH CONDITION NOTES
+var HEALTH_NOTES = {
+  diabetes:'⚠️ Diabetes/IR Protocol: Use only low-GI carbs (brown rice, oats, sweet potato). Distribute carbs evenly across all meals — no large carb spikes. Avoid all refined sugar, white bread, maida. Prioritise fibre-rich vegetables. Add methi seeds to morning water. Reduce overall carb targets by 10%.',
+  thyroid:'⚠️ Thyroid Protocol: Avoid raw cruciferous vegetables (broccoli, cauliflower) in large amounts — cook them instead. Include selenium-rich foods (Brazil nuts, eggs, fish). Ensure adequate iodine (iodised salt, seaweed). Take thyroid medication 30-60 min before eating. Time meals consistently.',
+  pcos:'⚠️ PCOS Protocol: Anti-inflammatory focus — avoid processed foods, refined carbs, excess dairy. Choose low-GI carbs only. Higher protein helps manage insulin. Increase omega-3 rich foods. Include spearmint tea (2 cups/day). Reduce sugar completely. Inositol supplement may help.',
+  cholesterol:'⚠️ High Cholesterol Protocol: Limit saturated fats (less ghee, coconut oil). Increase soluble fibre: oats, rajma, psyllium husk. Omega-3 rich foods daily: flaxseeds, walnuts, fish. Avoid trans fats completely (bakery, fried foods). Garlic and onion daily. Reduce egg yolks to 1-2/week.',
+  bp:'⚠️ Hypertension Protocol: Low sodium — avoid pickles, papad, packaged foods, excess salt. Potassium-rich foods: banana, sweet potato, spinach, rajma. DASH diet principles. Limit caffeine. Magnesium foods: almonds, spinach, dark chocolate (small amount). No added salt at table.',
+  ibs:'⚠️ IBS/Gut Protocol: Smaller, more frequent meals. Identify your trigger foods (common: onion, garlic, cruciferous veg, beans). Low-FODMAP approach initially. Cook all vegetables well — no raw. Include probiotic foods: curd, kanji. Psyllium husk (1 tsp/day, with water). Chew food slowly.'
+};
+
+// SEEDS DATA
+var SEEDS_DATA = [
+  {t:'🌱 Chia Seeds',d:'1 tbsp daily — Omega-3, fiber, calcium. Soak 10 min in water, add to curd/smoothie/oats.'},
+  {t:'🌾 Flax Seeds (ground)',d:'1 tbsp daily — Omega-3, lignans, hormone balance. Grind before eating. Add to roti dough or sabzi.'},
+  {t:'🎃 Pumpkin Seeds',d:'1 tbsp daily — Zinc, magnesium, protein. Roast with salt. Eat as snack or on salad.'},
+  {t:'🌻 Sunflower Seeds',d:'1 tbsp daily — Vitamin E, healthy fats. Evening snack. Roasted. Great for skin and immunity.'},
+  {t:'⚫ Sesame Seeds (til)',d:'1 tsp daily — Calcium, iron, antioxidants. Sprinkle on roti, dal, or rice. Also as chutney.'},
+  {t:'🍉 Watermelon Seeds',d:'1 tbsp roasted daily — Zinc, magnesium, iron. Light snack. Recovery support post-workout.'}
+];
+
+// SUPPS DATA BY GOAL
+var SUPPS_DATA = {
+  fatloss:[
+    {t:'Whey/Plant Protein',d:'1 scoop (25-30g protein) post-workout. Fill daily protein gap. Mix in water, not milk, for fat loss.'},
+    {t:'Creatine Monohydrate',d:'5g daily — preserves muscle during deficit. Take any time, consistency matters. Proven and safe.'},
+    {t:'Omega-3 Fish Oil',d:'1g EPA+DHA daily — reduces inflammation, improves fat loss signalling. Take with largest meal.'},
+    {t:'Multivitamin',d:'1 daily with breakfast — cover micronutrient gaps during calorie restriction. Look for methylated B12.'},
+    {t:'Vitamin D3',d:'2000-4000 IU daily — 80% of Indians are deficient. Critical for metabolism, immunity, mood.'},
+    {t:'Magnesium Glycinate',d:'300-400mg at night — improves sleep quality, reduces cortisol, helps muscle recovery.'},
+    {t:'Green Tea Extract',d:'400mg (standardised EGCG) — mild fat burning, antioxidant. Or drink 3-4 cups green tea daily.'}
+  ],
+  musclegain:[
+    {t:'Whey Protein',d:'1-2 scoops daily — post-workout + between meals. Aim for 2.0g protein/kg. Quality matters.'},
+    {t:'Creatine Monohydrate',d:'5g daily — increases strength, muscle volume, recovery. Best supplement for muscle gain. Take any time.'},
+    {t:'Vitamin D3',d:'2000-4000 IU daily — critical for testosterone production and muscle growth. Non-negotiable.'},
+    {t:'Omega-3',d:'1-2g EPA+DHA — reduces muscle soreness, improves protein synthesis. Take with food.'},
+    {t:'Magnesium',d:'300mg at night — sleep quality → growth hormone → muscle gain. Often deficient in gym-goers.'},
+    {t:'ZMA (Zinc+Magnesium)',d:'Before bed — supports testosterone, recovery, sleep. Take on empty stomach.'},
+    {t:'Casein Protein',d:'30g before bed — slow-digesting, feeds muscles overnight. Optional but effective for mass gain.'}
+  ],
+  recomp:[
+    {t:'Whey Protein',d:'1 scoop post-workout — critical when doing recomp. Muscle building needs protein surplus at cellular level.'},
+    {t:'Creatine Monohydrate',d:'5g daily — helps build muscle while in slight deficit. Most valuable supplement for recomp.'},
+    {t:'Vitamin D3',d:'2000-4000 IU — body composition improvement linked to Vitamin D levels directly.'},
+    {t:'Omega-3',d:'1g daily — improves insulin sensitivity, reduces inflammation, supports muscle synthesis.'},
+    {t:'Magnesium',d:'300mg at night — improves cortisol management, sleep, and body composition indirectly.'},
+    {t:'Caffeine',d:'100-200mg pre-workout (coffee or pill) — performance during recomp is critical. Keep calories burning.'}
+  ],
+  strength:[
+    {t:'Creatine Monohydrate',d:'5g daily — THE strength supplement. Increases phosphocreatine, directly improves 1RM. Non-negotiable.'},
+    {t:'Whey Protein',d:'1-2 scoops daily — strength demands high protein to repair connective tissue and muscle.'},
+    {t:'Beta-Alanine',d:'3.2g daily — buffers lactic acid, improves reps at high intensity. Tingling sensation is normal.'},
+    {t:'Vitamin D3',d:'4000 IU — low Vitamin D = weak bones and joints. Especially important under heavy loads.'},
+    {t:'Omega-3',d:'2g daily — reduces joint inflammation, critical when lifting heavy consistently.'},
+    {t:'Magnesium',d:'400mg at night — CNS recovery after heavy sessions. Sleep is where strength adaptations happen.'},
+    {t:'Caffeine',d:'150-200mg pre-workout — improves max strength output by 3-7%. Time it 30-45 min before lifting.'}
+  ],
+  endurance:[
+    {t:'Electrolyte Mix',d:'During and after training — sodium, potassium, magnesium. Prevents cramps and dehydration.'},
+    {t:'Whey/Plant Protein',d:'1 scoop post-workout — endurance athletes need 1.4-1.7g/kg. Muscle repair after long sessions.'},
+    {t:'Vitamin D3',d:'2000 IU — bone health critical for endurance athletes. Stress fracture prevention.'},
+    {t:'Omega-3',d:'1g daily — reduces systemic inflammation from high-volume training.'},
+    {t:'Iron (if deficient)',d:'Test ferritin first. Endurance training depletes iron rapidly. Take with Vitamin C, not with calcium.'},
+    {t:'Magnesium',d:'300mg at night — muscle cramp prevention and recovery. Often low in endurance athletes.'},
+    {t:'Beetroot/NO Booster',d:'250ml beetroot juice 2-3 hrs before — improves VO2 max, time to exhaustion. Evidence-strong.'}
+  ],
+  maintenance:[
+    {t:'Whey Protein',d:'As needed to hit daily protein. Convenience supplement. 1 scoop when meals are short on protein.'},
+    {t:'Creatine Monohydrate',d:'5g daily — maintains muscle, strength, performance. No drawback to long-term use.'},
+    {t:'Vitamin D3',d:'2000 IU — general health, immunity, mood. Most cost-effective supplement.'},
+    {t:'Omega-3',d:'1g daily — heart health, brain function, anti-inflammatory. Long-term investment.'},
+    {t:'Multivitamin',d:'1 daily — insurance policy for any micronutrient gaps. Not a replacement for whole foods.'},
+    {t:'Magnesium',d:'300mg at night — sleep quality, stress management, energy levels.'}
+  ]
+};
+
+// SMART SWAPS
+var SWAPS = {
+  veg_dairy:['Paneer → Tofu (same protein, less fat)','Curd → Coconut yogurt (if dairy-free needed)','Milk → Oat/almond milk (1:1 swap)','Ghee → Olive oil (for cooking)','Whey → Pea protein (if lactose issues)'],
+  nonveg:['Chicken breast → Turkey breast (lower fat)','Rohu fish → Tilapia/Basa (cheaper, similar protein)','Eggs → Paneer (for occasional veg day)','Tuna (canned) → Sardines (cheaper, more omega-3)','Greek yogurt → Regular curd + skim milk mix'],
+  vegan:['Tofu → Tempeh (more protein, better texture)','Plant milk → Any other plant milk (oat, almond, soy)','Peanut butter → Almond/cashew butter (premium)','Hemp seeds → Chia seeds (for omega-3)','Tempeh → Edamame (if tempeh unavailable)'],
+  eggetarian:['Eggs → Paneer (occasional veg day)','Whole eggs → Egg whites + 1 yolk (lower fat)','Greek yogurt → Regular curd (cheaper)','Oats → Poha or upma (local alternative)','Whey → Egg white protein powder (if lactose issue)'],
+  pescatarian:['Rohu → Tilapia/Basa/Surmai (same protein)','Tuna canned → Sardines (more omega-3, cheaper)','Salmon → Rohu + omega-3 supplement (budget hack)','Fish → Eggs (for travel/unavailability)','Greek yogurt → Regular thick curd'],
+  veg_nodairy:['Paneer → Tofu (1:1 swap for protein)','Curd → Coconut yogurt or soy yogurt','Milk → Oat milk (for smoothies)','Ghee → Coconut oil (same fat profile)','Regular yogurt → Cashew/coconut yogurt'],
+  egge_nodairy:['Milk → Oat/soy milk (1:1 in smoothies)','Curd → Coconut yogurt','Butter → Coconut oil (for cooking)','Cheese → Nutritional yeast (for flavour)','Paneer → Tofu (if added protein needed)'],
+  nonveg_nodairy:['Milk → Oat/almond milk','Curd → Coconut yogurt','Butter → Olive/coconut oil','Cheese → Avocado (fat source)','Paneer → Tofu'],
+  keto:['Rice/roti → Cauliflower rice or egg wraps','Potato → Turnip or radish (much lower carb)','Sugar → Stevia or erythritol (zero GI)','High-carb fruits → Berries (lowest carb fruit)','Milk → Cream or coconut milk (keto-friendly)']
+};
+
+// RULES BY GOAL
+var RULES = {
+  fatloss:['Eat protein in every single meal — minimum 20-25g per meal','Drink 500ml water before every meal — reduces intake naturally','Never skip breakfast — sets metabolic tone for the day','Weigh food for first 2-3 weeks to calibrate eye measurements','Sleep 7-9 hrs — sleep deprivation increases ghrelin by 25%'],
+  musclegain:['Hit your protein target every single day — this is non-negotiable','Eat more on training days — fuel the muscle-building process','Never train fasted — performance suffers, muscle catabolism increases','Track your lifts AND your food — both need to go up','Sleep 8 hrs minimum — this is when muscle is actually built'],
+  recomp:['Protein must be highest priority — eat this first in every meal','Train hard with weights — muscle stimulus drives recomp','Be patient — recomp takes 12+ weeks to show clearly','Measure waist and take photos monthly — scale will lie to you','Maintain slight calorie deficit only — too much = muscle loss'],
+  maintenance:['Maintain consistent meal timing — body loves routine','Keep protein intake consistent — 1.6-2.0g/kg LBM minimum','Allow occasional flexibility (80/20 rule) — sustainability matters','Continue resistance training — prevents muscle loss during maintenance','Regular check-ins monthly — adjust as activity changes'],
+  strength:['Eat to perform — undereating kills strength gains','Carb up before heavy sessions — fuel the CNS','Never train fasted on heavy lift days — performance drops 8-12%','Prioritise food quality — joints and connective tissue need micronutrients','Stay hydrated — even 2% dehydration drops strength output significantly'],
+  endurance:['Carb timing is critical — fuel during and after long sessions','Electrolytes are as important as water — replace both','Never do long sessions fasted — bonking = poor training adaptation','Eat within 30 min post-session — glycogen restoration window','Anti-inflammatory foods daily — high training volume = high inflammation']
+};
+
+// AVOID BY GOAL
+var AVOID = {
+  fatloss:['Ultra-processed foods — biscuits, chips, instant noodles, packaged snacks','Liquid calories — juice, cold drinks, lassi (except planned)','Skipping meals — causes muscle loss and metabolic adaptation','Binge eating after restriction — sets back 3-5 days of deficit','Extreme low-calorie diets below 1200 kcal — muscle loss guaranteed'],
+  musclegain:['Eating below TDEE — impossible to gain muscle in a meaningful deficit','Skipping post-workout nutrition — the most important meal window','Alcohol — suppresses testosterone and protein synthesis for 24-48 hrs','Ultra-processed protein sources — low amino acid quality','Dirty bulk (eating everything) — 70% of weight gained will be fat'],
+  recomp:['Long cardio sessions — eat into recovery and muscle gain capacity','Yo-yo dieting — ruins body composition long-term','Alcohol — 7 kcal/g, no nutrition, suppresses fat oxidation for hours','Skipping protein meals — you need daily synthesis, not weekly average','Expecting fast results — recomp is a 4-6 month minimum commitment'],
+  maintenance:['Letting protein slip below 1.4g/kg LBM — muscle loss begins silently','Week-long breaks from routine — habits break faster than they form','Mindless eating — even maintenance needs awareness of portions','Ignoring training — muscle is lost without stimulus regardless of diet','Processed convenience foods as staples — micronutrients matter'],
+  strength:['Alcohol before or after heavy sessions — impairs protein synthesis','Undereating the day before maximal lifts — peak strength needs fuel','Excessive cardio — competes with strength adaptations and recovery','Ignoring joint health foods — heavy lifting stresses connective tissue','Missing meals before training — fasted heavy training is high-risk'],
+  endurance:['Training in a depleted state (for long sessions) — bonking risk','Ignoring electrolytes — sodium, potassium, magnesium all critical','Protein neglect — endurance athletes need more than they think','Relying on sports drinks for all carbs — whole food balance matters','Ignoring iron status — endurance training destroys red blood cells']
+};
+
+// COACH NOTES
+var COACH_NOTES = {
+  fatloss: "Fat loss ho sakta hai — but only if you're consistent, not perfect. Aaj se ek rule: har plate mein protein hona chahiye. Roz subah weight mat karo — weekly average dekho. Yeh journey 3-6 mahine ka hai, 3 hafte ka nahi. Consistency beats perfection. Ek din khana kharab hua — no problem, next meal se back on track. Aap yeh kar sakte ho.",
+  musclegain: "Muscle gain ka matlab hai progressive overload + progressive eating. Dono saath hone chahiye. Agar gym mein weight nahi badh raha AND khana nahi badh raha — toh muscle nahi badhega. Simple science. Har roz protein hit karo — body ko signal do ki muscles banana hai. Bulk slowly, keep it clean. Results 3-4 months mein clearly visible honge.",
+  recomp: "Recomposition sabse challenging goal hai — aap ek saath fat lose aur muscle gain karna chahte ho. Yeh possible hai, but slower hai. Scale nahi hilega — tape measure aur photos use karo. Protein high rakho, train hard karo, sleep prioritise karo. 4-6 months consistently follow karo — results dekhoge jo scale nahi dikhata.",
+  maintenance: "Maintenance matlab lose nahi — maintain karna ek active choice hai. Protein consistent rakho, training continue karo. 80/20 rule follow karo — 80% clean, 20% flexibility. Yeh long-term sustainable lifestyle hai. Aap ne already ek goal achieve kiya — ab issko hold karo aur strengthen karo.",
+  strength: "Strength training ek long game hai. Aaj jo weight utha rahe ho, 3 months baad ussse double uthaoge — agar aap consistently khate ho aur sote ho. Pre-workout carbs, post-workout protein, raat ko 8 hrs neend. Yeh trifecta follow karo. Ego mat uthao — technique first, weight second. Injury se bach ke rehna.",
+  endurance: "Endurance ke liye fuel bahut important hai — body ek engine hai, engine ko petrol chahiye. Long sessions se pehle carbs compulsory hain. Electrolytes ignore mat karo — cramping aur fatigue prevent hoti hai. Recovery utni hi important hai jitni training. Sleep, protein, stretching — trifecta of endurance success."
+};
+
+// ============================================================
+// UNIT TOGGLE
+// ============================================================
+function setUnit(type, el) {
+  var c=document.getElementById(type+'Unit');
+  if(!c) return;
+  c.querySelectorAll('.unit-btn').forEach(function(b){b.classList.remove('active')});
+  el.classList.add('active');
+}
+
+// ============================================================
+// GENERATE FUNCTION
+// ============================================================
+function generate(mode) {
+  if (!validate()) return;
+
+  if (mode === 'premium') {
+    document.getElementById('premOverlay').classList.add('on');
+    return;
+  }
+
+  var wtU=document.querySelector('#weightUnit .unit-btn.active');
+  var htU=document.querySelector('#heightUnit .unit-btn.active');
+  var wtEl=document.getElementById('wt');
+  var htEl=document.getElementById('ht');
+  var origWt=wtEl.value, origHt=htEl.value;
+  if(wtU&&wtU.dataset.val==='lbs'&&origWt) wtEl.value=(parseFloat(origWt)/2.205).toFixed(1);
+  if(htU&&htU.dataset.val==='in'&&origHt) htEl.value=(parseFloat(origHt)*2.54).toFixed(1);
+
+  document.getElementById('loading').classList.add('on');
+  var steps=['aiStep1','aiStep2','aiStep3','aiStep4'];
+  var prog=document.getElementById('aiProgressFill');
+  var si=0;
+  var iv=setInterval(function(){
+    if(si<steps.length){
+      var el=document.getElementById(steps[si]);
+      if(el){el.classList.add('active');}
+      prog.style.width=((si+1)/steps.length*100)+'%';
+      if(si>0){var prev=document.getElementById(steps[si-1]);if(prev){prev.classList.remove('active');prev.classList.add('done');}}
+      si++;
+    }
+  },450);
+  setTimeout(function(){
+    clearInterval(iv);
+    steps.forEach(function(id){var el=document.getElementById(id);if(el){el.classList.remove('active');el.classList.add('done');}});
+    prog.style.width='100%';
+    setTimeout(function(){
+      document.getElementById('loading').classList.remove('on');
+      steps.forEach(function(id){var el=document.getElementById(id);if(el){el.classList.remove('done');}});
+      prog.style.width='0%';
+      if(mode==='normal'){
+        document.getElementById('aiGeneratedBadge').classList.add('show');
+      }
+      try {
+        renderPlan(mode);
+      } catch(err) {
+        console.error('renderPlan error:', err);
+        console.error(err);
+      }
+      wtEl.value=origWt;
+      htEl.value=origHt;
+    },300);
+  },2000);
+}
+
+// ============================================================
+// PREMIUM OVERLAY FUNCTIONS
+// ============================================================
+function closePremOverlay() {
+  document.getElementById('premOverlay').classList.remove('on');
+}
+function confirmPremium() {
+  var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?data=upi://pay?pa=skyce%40ybl&pn=Akash%20Singh&am=99&cu=INR&size=200x200';
+  document.getElementById('qrImage').src = qrUrl;
+  document.getElementById('qrAmount').textContent = '₹99';
+  document.getElementById('premOverlay').classList.remove('on');
+  document.getElementById('qrOverlay').classList.add('on');
+}
+function closeQrOverlay() {
+  document.getElementById('qrOverlay').classList.remove('on');
+}
+function sendTg(chatId, text, cb) {
+  fetch('https://api.telegram.org/bot8323966181:AAHkRHr-JXaEK_yVv1kG-fRXbtta4BBgT_8/sendMessage', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({chat_id: chatId, text: text})
+  }).then(function(){ if(cb) cb(); }).catch(function(){ if(cb) cb(); });
+}
+function isAdmin() { return window.location.search.indexOf('admin=1') > -1; }
+function confirmPayment() {
+  var _n = document.getElementById('cName').value.trim() || 'Not provided';
+  var _p = document.getElementById('phone').value.trim() || 'Not provided';
+  var _e = document.getElementById('email').value.trim() || 'Not provided';
+  var _g = document.querySelector('[data-g="goal"].active');
+  var _goal = _g ? _g.textContent.trim() : 'Not selected';
+  var _d = document.querySelector('[data-g="diet"].active');
+  var _diet = _d ? _d.textContent.trim() : 'Not selected';
+  var _header = '💰 PREMIUM MEAL PLAN — PAYMENT CONFIRMED\n━━━━━━━━━━━━━━━━━━\nName: ' + _n + '\nPhone: ' + _p + '\nEmail: ' + _e + '\nGoal: ' + _goal + '\nDiet: ' + _diet + '\nAmount: ₹99\n━━━━━━━━━━━━━━━━━━\n\nGenerating plan...\n';
+  document.getElementById('qrOverlay').classList.remove('on');
+  document.getElementById('loading').classList.add('on');
+  var steps=['aiStep1','aiStep2','aiStep3','aiStep4'];
+  var prog=document.getElementById('aiProgressFill');
+  var si=0;
+  var iv=setInterval(function(){
+    if(si<steps.length){
+      var el=document.getElementById(steps[si]);
+      if(el){el.classList.add('active');}
+      prog.style.width=((si+1)/steps.length*100)+'%';
+      if(si>0){var prev=document.getElementById(steps[si-1]);if(prev){prev.classList.remove('active');prev.classList.add('done');}}
+      si++;
+    }
+  },450);
+  setTimeout(function(){
+    clearInterval(iv);
+    steps.forEach(function(id){var el=document.getElementById(id);if(el){el.classList.remove('active');el.classList.add('done');}});
+    prog.style.width='100%';
+    setTimeout(function(){
+      document.getElementById('loading').classList.remove('on');
+      steps.forEach(function(id){var el=document.getElementById(id);if(el){el.classList.remove('done');}});
+      prog.style.width='0%';
+      try { renderPlan('premium'); } catch(err) { console.error(err); }
+      if (!isAdmin()) {
+        document.getElementById('output').style.display = 'none';
+        document.getElementById('output').setAttribute('data-premium-generated','1');
+      }
+      setTimeout(function(){
+        var out = document.getElementById('output');
+        var planText = out ? out.innerText : '';
+        if (planText.length > 3800) planText = planText.substring(0, 3800) + '\n...[truncated]';
+        var fullMsg = _header + '\n' + planText;
+        if (fullMsg.length > 4000) {
+          sendTg('676917032', fullMsg.substring(0, 4000));
+          setTimeout(function(){ sendTg('676917032', fullMsg.substring(4000)); }, 1500);
+        } else {
+          sendTg('676917032', fullMsg);
+        }
+      }, 500);
+      var sb = document.getElementById('successBanner');
+      document.getElementById('successMsg').textContent = 'Payment confirmed, ' + _n + '! Your premium meal plan has been generated and sent to Akash. He will share it with you shortly.';
+      sb.classList.add('on');
+      setTimeout(function(){ sb.classList.remove('on'); }, 8000);
+    },300);
+  },2000);
+}
+
+// ============================================================
+// RENDER PLAN
+// ============================================================
+function renderPlan(mode) {
+  var m=calcMetrics();
+  var name=document.getElementById('cName').value.trim();
+  var goal=S.goal, diet=S.diet, timing=S.timing;
+  var isPrem=mode==='premium';
+
+  // ── HEADER ──
+  var goalLabels={fatloss:'Fat Loss',musclegain:'Muscle Gain',recomp:'Body Recomposition',maintenance:'Maintenance',strength:'Strength',endurance:'Endurance'};
+  var dietLabels={veg_dairy:'Vegetarian',veg_nodairy:'Veg + Lactose-Free',eggetarian:'Eggetarian',egge_nodairy:'Eggetarian + LF',nonveg:'Non-Vegetarian',nonveg_nodairy:'Non-Veg + LF',vegan:'Vegan',pescatarian:'Pescatarian',keto:'Keto'};
+  var gl=goalLabels[goal]||goal, dl=dietLabels[diet]||diet;
+
+  document.getElementById('outTitle').textContent=(name||'Your')+' — '+gl+' Meal Plan'+(isPrem?' ⭐':'');
+  document.getElementById('outSub').textContent=m.tgt+' kcal/day · '+m.protG+'g protein · '+m.carbG+'g carbs · '+m.fatG+'g fat · '+dl+(isPrem?' · Premium':'');
+
+  var goalBadge={fatloss:'b-green',musclegain:'b-red',recomp:'b-blue',maintenance:'b-blue',strength:'b-orange',endurance:'b-orange'}[goal]||'b-blue';
+  document.getElementById('outBadges').innerHTML=
+    '<span class="badge '+goalBadge+'">'+gl+'</span>'+
+    '<span class="badge b-blue">'+dl+'</span>'+
+    (isPrem?'<span class="badge b-gold">⭐ Premium</span>':'')+
+    '<span class="badge b-green">BMR: '+m.bmr+' kcal</span>'+
+    '<span class="badge b-orange">TDEE: '+m.tdee+' kcal</span>';
+
+  // ── MACRO STATS ──
+  document.getElementById('outStats').innerHTML=
+    st(m.tgt+' kcal','Target Calories')+
+    st(m.protG+'g','Protein')+
+    st(m.carbG+'g','Carbs')+
+    st(m.fatG+'g','Fats')+
+    st(m.bmi,'BMI');
+
+  // ── BODY COMP ──
+  document.getElementById('bcRow').style.display='block';
+  document.getElementById('bcContent').innerHTML=
+    bci(m.bf.toFixed(1)+'%','Body Fat')+
+    bci(m.leanKg+'kg','Lean Mass')+
+    bci(m.fatKg+'kg','Fat Mass')+
+    bci(m.lbm.toFixed(1)+'kg','LBM')+
+    '<div style="flex:1;font-size:0.75rem;color:var(--muted);align-self:center">BMR: '+m.bmr+' → TDEE: '+m.tdee+' → Target: '+m.tgt+' kcal/day ('+
+    {fatloss:'−400 kcal deficit',musclegain:'+275 kcal surplus',recomp:'−150 kcal slight deficit',strength:'+225 kcal surplus',endurance:'+300 kcal surplus',maintenance:'Maintenance'}[goal]+')</div>';
+
+  // ── CALCULATIONS TABLE ──
+  var multLabel={'sedentary':'1.2 (Sedentary)','lightly':'1.375 (Lightly Active)','moderate':'1.55 (Moderately Active)','very':'1.725 (Very Active)','extreme':'1.9 (Athlete)'}[S.activity]||'1.375';
+  document.getElementById('outCalc').innerHTML=
+    '<table class="ctbl"><thead><tr><th>Step</th><th>Calculation</th><th>Result</th></tr></thead><tbody>'+
+    ctr('BMR (Mifflin-St Jeor)',m.g==='male'?'(10×'+m.wt.toFixed(0)+')+(6.25×'+m.ht+')−(5×'+m.age+')+5':'(10×'+m.wt.toFixed(0)+')+(6.25×'+m.ht+')−(5×'+m.age+')−161',m.bmr+' kcal')+
+    ctr('TDEE','BMR × '+multLabel,m.tdee+' kcal')+
+    ctr('Target Calories','TDEE + goal adjustment ({0})'.replace('{0}',{fatloss:'−400',musclegain:'+275',recomp:'−150',strength:'+225',endurance:'+300',maintenance:'±0'}[goal]),m.tgt+' kcal')+
+    ctr('Protein Target',m.pp.toFixed(1)+'g × '+m.lbm.toFixed(1)+'kg LBM',m.protG+'g ('+Math.round(m.protG*4/m.tgt*100)+'% kcal)')+
+    ctr('Carbohydrates',Math.round(m.cp*100)+'% of '+m.tgt+' kcal ÷ 4',m.carbG+'g')+
+    ctr('Fats',Math.round(m.fp*100)+'% of '+m.tgt+' kcal ÷ 9',m.fatG+'g')+
+    ctr('Rest Day Carbs','Training carbs × 0.78 (22% cut)',m.carbGRest+'g → '+m.tgtRest+' kcal total')+
+    '</tbody></table>';
+
+  // ── GET MEAL DATA ──
+  var dietKey = diet;
+  // fallback mapping
+  if (!MEAL_PLANS[dietKey]) {
+    if (diet==='nonveg_nodairy') dietKey='nonveg_nodairy';
+    else if (diet==='egge_nodairy') dietKey='egge_nodairy';
+    else dietKey='veg_dairy';
+  }
+  var mp=MEAL_PLANS[dietKey];
+  var goalKey = ['fatloss','musclegain','recomp','maintenance','strength','endurance'].indexOf(goal)>=0 ? goal : 'maintenance';
+
+  // ── TRAINING DAY MEALS ──
+  var numMeals=parseInt(S.meals)||4;
+  var timingKey=['morning','evening','flexible'].indexOf(timing)>=0?timing:'flexible';
+
+  document.getElementById('trainingDayLbl').innerHTML='🏋️ Training Day Meal Plan <span style="font-size:0.62rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--blue)">'+m.tgt+' kcal · Higher carbs · Full fuel</span>';
+
+  var mealHtml=buildMeals(mp,goalKey,timingKey,numMeals,m,false,isPrem);
+  document.getElementById('outMeals').innerHTML=mealHtml;
+
+  // ── REST DAY MEALS ──
+  var restHtml=buildMeals(mp,goalKey,timingKey,numMeals,m,true,isPrem);
+  document.getElementById('outRestMeals').innerHTML=restHtml;
+
+  // ── SEEDS ──
+  var seedHtml='';
+  for (var si=0;si<SEEDS_DATA.length;si++) {
+    seedHtml+='<div class="si"><div class="si-t">'+SEEDS_DATA[si].t+'</div><div class="si-d">'+SEEDS_DATA[si].d+'</div></div>';
+  }
+  document.getElementById('outSeeds').innerHTML=seedHtml;
+
+  // ── SUPPLEMENTS ──
+  document.getElementById('suppLbl').innerHTML=(isPrem?'⭐ Premium Supplement Stack':'💊 Recommended Supplements')+' <span class="slbl" style="display:inline;margin:0;padding:0;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)"></span>';
+  var suppArr=SUPPS_DATA[goalKey]||SUPPS_DATA.maintenance;
+  if (!isPrem) suppArr=suppArr.slice(0,4);
+  var suppHtml='';
+  for (var sui=0;sui<suppArr.length;sui++) {
+    suppHtml+='<div class="si"><div class="si-t">'+suppArr[sui].t+'</div><div class="si-d">'+suppArr[sui].d+'</div></div>';
+  }
+  document.getElementById('outSupps').innerHTML=suppHtml;
+
+  // ── BONUS ──
+  var wl=Math.round(m.wt*0.033*10)/10, wh=Math.round(m.wt*0.04*10)/10;
+  var cheatRule=goalKey==='fatloss'?'1 cheat MEAL per week (not day). Max 700 kcal over budget. Protein-first even on cheat day. Sunday recommended. No cheat in first 3 weeks.':
+    goalKey==='musclegain'?'1-2 cheat meals/week allowed. Choose calorie-dense foods wisely — pizza > chips. Still hit your protein on cheat day. Dirty bulk is a myth.':
+    'Flexible approach — 80% clean eating, 20% flexibility. Plan your cheat, do not react to cravings impulsively.';
+
+  document.getElementById('outBonus').innerHTML=
+    bc('💧 Hydration Protocol','Drink '+wl+'–'+wh+'L daily. '+Math.round(m.wt*35)+'ml minimum. Wake up: 500ml warm water. Pre-workout: 500ml. Post-workout: 500ml. Add electrolytes if training >60 min in heat.')+
+    bc('🍕 Cheat Meal Rule',cheatRule)+
+    bc('🥗 Meal Prep (Sunday)',isPrem?
+      'Batch cook: 500g chicken/paneer/tofu. Cook 2 cups rice + 1 cup dal. Portion into 4 containers. Chop all veggies. Pre-soak legumes. Marinate protein for week. Fridge: 4 days. Freezer: 2 weeks.':
+      'Sunday prep: cook protein in bulk (dal/chicken/eggs). Store in airtight containers. Cook 2 cups rice for Mon-Tue. Keep onion-tomato masala base ready. Saves 45 min on weekdays.')+
+    bc('📈 Progress Check','Weekly: weigh yourself same day, same time, after toilet. Monthly: tape measure (waist, hip, chest, arm). Photos every 4 weeks. If no progress in 3 weeks: cut 100 kcal or add 2000 steps/day.');
+
+  // ── RULES & AVOID ──
+  var rArr=RULES[goalKey]||RULES.maintenance;
+  var aArr=AVOID[goalKey]||AVOID.maintenance;
+  document.getElementById('outRules').innerHTML=rArr.map(function(r){return '<li>'+r+'</li>';}).join('');
+  document.getElementById('outAvoid').innerHTML=aArr.map(function(a){return '<li>'+a+'</li>';}).join('');
+
+  // ── SMART SWAPS ──
+  var swapArr=SWAPS[diet]||SWAPS.veg_dairy;
+  var swapHtml='<h3>If you don\'t have X → use Y (same macros)</h3><ul>'+swapArr.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ul>';
+  document.getElementById('outSwaps').innerHTML=swapHtml;
+
+  // ── HEALTH NOTE ──
+  var hEl=document.getElementById('healthNote');
+  var activeHealth = Array.isArray(S.health) ? S.health : [S.health];
+  var healthConditions = activeHealth.filter(function(h){ return h !== 'none'; });
+  if (healthConditions.length > 0) {
+    var hHtml = '';
+    for (var hi=0; hi<healthConditions.length; hi++) {
+      var hNote = HEALTH_NOTES[healthConditions[hi]];
+      if (hNote) hHtml += '<p style="font-size:0.82rem;line-height:1.6;margin-bottom:'+(hi<healthConditions.length-1?'10px':'0')+'">'+hNote+'</p>';
+    }
+    if (hHtml) {
+      hEl.style.display='block';
+      hEl.innerHTML='<div class="ib ib-orange"><h3>⚠️ Health Condition Protocols ('+healthConditions.length+' condition'+(healthConditions.length>1?'s':'')+' detected)</h3>'+hHtml+'</div>';
+    } else { hEl.style.display='none'; }
+  } else {
+    hEl.style.display='none';
+  }
+
+  // ── COACH NOTE ──
+  var cn=COACH_NOTES[goalKey]||COACH_NOTES.maintenance;
+  document.getElementById('outNote').innerHTML='<strong>🏆 Akash says'+(name?' to '+name:'')+':</strong> '+cn;
+
+  // ── PART 2: CARB CYCLING (premium only) ──
+  var ccLbl=document.getElementById('carbCycleLbl');
+  var ccWrap=document.getElementById('carbCycleWrap');
+  if (isPrem) {
+    ccLbl.style.display='flex';
+    ccWrap.style.display='block';
+    ccWrap.innerHTML=buildCarbCycling(m,goalKey);
+  } else {
+    ccLbl.style.display='none';
+    ccWrap.style.display='none';
+  }
+
+  // ── PART 2: WEEKLY MEAL PREP GUIDE ──
+  document.getElementById('outPrepGuide').innerHTML=buildPrepGuide(diet);
+
+  // ── PART 2: PROGRESS TRACKING ──
+  document.getElementById('outProgress').innerHTML=buildProgress(goalKey);
+
+  // ── PART 2: PREMIUM PANEL ──
+  var pPanel=document.getElementById('premiumPanel');
+  if (isPrem) {
+    pPanel.style.display='block';
+    document.getElementById('premiumContent').innerHTML=buildPremiumPanel(goalKey,m);
+  } else {
+    pPanel.style.display='none';
+  }
+
+  // ── SHOW OUTPUT ──
+  document.getElementById('output').classList.add('show');
+  document.getElementById('output').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ============================================================
+// BUILD MEALS HELPER
+// ============================================================
+function buildMeals(mp, goal, timing, numMeals, m, isRest, isPrem) {
+  var html='';
+  var optPick=isRest?1:0; // offset options on rest day for variety
+
+  // SLOT DEFINITIONS by meal count
+  var slots3=['breakfast','lunch','dinner'];
+  var slots4=['breakfast','midmorning','lunch','dinner'];
+  var slots5=['breakfast','midmorning','lunch','preworkout','dinner'];
+  var slots6=['early','breakfast','midmorning','lunch','preworkout','dinner'];
+
+  var slotMap={3:slots3,4:slots4,5:slots5,6:slots6};
+  var activeSlots=slotMap[numMeals]||slots4;
+
+  var slotLabels={
+    early:'Early Morning / Wake-Up',
+    breakfast:'Breakfast',
+    midmorning:'Mid-Morning Snack',
+    lunch:'Lunch',
+    preworkout:(timing==='morning'?'Pre-Workout (Morning)':timing==='evening'?'Pre/Post-Workout Snack':'Evening / Pre-Workout'),
+    dinner:'Dinner',
+    nightsnack:'Night Snack'
+  };
+
+  // Always add night snack
+  if (activeSlots.indexOf('nightsnack')<0 && numMeals>=4) activeSlots.push('nightsnack');
+
+  for (var i=0;i<activeSlots.length;i++) {
+    var slot=activeSlots[i];
+    var label=slotLabels[slot]||slot;
+    var opts=[];
+
+    if (slot==='early') opts=mp.early||[];
+    else if (slot==='midmorning') opts=mp.midmorning||[];
+    else if (slot==='nightsnack') opts=mp.nightsnack||[];
+    else if (slot==='preworkout') {
+      var pwData=mp.preworkout;
+      opts=(pwData&&pwData[timing])||pwData.flexible||[];
+    }
+    else if (mp[slot]&&mp[slot][goal]) opts=mp[slot][goal];
+    else if (mp[slot]) opts=mp[slot][goal]||mp[slot].maintenance||[];
+
+    // Approximate slot macros
+    var slotKcal=Math.round(m.tgt/activeSlots.length);
+    if (slot==='nightsnack') slotKcal=150;
+    if (slot==='early') slotKcal=50;
+    if (slot==='midmorning') slotKcal=Math.round(m.tgt*0.1);
+    var slotProt=Math.round(m.protG/activeSlots.length);
+
+    html+='<div class="mslot-hd">🕐 '+getSlotTime(slot,timing)+' — '+label+
+      ' <span class="mslot-macro">(~'+slotKcal+' kcal · ~'+slotProt+'g protein)</span>'+
+      (isRest&&(slot==='preworkout')?' <span class="rest-badge">SKIP OR LIGHT</span>':'')+
+      '</div>';
+
+    if (!opts||!opts.length) {
+      html+='<div class="mopt">Flexible — pick any light meal from your diet type</div>';
+    } else {
+      for (var j=0;j<Math.min(isPrem?5:2,opts.length);j++) {
+        var idx=(j+optPick)%opts.length;
+        var optText=opts[idx];
+        // Add rest day note for carb-heavy items
+        if (isRest&&/rice|roti|bread|oats|banana/i.test(optText)) {
+          optText+=' <em style="font-size:0.74rem;color:var(--blue)">(reduce portion by 20% on rest days)</em>';
+        }
+        html+='<div class="mopt">'+optText+'</div>';
+      }
+    }
+  }
+  return html;
+}
+
+function getSlotTime(slot,timing) {
+  var morning={early:'6:00 AM',breakfast:'7:30 AM',midmorning:'10:30 AM',lunch:'1:00 PM',preworkout:'5:00 PM',dinner:'8:00 PM',nightsnack:'10:00 PM'};
+  var evening={early:'6:00 AM',breakfast:'8:00 AM',midmorning:'11:00 AM',lunch:'1:30 PM',preworkout:'5:30 PM',dinner:'9:00 PM',nightsnack:'11:00 PM'};
+  var flex={early:'6:30 AM',breakfast:'8:00 AM',midmorning:'11:00 AM',lunch:'1:30 PM',preworkout:'5:00 PM',dinner:'8:00 PM',nightsnack:'10:30 PM'};
+  var map=timing==='morning'?morning:timing==='evening'?evening:flex;
+  return map[slot]||'—';
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function st(v,l){return '<div class="stat"><div class="stat-v">'+v+'</div><div class="stat-l">'+l+'</div></div>';}
+function bci(v,l){return '<div style="text-align:center"><div style="font-size:1.1rem;font-weight:800;color:#f2f2f5">'+v+'</div><div style="font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-top:2px">'+l+'</div></div>';}
+function ctr(a,b,c){return '<tr><td style="font-weight:700;white-space:nowrap">'+a+'</td><td style="color:var(--muted);font-size:0.8rem">'+b+'</td><td style="font-weight:700;color:var(--blue)">'+c+'</td></tr>';}
+function bc(h,b){return '<div class="bonus-card"><div class="bonus-head">'+h+'</div><div class="bonus-body">'+b+'</div></div>';}
+
+// ============================================================
+// PART 2: CARB CYCLING TABLE
+// ============================================================
+function buildCarbCycling(m, goal) {
+  var days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  // tdays mapping
+  var tdaysN = parseInt(S.tdays)||4;
+  // Training days = first N days of week
+  var trainDays = {3:[1,3,5], 4:[1,2,4,5], 5:[1,2,3,5,6], 6:[1,2,3,4,5,6]};
+  var tSet = trainDays[tdaysN] || trainDays[4];
+
+  var html = '<div style="overflow-x:auto"><table class="ctbl" style="min-width:600px">';
+  html += '<thead><tr><th>Day</th><th>Type</th><th>Calories</th><th>Protein</th><th>Carbs</th><th>Fat</th><th>Focus</th></tr></thead><tbody>';
+
+  var goalColors = {fatloss:'var(--green)',musclegain:'var(--red)',recomp:'var(--blue)',strength:'var(--orange)',endurance:'var(--blue)',maintenance:'var(--muted)'};
+  var gc = goalColors[goal]||'var(--muted)';
+
+  for (var i=0; i<7; i++) {
+    var dayNum = i+1;
+    var isTrain = tSet.indexOf(dayNum) >= 0;
+    var isRefeed = (goal==='fatloss' && i===6); // Sunday refeed for fat loss premium
+
+    var kcal, carb, prot, fat, focus, badge;
+    if (isRefeed) {
+      kcal = m.tdee;
+      prot = m.protG;
+      carb = Math.round((kcal - prot*4 - m.fatG*9)/4);
+      fat = m.fatG;
+      focus = 'Refeed Day — leptin reset';
+      badge = '<span style="background:var(--goldl);color:var(--gold);font-size:0.6rem;padding:2px 7px;border-radius:999px;font-weight:700">REFEED</span>';
+    } else if (isTrain) {
+      kcal = m.tgt;
+      prot = m.protG;
+      carb = m.carbG;
+      fat = m.fatG;
+      focus = 'Training — full fuel';
+      badge = '<span style="background:var(--gl);color:var(--green);font-size:0.6rem;padding:2px 7px;border-radius:999px;font-weight:700">TRAIN</span>';
+    } else {
+      kcal = m.tgtRest;
+      prot = m.protG;
+      carb = m.carbGRest;
+      fat = m.fatGRest;
+      focus = 'Rest — recovery & repair';
+      badge = '<span style="background:var(--bl);color:var(--blue);font-size:0.6rem;padding:2px 7px;border-radius:999px;font-weight:700">REST</span>';
+    }
+
+    var rowBg = isRefeed ? 'background:var(--goldl)' : isTrain ? '' : 'background:#0e0e14';
+    html += '<tr style="'+rowBg+'">';
+    html += '<td style="font-weight:700">'+days[i]+'</td>';
+    html += '<td>'+badge+'</td>';
+    html += '<td style="font-weight:700;color:'+gc+'">'+kcal+' kcal</td>';
+    html += '<td>'+prot+'g</td>';
+    html += '<td style="font-weight:'+(isTrain?'700':'400')+'">'+carb+'g</td>';
+    html += '<td>'+fat+'g</td>';
+    html += '<td style="font-size:0.76rem;color:var(--muted)">'+focus+'</td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table></div>';
+
+  // Weekly totals
+  var totalKcal=0, totalCarb=0;
+  for (var j=0;j<7;j++) {
+    var isTr = tSet.indexOf(j+1)>=0;
+    var isRf = (goal==='fatloss'&&j===6);
+    totalKcal += isRf ? m.tdee : isTr ? m.tgt : m.tgtRest;
+    totalCarb += isRf ? Math.round((m.tdee-m.protG*4-m.fatG*9)/4) : isTr ? m.carbG : m.carbGRest;
+  }
+  var avgKcal = Math.round(totalKcal/7);
+  html += '<div style="display:flex;gap:1rem;margin-top:10px;flex-wrap:wrap">';
+  html += '<div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:8px 14px;font-size:0.8rem"><strong>Weekly avg:</strong> '+avgKcal+' kcal/day</div>';
+  html += '<div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:8px 14px;font-size:0.8rem"><strong>Training days:</strong> '+tdaysN+'/7</div>';
+  html += '<div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:8px 14px;font-size:0.8rem"><strong>Protein constant:</strong> '+m.protG+'g every day</div>';
+  if (goal==='fatloss') html += '<div style="background:var(--goldl);border:1px solid var(--gold);border-radius:var(--rs);padding:8px 14px;font-size:0.8rem;color:var(--gold)"><strong>Sunday refeed:</strong> Eat at TDEE ('+m.tdee+' kcal) — prevents metabolic adaptation</div>';
+  html += '</div>';
+  return html;
+}
+
+// ============================================================
+// PART 2: WEEKLY MEAL PREP GUIDE
+// ============================================================
+var PREP_GUIDE = {
+  veg_dairy: [
+    {step:"1",icon:"🥘",title:"Cook Protein Batch",time:"45 min",desc:"Pressure cook 2 cups mixed dal (toor+moong). Sauté 200g paneer cubes (dry, no oil, in non-stick). Make 1 cup rajma or chole. Store in 4 separate airtight containers."},
+    {step:"2",icon:"🍚",title:"Cook Grains",time:"20 min",desc:"Cook 2 cups rice (makes ~5 cups cooked). Make 10-12 rotis, store in foil. Cook 100g oats (dry) in batches as needed. Store rice 3-4 days, rotis 2 days in fridge."},
+    {step:"3",icon:"🥗",title:"Chop & Store Vegetables",time:"20 min",desc:"Chop cucumber, tomato, onion for daily salad (3-day supply). Wash spinach and store in damp cloth. Chop capsicum and carrots in a box. Ready-to-use all week."},
+    {step:"4",icon:"🧂",title:"Make Masala Base",time:"15 min",desc:"Sauté onion-tomato-ginger-garlic base (large batch). Portion into ice cube tray, freeze. Pull 2 cubes per meal — saves 15 min every cooking session."},
+    {step:"5",icon:"🌱",title:"Soak & Prep Seeds",time:"5 min",desc:"Soak chia seeds in a jar (2 tbsp in 6 tbsp water) for morning. Grind flaxseeds weekly. Roast pumpkin and sunflower seeds lightly, store in jar."},
+    {step:"6",icon:"📦",title:"Portion Into Containers",time:"10 min",desc:"Portion rice + dal + paneer into 4 meal prep boxes (Mon-Thu). Label each with day. Each box: 150g rice + 1 cup dal + 80g paneer. Grab and go every morning."}
+  ],
+  nonveg: [
+    {step:"1",icon:"🍗",title:"Batch Cook Chicken",time:"45 min",desc:"Grill or bake 500g chicken breast (no oil needed in oven). Season with salt, pepper, cumin. Slice and store. Or pressure cook 400g in minimal water with spices. Fridge: 4 days. Freezer: 2 weeks."},
+    {step:"2",icon:"🥚",title:"Boil Eggs in Bulk",time:"12 min",desc:"Boil 10-12 eggs at once. Peel 6 and store in water in fridge. Keep 6 in shell (last longer). Ready for grab-and-go breakfast and snacks all week."},
+    {step:"3",icon:"🍚",title:"Cook Grains & Dal",time:"25 min",desc:"Cook 2 cups rice. Cook 1 cup toor dal (backup protein for days without chicken). Make 8-10 rotis. Store rice 3-4 days, roti 2 days."},
+    {step:"4",icon:"🥗",title:"Prep Salad Ingredients",time:"15 min",desc:"Chop cucumber, tomato, onion, capsicum. Store separately. Mix daily fresh (dressing oxidizes chopped salad). Wash lettuce and store in damp cloth — lasts 5 days."},
+    {step:"5",icon:"🧂",title:"Marinate Extra Chicken",time:"10 min",desc:"Marinate 300g chicken for mid-week (yogurt, spices, lemon). Keep in fridge — cooks faster when marinated and tastes better. Cook Wednesday."},
+    {step:"6",icon:"📦",title:"Build Meal Boxes",time:"15 min",desc:"4 containers: 150g chicken + 150g rice + sabzi + salad pack. Labelled Mon-Thu. Friday: cook fresh (mid-week refresh). Each box is a complete macro-balanced meal ready in 2 min."}
+  ],
+  vegan: [
+    {step:"1",icon:"🫘",title:"Batch Cook Legumes",time:"45 min",desc:"Pressure cook rajma, chole, moong dal — all together in separate compartments or batches. 2 cups each. Makes protein base for entire week. Store 4 days fridge."},
+    {step:"2",icon:"🥩",title:"Press & Marinate Tofu",time:"15 min",desc:"Press 400g firm tofu (under heavy pan, 20 min) to remove water. Cut into cubes. Marinate in soy sauce, turmeric, cumin. Bake at 200°C for 25 min. Store 4 days."},
+    {step:"3",icon:"🍚",title:"Cook Grains",time:"20 min",desc:"Cook 2 cups rice or 1 cup quinoa. Quinoa = more protein (6g/150g). Make 8 rotis. Store appropriately."},
+    {step:"4",icon:"🥗",title:"Prep Vegetables",time:"20 min",desc:"Chop all salad veggies. Blanch broccoli and store. Roast a tray of mixed vegetables (capsicum, zucchini, sweet potato) — add to any meal during week."},
+    {step:"5",icon:"🌱",title:"Seed Station",time:"5 min",desc:"Set up a seed jar mix: chia + flax (ground) + pumpkin + sunflower + sesame. Scoop 1 tbsp into meals daily. Pre-soak chia in water jar for morning."},
+    {step:"6",icon:"📦",title:"Box Up",time:"10 min",desc:"4 boxes: tofu/rajma + rice + roasted veg + salad. Label Mon-Thu. High protein, high fibre, complete nutrition. Refrigerate immediately."}
+  ],
+  eggetarian: [
+    {step:"1",icon:"🥚",title:"Boil Eggs in Bulk",time:"12 min",desc:"Boil 12 eggs at once. Store 6 peeled in water in fridge. Keep 6 in shell for later. 12 eggs = 4 days of mid-morning snacks + some breakfast covered."},
+    {step:"2",icon:"🥘",title:"Cook Dal Batch",time:"30 min",desc:"Pressure cook 2 cups mixed dal. Make paneer bhurji (150g paneer dry-cooked). These are your protein bases when eggs get boring."},
+    {step:"3",icon:"🍚",title:"Cook Grains",time:"20 min",desc:"Cook rice, make rotis. Standard weekly prep. 2 cups cooked rice = 3-4 days supply stored in fridge."},
+    {step:"4",icon:"🥗",title:"Chop Vegetables",time:"15 min",desc:"Chop everything for salads and stir-fries. Keep in separate boxes. Wash and store spinach."},
+    {step:"5",icon:"🧁",title:"Make Egg Muffins",time:"25 min",desc:"Whisk 6 eggs + veggies + salt. Pour into muffin tin. Bake 180°C for 18 min. Makes 12 egg muffins — grab-and-go breakfast for 3 days. Genius hack."},
+    {step:"6",icon:"📦",title:"Box Meals",time:"10 min",desc:"4 boxes: boiled eggs (2) + rice + dal + salad. Each box = approx 35-40g protein, balanced carbs. Label and refrigerate."}
+  ],
+  pescatarian: [
+    {step:"1",icon:"🐟",title:"Cook Fish in Bulk",time:"30 min",desc:"Bake or grill 400g fish (rohu/tilapia/basa). Season simply. Store 3 days max (fish spoils faster). Cook mid-week batch also on Wednesday. Or use tuna canned as backup."},
+    {step:"2",icon:"🥚",title:"Boil Eggs",time:"12 min",desc:"8-10 boiled eggs. Your backup protein for any meal. Reliable, cheap, fast."},
+    {step:"3",icon:"🍚",title:"Cook Grains & Dal",time:"25 min",desc:"2 cups rice + 1 cup dal for the week. Make 8-10 rotis."},
+    {step:"4",icon:"🥗",title:"Prep Salads",time:"15 min",desc:"All salad veg chopped and stored. Lemon squeezed and ready."},
+    {step:"5",icon:"🐠",title:"Tuna Emergency Supply",time:"2 min",desc:"Stock 4 cans of tuna (in water). Perfect emergency protein: 25g protein/can, zero cooking, 80 kcal. Keep in bag for travel too."},
+    {step:"6",icon:"📦",title:"Meal Boxes",time:"10 min",desc:"4 boxes: fish (120g) + rice + dal + salad. Mid-week: tuna + eggs + salad. Rotate for variety."}
+  ],
+  veg_nodairy: [
+    {step:"1",icon:"🫘",title:"Cook Legumes Batch",time:"45 min",desc:"Pressure cook rajma + chole + moong in bulk. These are your dairy-free protein foundations all week. 2 cups each gives plenty."},
+    {step:"2",icon:"🧈",title:"Prep Tofu",time:"30 min",desc:"Press, cube, marinate, and bake 400g tofu. Stores 4 days. Versatile — add to any meal."},
+    {step:"3",icon:"🍚",title:"Grains",time:"20 min",desc:"Rice, rotis as usual. Add quinoa 1-2 days for extra protein without dairy."},
+    {step:"4",icon:"🥗",title:"Vegetables",time:"15 min",desc:"Chop all salad vegetables. Roast a sheet pan of mixed veg for grab-and-add."},
+    {step:"5",icon:"🧃",title:"Make Plant Milk",time:"5 min",desc:"Prep oat milk if making at home (100g oats blended, strained). Or stock store-bought. Use in oats, smoothies."},
+    {step:"6",icon:"📦",title:"Box Meals",time:"10 min",desc:"4 boxes: tofu/rajma + rice + roasted veg + salad."}
+  ],
+  egge_nodairy: [
+    {step:"1",icon:"🥚",title:"Boil Eggs Bulk",time:"12 min",desc:"10-12 eggs boiled. Core protein source. Store 5 days."},
+    {step:"2",icon:"🫘",title:"Cook Dal & Legumes",time:"30 min",desc:"Mixed dal + rajma or chole. Backup protein days."},
+    {step:"3",icon:"🍚",title:"Grains",time:"20 min",desc:"Rice + rotis. Standard prep."},
+    {step:"4",icon:"🧁",title:"Egg Muffins (no dairy)",time:"25 min",desc:"Egg muffins with coconut oil instead of butter. 12 muffins = 3-day breakfast sorted."},
+    {step:"5",icon:"🥗",title:"Salad Prep",time:"15 min",desc:"All vegetables chopped and stored in boxes."},
+    {step:"6",icon:"📦",title:"Meal Boxes",time:"10 min",desc:"4 boxes with eggs + dal + rice + salad. Label Mon-Thu."}
+  ],
+  nonveg_nodairy: [
+    {step:"1",icon:"🍗",title:"Batch Cook Chicken",time:"45 min",desc:"500g chicken grilled/baked. Store 4 days. Mid-week cook another 300g fresh."},
+    {step:"2",icon:"🥚",title:"Boil Eggs",time:"12 min",desc:"10 eggs boiled. Backup protein for any meal or snack."},
+    {step:"3",icon:"🍚",title:"Grains & Dal",time:"25 min",desc:"Rice + dal + rotis. Full week supply."},
+    {step:"4",icon:"🥗",title:"Salad Prep",time:"15 min",desc:"All chopped vegetables stored. Lemon ready."},
+    {step:"5",icon:"🐠",title:"Tuna Stock",time:"2 min",desc:"4 cans tuna (water). Emergency meals sorted."},
+    {step:"6",icon:"📦",title:"Meal Boxes",time:"10 min",desc:"Chicken + rice + sabzi + salad. 4 boxes Mon-Thu."}
+  ],
+  keto: [
+    {step:"1",icon:"🍳",title:"Cook Protein Batch",time:"40 min",desc:"Grill 400g paneer in ghee. Hard boil 10 eggs. These are your primary proteins. No carb-heavy cooking needed this week."},
+    {step:"2",icon:"🥬",title:"Prep Low-Carb Veg",time:"20 min",desc:"Wash spinach, zucchini, capsicum, broccoli. These are your carb sources. Blanch broccoli. Keep in boxes."},
+    {step:"3",icon:"🥑",title:"Avocado Strategy",time:"5 min",desc:"Buy 4-5 avocados at different ripeness stages. Eat ripest first. Store unripe at room temp, ripe in fridge. Prevents waste."},
+    {step:"4",icon:"🧀",title:"Fat Sources Ready",time:"5 min",desc:"Portion nuts into daily bags (20g each = 7 bags for 7 days). Keep ghee, olive oil, coconut oil accessible. These are your fuel."},
+    {step:"5",icon:"🥗",title:"Salad Bases",time:"15 min",desc:"Chop salad greens, cucumber, olives, capsicum. Store 3-4 days."},
+    {step:"6",icon:"📦",title:"Keto Boxes",time:"10 min",desc:"4 boxes: paneer (100g) + eggs (2) + salad greens + avocado + nuts. No carbs needed. Pure fat and protein."}
+  ]
+};
+
+function buildPrepGuide(diet) {
+  var guide = PREP_GUIDE[diet] || PREP_GUIDE.veg_dairy;
+  var html = '';
+  for (var i=0;i<guide.length;i++) {
+    var g=guide[i];
+    html += '<div style="padding:11px 16px;border-bottom:1px solid var(--border);display:flex;gap:14px;align-items:flex-start">';
+    html += '<div style="flex-shrink:0;width:32px;height:32px;background:#7c3aed;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:800">'+g.step+'</div>';
+    html += '<div style="flex:1">';
+    html += '<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:3px">';
+    html += '<span style="font-size:0.82rem;font-weight:700">'+g.icon+' '+g.title+'</span>';
+    html += '<span style="font-size:0.68rem;color:var(--muted);background:var(--bg);border:1px solid var(--border);padding:1px 7px;border-radius:999px">⏱ '+g.time+'</span>';
+    html += '</div>';
+    html += '<div style="font-size:0.81rem;color:var(--muted);line-height:1.55">'+g.desc+'</div>';
+    html += '</div></div>';
+  }
+  // Storage guide
+  html += '<div style="padding:11px 16px;background:var(--bg)">';
+  html += '<div style="font-size:0.68rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:7px">🧊 Storage Guide</div>';
+  html += '<div style="display:flex;flex-wrap:wrap;gap:10px">';
+  var storage = [
+    ['Cooked Rice/Roti','3-4 days fridge'],['Cooked Dal/Rajma','4-5 days fridge'],
+    ['Grilled Chicken','4 days fridge · 2 weeks freezer'],['Cooked Fish','2-3 days fridge only'],
+    ['Boiled Eggs (peeled)','5 days in water in fridge'],['Paneer/Tofu (cooked)','3-4 days fridge'],
+    ['Chopped Salad','2-3 days (undressed)'],['Masala Base','1 week fridge · 1 month freezer']
+  ];
+  for (var si=0;si<storage.length;si++) {
+    html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:6px 12px;font-size:0.78rem">';
+    html += '<div style="font-weight:700;color:#f2f2f5">'+storage[si][0]+'</div>';
+    html += '<div style="color:var(--muted);font-size:0.73rem">'+storage[si][1]+'</div></div>';
+  }
+  html += '</div></div>';
+  return html;
+}
+
+// ============================================================
+// PART 2: PROGRESS TRACKING
+// ============================================================
+var PROGRESS_DATA = {
+  fatloss: {
+    metrics:["Weight (kg) — same day, same time, after toilet, before food","Waist circumference (cm) — at navel level","Hip circumference (cm) — widest point","Body fat % — if you have a good scale or calipers","Progress photos — front, side, back in same lighting"],
+    frequency:"Weekly weigh-in (Sunday morning). Monthly tape measure. Photos every 4 weeks.",
+    plateau:"If no change for 2 consecutive weeks: Step 1 — Reduce calories by 100 kcal. Step 2 — Add 2,000 steps/day. Step 3 — Check if protein is being hit (most common miss). Step 4 — Assess sleep quality. Do NOT go below 1200 kcal.",
+    signals_more:"Extreme fatigue, brain fog, hair loss, low libido, no gym performance — you need to eat more.",
+    signals_less:"Weight not moving for 3+ weeks, clothes same fit, measurements same — tighten the deficit slightly."
+  },
+  musclegain: {
+    metrics:["Weight (kg) — should go up 0.25-0.5 kg/week in lean bulk","Chest, arm, thigh circumference","Gym lifts — track your bench, squat, deadlift 1RM or 5RM","Body fat % — ensure you are gaining mostly muscle, not fat","Progress photos monthly — check muscle definition vs fat accumulation"],
+    frequency:"Weekly weight check. Monthly measurements. Track gym lifts every session.",
+    plateau:"If weight not increasing for 2 weeks: Add 150 kcal to daily target. Focus on progressive overload in gym — body needs stimulus to grow. Check protein hitting target daily.",
+    signals_more:"Strength stalling, feeling depleted, losing weight — definitely eat more.",
+    signals_less:"Waist growing fast, body fat going up too quickly — slow the surplus. Aim for 80% muscle, 20% fat in gains."
+  },
+  recomp: {
+    metrics:["Weight — will stay roughly same (ignore the scale)","Waist + hip — should decrease over time","Muscle measurements — chest, arm, thigh — should increase","Strength in gym — must increase for recomp to work","Photos — the best measure of recomp success"],
+    frequency:"Bi-weekly measurements. Monthly photos. Weigh weekly but do not obsess.",
+    plateau:"Recomp is naturally slow — 4-6 months minimum. If NO change in 8 weeks: check protein target, check training intensity, ensure sleep. Increase training volume first before changing diet.",
+    signals_more:"Gym performance tanking, fatigue, mood issues — increase carbs slightly on training days.",
+    signals_less:"Body fat clearly increasing — reduce rest-day calories first."
+  },
+  strength: {
+    metrics:["1RM or 5RM on main lifts (bench, squat, deadlift, OHP)","Bodyweight — track but secondary to strength numbers","Recovery quality — how are DOMS feeling by day 3?","Sleep quality and duration — directly tied to strength gains","Energy levels in gym — consistent or dropping?"],
+    frequency:"Track lifts every session. Monthly 5RM test. Weight weekly.",
+    plateau:"Strength plateau: Deload week (50% volume, same movements). Check sleep — most strength plateaus are sleep/recovery failures. Check pre-workout nutrition. Consider periodization.",
+    signals_more:"Lifts going backward, constant fatigue, poor recovery — eat more especially carbs pre-workout.",
+    signals_less:"Unwanted fat gain making movements harder — tighten up weekends especially."
+  },
+  endurance: {
+    metrics:["Pace per km or mile at given heart rate (efficiency metric)","VO2max estimate from sports watch","Resting heart rate — lower = better cardiovascular fitness","Race times or segment times — actual performance","Energy levels during training — are you bonking?"],
+    frequency:"Track every training session. Monthly benchmark test (5K time trial or similar).",
+    plateau:"Performance plateau: Check carbohydrate intake on training days — most common cause. Check iron levels (blood test). Ensure recovery weeks (every 4th week, reduce volume 40%).",
+    signals_more:"Bonking in training, extreme fatigue, poor recovery between sessions — eat more carbs around training.",
+    signals_less:"Gaining weight impacting pace — review weekend eating habits and alcohol."
+  },
+  maintenance: {
+    metrics:["Weight — should stay within ±1-2 kg of your target","Energy levels and mood — subjective but critical","Strength in gym — should not decrease","Body fat % — annual measurement is enough","How clothes fit — most practical measure of maintenance success"],
+    frequency:"Monthly weight check. Annual body composition test. Gym performance tracked per session.",
+    plateau:"Maintenance is a plateau by definition! If weight drifting up: review weekend habits, liquid calories, portion creep. If drifting down: add 100-200 kcal from healthy sources.",
+    signals_more:"Constant hunger, fatigue, strength loss — maintenance calories set too low.",
+    signals_less:"Gradual weight gain over months — maintenance calories may need reduction as activity level changed."
+  }
+};
+
+function buildProgress(goal) {
+  var pd = PROGRESS_DATA[goal] || PROGRESS_DATA.maintenance;
+  var html = "";
+
+  // Metrics to track
+  html += "<div class=\"progress-2col\" style=\"display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem\">";
+
+  html += "<div class=\"sf\" style=\"margin-bottom:0\"><div class=\"sh\">📏 What to Track</div><div style=\"padding:10px 14px\">";
+  for (var mi=0;mi<pd.metrics.length;mi++) {
+    html += "<div style=\"font-size:0.81rem;padding:4px 0;display:flex;gap:8px;border-bottom:1px dashed var(--border)\">";
+    html += "<span style=\"color:var(--green);font-weight:700;flex-shrink:0\">"+(mi+1)+".</span>"+pd.metrics[mi]+"</div>";
+  }
+  html += "</div></div>";
+
+  html += "<div style=\"display:flex;flex-direction:column;gap:10px\">";
+
+  html += "<div class=\"sf\" style=\"margin-bottom:0\"><div class=\"sh\">📅 Frequency</div>";
+  html += "<div style=\"padding:10px 14px;font-size:0.81rem;line-height:1.6;color:var(--muted)\">"+pd.frequency+"</div></div>";
+
+  html += "<div class=\"sf\" style=\"margin-bottom:0\"><div class=\"sh\" style=\"background:var(--red)\">🔴 Signs You Need to Eat More</div>";
+  html += "<div style=\"padding:10px 14px;font-size:0.81rem;line-height:1.6;color:var(--red)\">"+pd.signals_more+"</div></div>";
+
+  html += "<div class=\"sf\" style=\"margin-bottom:0\"><div class=\"sh\" style=\"background:var(--orange)\">🟡 Signs You Need to Eat Less</div>";
+  html += "<div style=\"padding:10px 14px;font-size:0.81rem;line-height:1.6;color:var(--orange)\">"+pd.signals_less+"</div></div>";
+
+  html += "</div></div>";
+
+  // Plateau buster
+  html += "<div class=\"ib ib-orange\" style=\"margin-bottom:0\"><h3>⚡ Plateau Buster Protocol</h3>";
+  html += "<p style=\"font-size:0.82rem;line-height:1.6\">"+pd.plateau+"</p></div>";
+
+  return html;
+}
+
+// ============================================================
+// PART 2: PREMIUM PANEL
+// ============================================================
+var PREMIUM_DATA = {
+  fatloss: {
+    title:"Fat Loss — Advanced Strategies",
+    strategies:[
+      {h:"Refeed Day Protocol",b:"Every 10-14 days: eat at TDEE (maintenance) for 1 day. This resets leptin (satiety hormone) and prevents metabolic adaptation. Choose a training day. Higher carbs (back to TDEE carb level), same protein, lower fat. Next day back on deficit. This is why the plan shows Sunday at TDEE in carb cycling."},
+      {h:"Calorie Cycling",b:"Not all days need equal calories. Eat higher on training days (TDEE−200), lower on rest days (TDEE−600). Weekly deficit stays same but hormones, energy, and adherence all improve. Average out to your target."},
+      {h:"Protein Leverage Hack",b:"Start every meal with protein first — eat all your protein before touching carbs or fat. Research shows this naturally reduces total calories consumed by 12-15% without feeling deprived. Body stops hunger signal when protein threshold is hit."},
+      {h:"Strategic Fasting Window",b:"Optionally compress meals into 10-12 hr window (e.g. 8am-8pm). Not extreme fasting — just avoiding late-night snacking. This alone creates 200-300 kcal weekly deficit with zero effort. Sleep is the ultimate fast."},
+      {h:"NEAT Manipulation",b:"Non-Exercise Activity Thermogenesis. Add 3,000 steps/day = approximately 150 kcal/day = 4.5 kg/year without stepping into a gym extra. Park far, use stairs, walk calls, standing desk. This is the hidden fat loss multiplier."}
+    ]
+  },
+  musclegain: {
+    title:"Muscle Gain — Advanced Protocols",
+    strategies:[
+      {h:"Nutrient Timing Window",b:"Post-workout 30-minute window is real for muscle gain. Within 30 min: 30-40g fast protein (whey or egg whites) + 40-60g fast carbs (banana, white rice, dextrose). This maximises muscle protein synthesis when mTOR is activated by training."},
+      {h:"Carb Backloading",b:"Eat majority of carbs POST-workout and in the evening. Muscles are insulin-sensitive post-training — carbs go to muscle, not fat. Morning and mid-day: protein + fat focused. Post-workout onwards: carb-heavy meals."},
+      {h:"Lean Bulk Tracking",b:"Optimal rate: 0.25-0.5 kg/week for males, 0.12-0.25 kg/week for females. Faster = mostly fat. If gaining faster, reduce by 100 kcal. If not gaining in 2 weeks, add 150 kcal. Precision over aggression."},
+      {h:"Sleep Nutrition",b:"Casein protein before bed (cottage cheese, Greek yogurt, or casein powder — 30-40g). Slow-digesting, feeds muscles for 6-8 hours during sleep. Growth hormone peaks 1-3 hrs after sleep onset. Give it building blocks."},
+      {h:"Deload Week Nutrition",b:"Every 6-8 weeks, take a deload week (50% gym volume). Reduce calories by 200 kcal, keep protein same, reduce carbs. This prevents overreaching and allows full recovery. Muscles grow DURING recovery, not training."}
+    ]
+  },
+  recomp: {
+    title:"Body Recomposition — Elite Protocol",
+    strategies:[
+      {h:"Calorie Cycling for Recomp",b:"Training days: eat at TDEE or +100 kcal. Rest days: eat at TDEE−300. This creates a slight weekly deficit while providing fuel to build muscle on training days. Over 16+ weeks, fat decreases and muscle increases simultaneously."},
+      {h:"Protein Synthesis Windows",b:"Recomp demands protein at EVERY meal — minimum 20g. Space meals every 3-4 hours to keep MPS (muscle protein synthesis) elevated all day. Leucine threshold (2-3g per meal) triggers MPS — ensure meals hit this."},
+      {h:"Training Intensity is Non-Negotiable",b:"You MUST train with progressive overload for recomp. Body recomposition is driven by exercise, enabled by diet. If you are not building strength in gym, you are just in a slow fat loss phase. Track lifts weekly."},
+      {h:"Scale Independence",b:"During recomp, scale will not move — or will fluctuate. This is SUCCESS, not failure. Take monthly photos and measurements. Waist going down + weight same = recomp working. Focus on non-scale victories."},
+      {h:"12-Week Commitment Minimum",b:"Recomp results are not visible until week 8-12. Most people quit at week 4-6 because scale does not move. Commit to 12 weeks of consistent tracking before evaluating. The transformation is happening even when invisible."}
+    ]
+  },
+  strength: {
+    title:"Strength Training — Advanced Nutrition",
+    strategies:[
+      {h:"Periodization Nutrition",b:"Match nutrition to training phases. Hypertrophy phase: higher carbs, moderate surplus. Strength phase: maintain, focus on pre-workout carbs. Peak/Competition: slight cut, high protein, maintain strength. Each phase 4-6 weeks."},
+      {h:"Pre-Workout Carb Loading",b:"3 hours before heavy session: 60-80g carbs (rice, banana, oats). 30-45 min before: 30g fast carbs + 200mg caffeine. This maximises glycogen stores and CNS activation. Study shows 7% strength increase with proper pre-workout nutrition."},
+      {h:"Creatine Loading Protocol",b:"Loading phase: 20g/day (5g×4) for 5-7 days. Maintenance: 5g/day. Or skip loading — just do 5g/day consistently. Saturates muscle creatine stores in 28 days. Take with carbs for better uptake (insulin drives creatine into cells)."},
+      {h:"Joint Health Nutrition",b:"Heavy lifting stresses joints. Add: collagen peptides (10g/day, with vitamin C), omega-3 (2g EPA+DHA), turmeric (anti-inflammatory), glucosamine if joint pain exists. Prevention is cheaper than treatment."},
+      {h:"CNS Recovery Protocol",b:"Central Nervous System is what limits strength. Recovery requires: 8+ hrs sleep, magnesium 400mg, zinc 15-30mg, vitamin D 4000IU, omega-3. If feeling \"flat\" in gym consistently — CNS is undertrained, not muscles. Rest is the prescription."}
+    ]
+  },
+  endurance: {
+    title:"Endurance — Fuelling for Performance",
+    strategies:[
+      {h:"Carbohydrate Periodization",b:"High carb training days: 5-7g/kg body weight. Rest days: 2-3g/kg. For long sessions (90+ min): eat during training — 30-60g carbs/hour (banana, dates, sports drink). For under 60 min: pre-workout carbs sufficient."},
+      {h:"Train-Low Compete-High",b:"Advanced protocol: occasionally train in depleted state (fasted or low carb) to train fat oxidation pathways. Then compete with full carb loading. This increases metabolic flexibility and fat burning efficiency for endurance."},
+      {h:"Carb Loading Pre-Race",b:"48-72 hours before race: 8-10g carbs/kg/day (very high). Taper training. This maximises glycogen stores. On race morning: 1-4g/kg carbs 1-4 hours before. Avoid high-fat or high-fibre foods race morning."},
+      {h:"Sodium Strategy",b:"Endurance athletes lose 500-1500mg sodium/hour of sweat. Replace during training: electrolyte tabs, salted snacks. Low sodium = cramping, performance drops, hyponatremia risk. Do not just drink water — drink electrolytes."},
+      {h:"Recovery Nutrition",b:"Within 30 min post-long session: 1.2g carbs/kg + 0.4g protein/kg. This is your golden window. Example: 70kg athlete needs 84g carbs + 28g protein immediately. Then normal meal 1-2 hours later. Do not skip this window."}
+    ]
+  },
+  maintenance: {
+    title:"Maintenance — Long-Term Lifestyle Strategies",
+    strategies:[
+      {h:"80/20 Principle",b:"Eat perfectly 80% of the time. The other 20% — enjoy life, social events, travel. This is sustainable indefinitely. Perfection 100% of the time creates disordered eating. Flexibility is the secret to long-term adherence."},
+      {h:"Reverse Dieting",b:"If coming off a cut: increase calories by 50-100 kcal per week over 8-12 weeks until reaching maintenance. This prevents fat regain and keeps metabolism running efficiently. Rush to maintenance = fat gain."},
+      {h:"Mini Cuts/Bulks",b:"Maintenance does not mean static. Many advanced athletes do mini cut (8 weeks, −300 kcal) and mini bulk (8 weeks, +200 kcal) cycles year-round. This maintains body composition while allowing progress."},
+      {h:"Maintenance Macros Adjustment",b:"Maintenance calories change with: age (−10 kcal/decade after 30), activity level changes, muscle mass changes (more muscle = higher maintenance), seasons. Reassess every 3-6 months."},
+      {h:"Mindful Eating Practice",b:"At maintenance, hunger signals become reliable guides. Eat slowly (20+ min per meal). Rate hunger 1-10 before eating. Stop at 7/10 fullness. Body learned the right calorie level — trust it with mindful habits."}
+    ]
+  }
+};
+
+function buildPremiumPanel(goal, m) {
+  var pd = PREMIUM_DATA[goal] || PREMIUM_DATA.maintenance;
+  var html = '';
+
+  // Header card
+  html += '<div style="background:linear-gradient(135deg,#1a1200,#3a2800);border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:1rem;border:1px solid var(--gold)">';
+  html += '<div style="font-size:0.7rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">⭐ '+pd.title+'</div>';
+  html += '<div style="font-size:0.8rem;color:#d4c090;line-height:1.5">Advanced strategies for clients who want to go beyond the basics. Implement 1-2 at a time — master each before adding the next.</div>';
+  html += '</div>';
+
+  // Strategies
+  for (var si=0;si<pd.strategies.length;si++) {
+    var s=pd.strategies[si];
+    html += '<div style="border:1px solid var(--border);border-radius:var(--rs);overflow:hidden;margin-bottom:10px">';
+    html += '<div style="background:linear-gradient(135deg,#1a1a1a,#2a2a2a);color:#f0f0f0;padding:8px 14px;font-size:0.78rem;font-weight:700;display:flex;align-items:center;gap:8px">';
+    html += '<span style="background:var(--gold);color:#3a2800;font-size:0.62rem;padding:2px 8px;border-radius:999px;font-weight:800">'+(si+1)+'</span>'+s.h+'</div>';
+    html += '<div style="padding:10px 14px;font-size:0.82rem;line-height:1.6;color:var(--muted)">'+s.b+'</div></div>';
+  }
+
+  // Weekly calories summary for premium
+  html += '<div style="background:var(--goldl);border:1px solid var(--gold);border-radius:var(--rs);padding:1rem 1.25rem;margin-top:10px">';
+  html += '<div style="font-size:0.7rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">⭐ Your Premium Weekly Numbers</div>';
+  html += '<div style="display:flex;flex-wrap:wrap;gap:10px">';
+  html += '<div style="background:#14141e;border-radius:var(--rs);padding:8px 14px;font-size:0.8rem"><strong>Training day:</strong> '+m.tgt+' kcal</div>';
+  html += '<div style="background:#14141e;border-radius:var(--rs);padding:8px 14px;font-size:0.8rem"><strong>Rest day:</strong> '+m.tgtRest+' kcal</div>';
+  html += '<div style="background:#14141e;border-radius:var(--rs);padding:8px 14px;font-size:0.8rem"><strong>Refeed day:</strong> '+m.tdee+' kcal</div>';
+  html += '<div style="background:#14141e;border-radius:var(--rs);padding:8px 14px;font-size:0.8rem"><strong>Protein — every day:</strong> '+m.protG+'g</div>';
+  html += '</div></div>';
+
+  return html;
+}
+
+// ============================================================
+// COPY PLAN
+// ============================================================
+function doCopy(btn) {
+  var title=document.getElementById('outTitle').textContent;
+  var sub=document.getElementById('outSub').textContent;
+  var t='MEAL PLAN: '+title+'\n'+sub+'\nAkash Singh @akash.liftsup\n'+'─'.repeat(44)+'\n\n';
+  var div=document.createElement('div');
+  div.innerHTML=document.getElementById('outMeals').innerHTML;
+  div.querySelectorAll('.mslot-hd').forEach(function(h){t+='\n'+h.textContent.trim()+'\n';});
+  div.querySelectorAll('.mopt').forEach(function(o){t+='  • '+o.textContent.trim()+'\n';});
+  t+='\n'+'─'.repeat(44)+'\nAkash Singh | @akash.liftsup';
+  navigator.clipboard.writeText(t).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='📋 Copy Plan';},2000);});
+}
+</script>
+</body>
+</html>

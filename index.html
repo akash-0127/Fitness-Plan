@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Get Your Plan — FitPlan</title>
+<title>FitPlan — Personalised Fitness Plans</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -66,6 +66,7 @@
   @keyframes borderFlow { 0% { background-position:0% 50%; } 50% { background-position:100% 50%; } 100% { background-position:0% 50%; } }
   @keyframes popularBounce { 0%,100% { transform:translateY(-1px) scale(1); } 50% { transform:translateY(-3px) scale(1.02); } }
   @keyframes textGlow { 0%,100% { text-shadow:0 0 0 transparent; } 50% { text-shadow:0 0 12px rgba(124,58,237,0.3); } }
+  @keyframes redirectPulse { 0% { transform:scale(1); } 50% { transform:scale(0.97); } 100% { transform:scale(1); } }
 
   /* ── BACKGROUND GLOW ── */
   .bg-glow {
@@ -76,13 +77,19 @@
     animation: breathe 8s ease-in-out infinite;
   }
 
+  /* ── PORTAL NAV ── */
+  .portal-nav{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 2rem;background:rgba(5,5,8,0.95);backdrop-filter:blur(10px);border-bottom:1px solid #1a1a24;position:sticky;top:0;z-index:200}
+  .portal-nav .nav-brand{font-size:1.1rem;font-weight:800;color:#7c3aed;text-decoration:none}
+  .portal-nav .nav-links{display:flex;gap:1.5rem}
+  .portal-nav .nav-links a{color:#888;text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}
+  .portal-nav .nav-links a:hover,.portal-nav .nav-links a.active{color:#a78bfa}
+
   /* ── HEADER ── */
   .header {
     background: rgba(5,5,8,0.9); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid rgba(124,58,237,0.15);
     padding: 1rem 2rem;
     display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;
-    position: sticky; top: 0; z-index: 100;
     animation: fadeInUp 0.5s ease-out;
   }
   .header-brand { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.3px; }
@@ -101,20 +108,13 @@
     transform: translateY(-1px); box-shadow: 0 4px 12px rgba(124,58,237,0.15);
   }
 
-  /* ═══════════════════════════════════════════
-     TWO-COLUMN DESKTOP LAYOUT
-     ═══════════════════════════════════════════ */
+  /* ── PAGE WRAP ── */
   .page-wrap {
     position: relative; z-index: 1;
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
     padding: 0 1.5rem;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0;
   }
-  .col-left { min-width: 0; }
-  .col-right { min-width: 0; }
 
   /* ── HERO ── */
   .hero {
@@ -139,7 +139,7 @@
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
-  .hero-sub { font-size: 1.05rem; color: #aaa; margin-bottom: 0.3rem; }
+  .hero-sub { font-size: 1.05rem; color: #aaa; margin-bottom: 0.3rem; animation: fadeInUp 0.6s ease 0.1s both; }
   .hero-nogimmick {
     font-size: 0.9rem; color: var(--accent2); font-weight: 700;
     display: inline-flex; align-items: center; gap: 5px;
@@ -169,7 +169,6 @@
   }
   .hero-cta:hover::before { left: 100%; }
   .hero-cta:active { transform: scale(0.97); }
-  .hero-cta.hidden { display: none; }
 
   /* ── REVEAL SECTION ── */
   .reveal-wrap {
@@ -178,11 +177,6 @@
   }
   .reveal-wrap.show {
     max-height: 5000px; opacity: 1;
-  }
-  .reveal-inner {
-    max-width: 1200px; margin: 0 auto;
-    padding: 0 1.5rem;
-    display: grid; grid-template-columns: 1fr; gap: 0;
   }
 
   /* ── TRUST BADGES ── */
@@ -264,9 +258,14 @@
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(124,58,237,0.12), 0 16px 40px rgba(0,0,0,0.3);
     background: rgba(124,58,237,0.03);
-    animation: glowPulse 3s ease-in-out infinite;
+    animation: redirectPulse 0.3s ease-out;
   }
   .plan-card.selected::before { opacity: 1; }
+  .plan-card.redirecting {
+    opacity: 0.7;
+    transform: scale(0.98);
+    pointer-events: none;
+  }
 
   /* ── STAGGERED ENTRANCE ── */
   .plan-card.card-meal { animation: cardReveal1 0.7s ease-out 0.4s both; }
@@ -287,48 +286,27 @@
     opacity: 0; transition: opacity 0.3s; pointer-events: none;
   }
   .plan-card:hover .plan-icon-wrap { animation: iconFloat 2s ease-in-out infinite; }
-  .plan-card.selected .plan-icon-wrap::after { opacity: 1; }
 
   .plan-card.card-meal .plan-icon-wrap {
     background: linear-gradient(135deg, rgba(52,211,153,0.15), rgba(52,211,153,0.05));
     border: 1px solid rgba(52,211,153,0.2);
   }
-  .plan-card.card-meal.selected .plan-icon-wrap {
-    box-shadow: 0 0 20px rgba(52,211,153,0.15);
-  }
-  .plan-card.card-meal.selected .plan-icon-wrap::after {
-    background: radial-gradient(circle, rgba(52,211,153,0.1) 0%, transparent 70%);
-  }
-
   .plan-card.card-workout .plan-icon-wrap {
     background: linear-gradient(135deg, rgba(167,139,250,0.15), rgba(167,139,250,0.05));
     border: 1px solid rgba(167,139,250,0.2);
   }
-  .plan-card.card-workout.selected .plan-icon-wrap {
-    box-shadow: 0 0 20px rgba(167,139,250,0.15);
-  }
-  .plan-card.card-workout.selected .plan-icon-wrap::after {
-    background: radial-gradient(circle, rgba(167,139,250,0.1) 0%, transparent 70%);
-  }
-
   .plan-card.card-combo .plan-icon-wrap {
     background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(124,58,237,0.05));
     border: 1px solid rgba(124,58,237,0.2);
   }
-  .plan-card.card-combo.selected .plan-icon-wrap {
-    box-shadow: 0 0 20px rgba(124,58,237,0.15);
-  }
-  .plan-card.card-combo.selected .plan-icon-wrap::after {
-    background: radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%);
-  }
 
-  /* ── RING PULSE ON SELECT ── */
+  /* ── RING PULSE ON HOVER ── */
   .plan-icon-ring {
     position: absolute; inset: -6px; border-radius: 18px;
     border: 2px solid var(--accent); opacity: 0;
     pointer-events: none; transition: opacity 0.3s;
   }
-  .plan-card.selected .plan-icon-ring { opacity: 1; animation: ringPulse 1.5s ease-out infinite; }
+  .plan-card:hover .plan-icon-ring { opacity: 0.4; animation: ringPulse 1.5s ease-out infinite; }
 
   /* ── CARD CONTENT ── */
   .plan-card-left { flex: 1; min-width: 0; }
@@ -344,7 +322,7 @@
   }
 
   /* ── FEATURE LIST ── */
-  .plan-features { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+  .plan-features { display: flex; flex-direction: column; gap: 5px; margin-bottom: 4px; }
   .plan-feature {
     font-size: 0.78rem; color: #999; display: flex; align-items: center; gap: 8px;
     opacity: 0; animation: featureSlide 0.4s ease-out forwards;
@@ -376,7 +354,7 @@
   /* ── BOTTOM ROW ── */
   .plan-card-bottom {
     display: flex; align-items: center; justify-content: space-between;
-    position: relative; z-index: 1;
+    position: relative; z-index: 1; margin-top: 8px;
   }
 
   /* ── BADGES ── */
@@ -404,46 +382,15 @@
     color: #fff; border: none; animation: badgeSlide 0.4s ease-out 0.9s forwards, popularBounce 2s ease-in-out 1.3s infinite;
   }
 
-  /* ── PRICE ── */
-  .plan-price-area { text-align: right; display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
-  .plan-dur-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    border: 1.5px solid rgba(255,255,255,0.06); border-radius: 10px;
-    padding: 6px 12px; cursor: pointer; transition: all 0.25s; user-select: none;
-    background: var(--card2);
+  /* ── ARROW HINT ── */
+  .plan-arrow {
+    font-size: 1.1rem; color: var(--muted); transition: all 0.3s;
+    opacity: 0; animation: featureSlide 0.4s ease-out forwards;
   }
-  .plan-dur-btn:hover { border-color: rgba(255,255,255,0.12); }
-  .plan-dur-btn.active { border-color: var(--accent); background: rgba(124,58,237,0.06); }
-  .plan-card.card-meal .plan-dur-btn.active { border-color: var(--success); background: rgba(52,211,153,0.06); }
-  .plan-card.card-workout .plan-dur-btn.active { border-color: var(--purple); background: rgba(167,139,250,0.06); }
-  .plan-dur-label { font-size: 0.65rem; color: var(--muted); font-weight: 600; white-space: nowrap; }
-  .plan-dur-price { font-size: 0.95rem; font-weight: 800; color: #fff; white-space: nowrap; }
-  .plan-card.card-meal .plan-dur-price { color: var(--success); }
-  .plan-card.card-workout .plan-dur-price { color: var(--purple); }
-  .plan-card.card-combo .plan-dur-price {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .plan-dur-original { font-size: 0.65rem; color: #444; text-decoration: line-through; }
-  .plan-dur-save {
-    font-size: 0.58rem; font-weight: 700; color: var(--success);
-    background: rgba(52,211,153,0.1); padding: 1px 6px; border-radius: 999px;
-  }
-  .plan-card.card-combo .plan-dur-save { color: var(--accent); background: rgba(124,58,237,0.1); }
-  .plan-card.card-workout .plan-dur-save { color: var(--purple); background: rgba(167,139,250,0.1); }
-
-  /* ── CHECK CIRCLE ── */
-  .plan-check {
-    width: 22px; height: 22px; border-radius: 50%;
-    border: 1.5px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; margin-top: 2px; transition: all 0.25s;
-  }
-  .plan-card.card-meal.selected .plan-check { background: var(--success); border-color: var(--success); box-shadow: 0 0 10px rgba(52,211,153,0.3); }
-  .plan-card.card-workout.selected .plan-check { background: var(--purple); border-color: var(--purple); box-shadow: 0 0 10px rgba(167,139,250,0.3); }
-  .plan-card.card-combo.selected .plan-check { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 10px rgba(124,58,237,0.3); }
-  .plan-check-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; display: none; }
-  .plan-card.selected .plan-check-dot { display: block; animation: checkPop 0.3s ease-out; }
+  .plan-card.card-meal .plan-arrow { animation-delay: 1s; }
+  .plan-card.card-workout .plan-arrow { animation-delay: 1.15s; }
+  .plan-card.card-combo .plan-arrow { animation-delay: 1.3s; }
+  .plan-card:hover .plan-arrow { color: var(--accent); transform: translateX(4px); }
 
   /* ── PARTICLES ── */
   .plan-particles {
@@ -454,7 +401,7 @@
     position: absolute; width: 4px; height: 4px; border-radius: 50%;
     opacity: 0;
   }
-  .plan-card.selected .plan-particle { opacity: 1; }
+  .plan-card:hover .plan-particle { opacity: 1; }
   .plan-card.card-meal .plan-particle { background: var(--success); }
   .plan-card.card-workout .plan-particle { background: var(--purple); }
   .plan-card.card-combo .plan-particle { background: var(--accent); }
@@ -463,125 +410,6 @@
   .plan-particle:nth-child(3) { top: 40%; left: 50%; animation: particleDrift3 3.5s ease-in-out 0.5s infinite; }
   .plan-particle:nth-child(4) { top: 80%; left: 30%; animation: particleDrift1 4.5s ease-in-out 1.5s infinite; }
   .plan-particle:nth-child(5) { top: 10%; left: 70%; animation: particleDrift2 3.8s ease-in-out 0.8s infinite; }
-
-  /* ═══════════════════════════════════════════
-     FORM — RIGHT COLUMN
-     ═══════════════════════════════════════════ */
-  .form-wrap { padding: 0 0 4rem; max-height: 0; opacity: 0; overflow: hidden;
-    transition: max-height 0.7s cubic-bezier(0.4,0,0.2,1), opacity 0.5s ease-out, padding 0.5s; }
-  .form-wrap.show { max-height: 5000px; opacity: 1; }
-  .form-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 18px; padding: 2rem;
-    box-shadow: 0 0 0 1px rgba(124,58,237,0.04), 0 24px 64px rgba(0,0,0,0.5);
-    animation: fadeInScale 0.6s ease-out 0.5s both;
-  }
-  .plan-summary {
-    background: rgba(124,58,237,0.04); border: 1px solid rgba(124,58,237,0.12);
-    border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 1.5rem;
-    display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;
-    transition: all 0.25s;
-  }
-  .plan-summary:hover { background: rgba(124,58,237,0.06); border-color: rgba(124,58,237,0.2); }
-  .plan-summary-name { color: #ccc; font-weight: 600; }
-  .plan-summary-price { color: var(--accent); font-weight: 800; font-size: 1rem; }
-
-  .form-section-label {
-    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--accent);
-    margin: 1.75rem 0 1rem; display: flex; align-items: center; gap: 10px;
-  }
-  .form-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-  .form-section-label:first-child { margin-top: 0; }
-
-  .field { margin-bottom: 1.1rem; }
-  .field label { display: block; font-size: 0.78rem; font-weight: 600; color: #bbb; margin-bottom: 6px; }
-  .field label .req { color: var(--accent); margin-left: 2px; }
-  .field label .opt { color: var(--muted); font-weight: 400; margin-left: 4px; font-size: 0.72rem; }
-  .field input[type="text"], .field input[type="email"], .field input[type="number"],
-  .field input[type="tel"], .field textarea {
-    width: 100%; background: var(--card2); border: 1.5px solid rgba(255,255,255,0.06);
-    border-radius: var(--radius-sm); padding: 11px 14px; font-size: 0.9rem;
-    color: var(--text); font-family: inherit; outline: none; transition: all 0.25s;
-    -webkit-appearance: none;
-  }
-  .field input:focus, .field textarea:focus {
-    border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,58,237,0.1), 0 0 16px rgba(124,58,237,0.05);
-    background: var(--card-hover);
-  }
-  .field input::placeholder, .field textarea::placeholder { color: #444; }
-  .field textarea { resize: vertical; min-height: 80px; }
-  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-  .chips { display: flex; flex-wrap: wrap; gap: 7px; }
-  .chip-opt {
-    border: 1.5px solid rgba(255,255,255,0.06); border-radius: 999px;
-    padding: 7px 16px; font-size: 0.82rem; cursor: pointer; color: var(--muted);
-    background: var(--card2); transition: all 0.25s; font-weight: 500; user-select: none;
-  }
-  .chip-opt:hover { border-color: rgba(124,58,237,0.3); color: #ccc; transform: translateY(-1px); background: var(--card-hover); }
-  .chip-opt.active {
-    background: rgba(124,58,237,0.1); border-color: var(--accent); color: var(--accent);
-    font-weight: 600; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(124,58,237,0.1);
-  }
-
-  .submit-btn {
-    width: 100%; margin-top: 1.75rem;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    background-size: 200% 200%; color: #fff; border: none;
-    border-radius: var(--radius-sm); padding: 16px; font-size: 1.05rem;
-    font-weight: 800; letter-spacing: 0.03em; cursor: pointer;
-    transition: all 0.3s; position: relative; overflow: hidden;
-    box-shadow: 0 4px 20px rgba(124,58,237,0.25);
-  }
-  .submit-btn::before {
-    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-    transition: left 0.6s;
-  }
-  .submit-btn:hover {
-    transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124,58,237,0.35);
-    animation: shimmer 2s linear infinite; background-size: 200% 200%;
-  }
-  .submit-btn:hover::before { left: 100%; }
-  .submit-btn:active { transform: scale(0.98) translateY(0); box-shadow: 0 2px 8px rgba(124,58,237,0.2); }
-  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-  .submit-btn:disabled::before { display: none; }
-  .submit-note { text-align: center; font-size: 0.74rem; color: var(--muted); margin-top: 0.75rem; }
-
-  .success-card {
-    background: var(--card); border: 1px solid rgba(52,211,153,0.2);
-    border-radius: 18px; padding: 3rem 2rem; text-align: center; display: none;
-    box-shadow: 0 0 0 1px rgba(52,211,153,0.08), 0 24px 64px rgba(0,0,0,0.5);
-  }
-  .success-card.show { display: block; animation: fadeInScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
-  .form-card.hide { display: none; }
-  .success-icon {
-    width: 68px; height: 68px; border-radius: 50%;
-    background: rgba(52,211,153,0.1); border: 2px solid rgba(52,211,153,0.3);
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 1.25rem; font-size: 1.8rem;
-    animation: checkPop 0.5s ease-out 0.2s both;
-  }
-  .success-card h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem; color: #fff; }
-  .success-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
-  .success-tg {
-    display: inline-flex; align-items: center; gap: 8px; margin-top: 1.25rem;
-    background: linear-gradient(135deg, #E1306C, #fd1d1d); color: #fff; text-decoration: none;
-    font-weight: 700; font-size: 0.9rem; padding: 11px 24px; border-radius: var(--radius-sm);
-    transition: all 0.25s; box-shadow: 0 4px 16px rgba(225,48,108,0.3);
-  }
-  .success-tg:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(225,48,108,0.35); }
-  .success-wa-note { margin-top: 0.9rem; font-size: 0.8rem; color: var(--muted); }
-  .success-wa-note a { color: var(--success); text-decoration: none; font-weight: 600; transition: color 0.2s; }
-  .success-wa-note a:hover { text-decoration: underline; color: #6ee7b7; }
-
-  .form-error {
-    background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25);
-    color: #f87171; border-radius: var(--radius-sm); padding: 10px 14px;
-    font-size: 0.85rem; margin-top: 1rem; display: none;
-  }
-  .form-error.show { display: block; animation: fadeInUp 0.3s ease-out; }
 
   /* ── FOOTER ── */
   .footer {
@@ -607,47 +435,23 @@
     .hero-sub { font-size: 1.1rem; }
     .hook-inner p { font-size: 0.92rem; }
     .plan-card { padding: 1.6rem 2rem; }
-    .form-card { padding: 2.5rem; }
   }
 
   /* ═══════════════════════════════════════════
-     RESPONSIVE — DESKTOP (TWO-COLUMN)
+     RESPONSIVE — DESKTOP
      ═══════════════════════════════════════════ */
   @media (min-width: 900px) {
-    .page-wrap { padding: 0 2rem; }
-
-    .reveal-inner {
-      grid-template-columns: 1fr 420px;
-      gap: 2.5rem;
-      align-items: start;
-      padding: 0 2rem;
-    }
-    .form-wrap { position: sticky; top: 80px; }
-
     .hero { text-align: left; padding: 4rem 0 2rem; max-width: none; }
     .hero h1 { font-size: 2.8rem; letter-spacing: -1px; }
     .hero-sub { font-size: 1.15rem; }
     .hero-nogimmick { font-size: 0.95rem; }
-
     .trust { justify-content: flex-start; padding: 0 0 1.5rem; max-width: none; gap: 2rem; }
     .hook-box, .plan-section { max-width: none; padding-left: 0; padding-right: 0; }
     .plan-section { padding-bottom: 3rem; }
-
     .plan-card { padding: 1.75rem 2.25rem; }
     .plan-name { font-size: 1.1rem; }
     .plan-tagline { font-size: 0.82rem; }
-    .plan-launch { font-size: 1.5rem; }
-    .plan-original { font-size: 0.78rem; }
     .plan-badge { font-size: 0.68rem; padding: 4px 12px; }
-
-    .form-card { padding: 2.5rem; border-radius: 20px; }
-    .form-section-label { margin: 2rem 0 1.25rem; }
-    .field { margin-bottom: 1.25rem; }
-    .field label { font-size: 0.8rem; }
-    .field input, .field textarea { padding: 12px 16px; font-size: 0.92rem; }
-    .chip-opt { padding: 8px 18px; font-size: 0.85rem; }
-    .submit-btn { padding: 17px; font-size: 1.1rem; }
-
     .bg-glow { width: 1000px; height: 1000px; top: -30%; }
   }
 
@@ -655,13 +459,11 @@
      RESPONSIVE — LARGE DESKTOP
      ═══════════════════════════════════════════ */
   @media (min-width: 1100px) {
-    .reveal-inner { max-width: 1100px; grid-template-columns: 1fr 460px; gap: 3rem; padding: 0 2rem; }
     .hero h1 { font-size: 3.2rem; }
     .hero-sub { font-size: 1.2rem; }
     .plan-card { padding: 1.85rem 2.5rem; }
     .plan-name { font-size: 1.15rem; }
     .plan-tagline { font-size: 0.85rem; }
-    .form-card { padding: 2.75rem; }
   }
 
   /* ═══════════════════════════════════════════
@@ -669,27 +471,35 @@
      ═══════════════════════════════════════════ */
   @media (max-width: 639px) {
     .header { padding: 0.85rem 1.25rem; }
-    .page-wrap { padding: 0 0.75rem; }
-    .reveal-inner { padding: 0 0.75rem; }
     .hero { padding: 2.5rem 0.5rem 1.5rem; }
     .hero h1 { font-size: 1.7rem; }
     .hero-pill { animation: none; }
     .trust { gap: 1rem; }
     .trust-item { font-size: 0.74rem; }
-    .field-row { grid-template-columns: 1fr; }
-    .form-card { padding: 1.5rem; border-radius: 14px; }
     .plan-card { padding: 1.25rem 1.25rem; border-radius: 14px; }
     .plan-card:hover { transform: none; }
-    .chip-opt:hover { transform: none; }
-    .submit-btn:hover { transform: none; }
-    .success-tg:hover { transform: none; }
     .plan-icon-wrap { width: 44px; height: 44px; font-size: 1.3rem; border-radius: 12px; }
     .plan-name { font-size: 0.95rem; }
-    .plan-launch { font-size: 1.2rem; }
   }
+  /* ANIMATIONS */
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes slideInRight{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,0)}50%{box-shadow:0 0 20px 4px rgba(124,58,237,0.3)}}
+  @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+  @keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
 </style>
 </head>
 <body>
+
+<nav class="portal-nav">
+  <a href="index.html" class="nav-brand">FitPlan</a>
+  <div class="nav-links">
+    <a href="index.html" class="active">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</nav>
 
 <div class="bg-glow"></div>
 
@@ -705,674 +515,159 @@
 
 <div class="page-wrap">
 
-  <!-- LEFT COLUMN -->
-  <div class="col-left">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-pill">Personalised Fitness Plans</div>
+    <h1>Get Your Custom <em>Fat Loss / Muscle</em> Plan</h1>
+    <p class="hero-sub">Built for YOUR body, schedule &amp; diet</p>
+    <p class="hero-nogimmick">No generic plans. No guesswork.</p>
+    <button class="hero-cta" id="heroCta" onclick="revealPlans()">Get My Plan &#8594;</button>
+  </div>
 
-    <!-- HERO -->
-    <div class="hero">
-      <div class="hero-pill">Personalised Fitness Plans</div>
-      <h1>Get Your Custom <em>Fat Loss / Muscle</em> Plan</h1>
-      <p class="hero-sub">Built for YOUR body, schedule &amp; diet</p>
-      <p class="hero-nogimmick">No generic plans. No guesswork.</p>
-      <button class="hero-cta" id="heroCta" onclick="revealPlans()">Get My Plan &#8594;</button>
-    </div>
+  <!-- TRUST -->
+  <div class="trust">
+    <div class="trust-item"><div class="trust-dot"></div> 100% personalised</div>
+    <div class="trust-item"><div class="trust-dot"></div> Responds within 24 hrs</div>
+    <div class="trust-item"><div class="trust-dot"></div> Reviewed personally</div>
+  </div>
 
-    <!-- TRUST -->
-    <div class="trust">
-      <div class="trust-item"><div class="trust-dot"></div> 100% personalised</div>
-      <div class="trust-item"><div class="trust-dot"></div> Responds within 24 hrs</div>
-      <div class="trust-item"><div class="trust-dot"></div> Reviewed personally</div>
-    </div>
-
-    <!-- TRANSFORMATION HOOK -->
-    <div class="hook-box">
-      <div class="hook-inner">
-        <p>Most people fail because they follow random YouTube workouts.</p>
-        <p style="margin-bottom:0.5rem;">This plan is built based on:</p>
-        <div class="hook-checks">
-          <div class="hook-check"><span class="tick">&#10003;</span> Your body stats</div>
-          <div class="hook-check"><span class="tick">&#10003;</span> Your lifestyle</div>
-          <div class="hook-check"><span class="tick">&#10003;</span> Your diet preference</div>
-        </div>
-        <div class="hook-result">So you actually see results.</div>
+  <!-- TRANSFORMATION HOOK -->
+  <div class="hook-box">
+    <div class="hook-inner">
+      <p>Most people fail because they follow random YouTube workouts.</p>
+      <p style="margin-bottom:0.5rem;">This plan is built based on:</p>
+      <div class="hook-checks">
+        <div class="hook-check"><span class="tick">&#10003;</span> Your body stats</div>
+        <div class="hook-check"><span class="tick">&#10003;</span> Your lifestyle</div>
+        <div class="hook-check"><span class="tick">&#10003;</span> Your diet preference</div>
       </div>
+      <div class="hook-result">So you actually see results.</div>
     </div>
+  </div>
 
-  </div><!-- /col-left -->
+</div><!-- /page-wrap -->
 
-  </div><!-- /page-wrap -->
+<!-- REVEAL: Plan Cards -->
+<div class="reveal-wrap" id="revealWrap">
+  <div class="plan-section" id="planSection">
+    <div class="plan-section-title">Choose your plan</div>
+    <div class="plan-cards">
 
-  <!-- REVEAL: Plans + Form -->
-  <div class="reveal-wrap" id="revealWrap">
-    <div class="reveal-inner">
-
-      <!-- PLAN SELECTION -->
-      <div class="plan-section">
-        <div class="plan-section-title" id="planSectionTitle">Choose your plan</div>
-        <div class="plan-cards">
-
-        <!-- MEAL PLAN -->
-        <div class="plan-card card-meal" id="card-diet" onclick="selectPlan('diet')">
-          <div class="plan-particles">
-            <div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div>
+      <!-- MEAL PLAN -->
+      <div class="plan-card card-meal" onclick="goToPlan('Meal Plan.html', this)">
+        <div class="plan-particles">
+          <div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div>
+        </div>
+        <div class="plan-card-top">
+          <div class="plan-icon-wrap">
+            <div class="plan-icon-ring"></div>
+            &#127823;
           </div>
-          <div class="plan-card-top">
-            <div class="plan-check" id="check-diet"><div class="plan-check-dot"></div></div>
-            <div class="plan-icon-wrap">
-              <div class="plan-icon-ring"></div>
-              &#127823;
-            </div>
-            <div class="plan-card-left">
-              <div class="plan-name">Custom Meal Plan</div>
-              <div class="plan-tagline">A plan that fits YOUR life &#8212; not the other way around</div>
-              <div class="plan-features">
-                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Calorie &amp; macro split for your body</div>
-                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Veg / Non-veg / Jain options</div>
-                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Grocery list + meal prep guide</div>
-                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Restaurant &amp; travel-friendly swaps</div>
-                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Revisions until you're satisfied</div>
-              </div>
-            </div>
-          </div>
-          <div class="plan-card-bottom">
-            <div class="plan-badge">Launch pricing</div>
-            <div class="plan-price-area">
-              <div class="plan-dur-btn active" data-plan="diet" data-dur="1" data-price="49" onclick="selectDuration(this, event)">
-                <div class="plan-dur-label">1 mo</div>
-                <div class="plan-dur-price">&#8377;49</div>
-              </div>
-              <div class="plan-dur-btn" data-plan="diet" data-dur="3" data-price="99" onclick="selectDuration(this, event)">
-                <div class="plan-dur-label">3 mo</div>
-                <div class="plan-dur-price">&#8377;99</div>
-                <div class="plan-dur-save">SAVE 3 mo</div>
-              </div>
+          <div class="plan-card-left">
+            <div class="plan-name">Custom Meal Plan</div>
+            <div class="plan-tagline">A plan that fits YOUR life &#8212; not the other way around</div>
+            <div class="plan-features">
+              <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Calorie &amp; macro split for your body</div>
+              <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Veg / Non-veg / Jain options</div>
+              <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Grocery list + meal prep guide</div>
+              <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Restaurant &amp; travel-friendly swaps</div>
+              <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Revisions until you're satisfied</div>
             </div>
           </div>
         </div>
-
-        <!-- WORKOUT PLAN -->
-        <div class="plan-card card-workout" id="card-workout" onclick="selectPlan('workout')">
-          <div class="plan-particles">
-            <div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div>
-          </div>
-          <div class="plan-card-top">
-            <div class="plan-check" id="check-workout"><div class="plan-check-dot"></div></div>
-            <div class="plan-icon-wrap">
-              <div class="plan-icon-ring"></div>
-              &#127947;&#65039;
-            </div>
-            <div class="plan-card-left">
-              <div class="plan-name">Custom Workout Plan</div>
-              <div class="plan-tagline">Built for your goal, experience &amp; available equipment</div>
-              <div class="plan-features">
-                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Exercise demos via video links</div>
-                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Warm-up &amp; cool-down included</div>
-                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Progressive overload week by week</div>
-                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Home or gym &#8212; equipment alternatives</div>
-                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Revisions until you're satisfied</div>
-              </div>
-            </div>
-          </div>
-          <div class="plan-card-bottom">
-            <div class="plan-badge">Launch pricing</div>
-            <div class="plan-price-area">
-              <div class="plan-dur-btn active" data-plan="workout" data-dur="1" data-price="49" onclick="selectDuration(this, event)">
-                <div class="plan-dur-label">1 mo</div>
-                <div class="plan-dur-price">&#8377;49</div>
-              </div>
-              <div class="plan-dur-btn" data-plan="workout" data-dur="3" data-price="99" onclick="selectDuration(this, event)">
-                <div class="plan-dur-label">3 mo</div>
-                <div class="plan-dur-price">&#8377;99</div>
-                <div class="plan-dur-save">SAVE 3 mo</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- COMBO -->
-        <div class="plan-card card-combo" id="card-combo" onclick="selectPlan('combo')">
-          <div class="plan-particles">
-            <div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div>
-          </div>
-          <div class="plan-card-top">
-            <div class="plan-check" id="check-combo"><div class="plan-check-dot"></div></div>
-            <div class="plan-icon-wrap">
-              <div class="plan-icon-ring"></div>
-              &#128293;
-            </div>
-            <div class="plan-card-left">
-              <div class="plan-name">Meal + Workout Combo</div>
-              <div class="plan-tagline">Diet &amp; training synced for 2x faster results</div>
-              <div class="plan-features">
-                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Everything in Meal Plan</div>
-                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Everything in Workout Plan</div>
-                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Diet &amp; training synced together</div>
-                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Weekly check-in for first month</div>
-                <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Priority WhatsApp support</div>
-              </div>
-            </div>
-          </div>
-          <div class="plan-card-bottom">
-            <div class="plan-badge popular-badge">&#11088; Most Popular</div>
-            <div class="plan-price-area">
-              <div class="plan-dur-btn active" data-plan="combo" data-dur="1" data-price="79" onclick="selectDuration(this, event)">
-                <div class="plan-dur-label">1 mo</div>
-                <div class="plan-dur-price">&#8377;79</div>
-              </div>
-              <div class="plan-dur-btn" data-plan="combo" data-dur="3" data-price="149" onclick="selectDuration(this, event)">
-                <div class="plan-dur-label">3 mo</div>
-                <div class="plan-dur-price">&#8377;149</div>
-                <div class="plan-dur-save">SAVE 3 mo</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- FORM (inside reveal) -->
-    <div class="form-wrap">
-
-      <!-- SUCCESS -->
-      <div class="success-card" id="successCard">
-        <div class="success-icon">&#10003;</div>
-        <h2>Request received!</h2>
-        <p>Your plan will be reviewed and sent within <strong>24 hours</strong>.</p>
-        <a class="success-tg" href="https://instagram.com/akash.liftsup" target="_blank" style="background:#E1306C;">
-          &#128248; DM on Instagram @akash.liftsup
-        </a>
-        <div class="success-wa-note" style="margin-top:0.75rem;color:var(--muted);font-size:0.8rem;">
-          Drop a DM if you have any questions!
+        <div class="plan-card-bottom">
+          <div class="plan-badge">Personalised plan</div>
+          <div class="plan-arrow">&#8594;</div>
         </div>
       </div>
 
-      <!-- FORM CARD -->
-      <div class="form-card" id="formCard">
-
-        <div class="plan-summary">
-          <span class="plan-summary-name" id="summaryName">&#127823; Custom Meal Plan &#8212; 1 month</span>
-          <span class="plan-summary-price" id="summaryPrice">&#8377;49</span>
+      <!-- WORKOUT PLAN -->
+      <div class="plan-card card-workout" onclick="goToPlan('Workout Plan.html', this)">
+        <div class="plan-particles">
+          <div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div>
         </div>
-
-        <div class="form-section-label">Personal info</div>
-
-        <div class="field">
-          <label>Full name <span class="req">*</span></label>
-          <input type="text" id="f_name" placeholder="e.g. Rahul Sharma" required/>
-        </div>
-
-        <div class="field-row">
-          <div class="field">
-            <label>WhatsApp number <span class="req">*</span></label>
-            <input type="tel" id="f_phone" placeholder="+91 98765 43210" required/>
+        <div class="plan-card-top">
+          <div class="plan-icon-wrap">
+            <div class="plan-icon-ring"></div>
+            &#127947;&#65039;
           </div>
-          <div class="field">
-            <label>Email <span class="req">*</span></label>
-            <input type="email" id="f_email" placeholder="rahul@email.com"/>
-          </div>
-        </div>
-
-        <div class="field-row">
-          <div class="field">
-            <label>Age <span class="req">*</span></label>
-            <input type="number" id="f_age" placeholder="25" min="15" max="65" required/>
-          </div>
-          <div class="field">
-            <label>Gender <span class="req">*</span></label>
-            <div class="chips" style="margin-top:4px;">
-              <div class="chip-opt active" data-group="gender" data-val="Male">&#9794; Male</div>
-              <div class="chip-opt" data-group="gender" data-val="Female">&#9792; Female</div>
+          <div class="plan-card-left">
+            <div class="plan-name">Custom Workout Plan</div>
+            <div class="plan-tagline">Built for your goal, experience &amp; available equipment</div>
+            <div class="plan-features">
+              <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Exercise demos via video links</div>
+              <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Warm-up &amp; cool-down included</div>
+              <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Progressive overload week by week</div>
+              <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Home or gym &#8212; equipment alternatives</div>
+              <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Revisions until you're satisfied</div>
             </div>
-            <input type="hidden" id="f_gender" value="Male"/>
           </div>
         </div>
-
-        <div class="field-row">
-          <div class="field">
-            <label>Weight (kg) <span class="req">*</span></label>
-            <input type="number" id="f_weight" placeholder="70" min="35" max="200" required/>
-          </div>
-          <div class="field">
-            <label>Height (cm) <span class="req">*</span></label>
-            <input type="number" id="f_height" placeholder="170" min="140" max="220" required/>
-          </div>
+        <div class="plan-card-bottom">
+          <div class="plan-badge">Personalised plan</div>
+          <div class="plan-arrow">&#8594;</div>
         </div>
-
-        <div class="form-section-label">Goals &amp; preferences</div>
-
-        <div class="field">
-          <label>Primary goal <span class="req">*</span></label>
-          <div class="chips">
-            <div class="chip-opt active" data-group="goal" data-val="Weight Loss">&#9878;&#65039; Weight Loss</div>
-            <div class="chip-opt" data-group="goal" data-val="Fat Loss">&#128293; Fat Loss</div>
-            <div class="chip-opt" data-group="goal" data-val="Weight Gain / Muscle">&#128170; Weight Gain</div>
-          </div>
-          <input type="hidden" id="f_goal" value="Weight Loss"/>
-        </div>
-
-        <div class="field">
-          <label>Current activity level <span class="req">*</span></label>
-          <div class="chips">
-            <div class="chip-opt active" data-group="activity" data-val="Sedentary (desk job)">Sedentary</div>
-            <div class="chip-opt" data-group="activity" data-val="Lightly active">Lightly active</div>
-            <div class="chip-opt" data-group="activity" data-val="Moderately active">Moderate</div>
-            <div class="chip-opt" data-group="activity" data-val="Very active">Very active</div>
-          </div>
-          <input type="hidden" id="f_activity" value="Sedentary (desk job)"/>
-        </div>
-
-        <div class="field" id="trainingField">
-          <label>Where do you train? <span class="req">*</span></label>
-          <div class="chips">
-            <div class="chip-opt active" data-group="training" data-val="Gym">&#127947;&#65039; Gym</div>
-            <div class="chip-opt" data-group="training" data-val="Home">&#127968; Home</div>
-          </div>
-          <input type="hidden" id="f_training" value="Gym"/>
-        </div>
-
-        <div class="field">
-          <label>Diet preference <span class="req">*</span></label>
-          <div class="chips">
-            <div class="chip-opt active" data-group="diet" data-val="Vegetarian">&#129382; Vegetarian</div>
-            <div class="chip-opt" data-group="diet" data-val="Non-Veg">&#127837; Non-Veg</div>
-          </div>
-          <input type="hidden" id="f_diet" value="Vegetarian"/>
-        </div>
-
-        <div class="field">
-          <label>Whey protein?</label>
-          <div class="chips">
-            <div class="chip-opt" data-group="whey" data-val="With Whey Protein">With Whey</div>
-            <div class="chip-opt active" data-group="whey" data-val="No Whey">No Whey</div>
-          </div>
-          <input type="hidden" id="f_whey" value="No Whey"/>
-        </div>
-
-        <div class="form-section-label">Body measurements <span class="req">*</span></div>
-
-        <div class="field-row">
-          <div class="field">
-            <label>Waist (cm) <span class="req">*</span></label>
-            <input type="number" id="f_waist" placeholder="e.g. 85" min="50" max="180"/>
-          </div>
-          <div class="field">
-            <label>Neck (cm) <span class="req">*</span></label>
-            <input type="number" id="f_neck" placeholder="e.g. 38" min="25" max="70"/>
-          </div>
-        </div>
-
-        <div class="field" id="hipsField" style="display:none;">
-          <label>Hips (cm) <span class="req">*</span></label>
-          <input type="number" id="f_hips" placeholder="e.g. 95" min="50" max="180"/>
-        </div>
-
-        <div class="form-section-label">Anything else</div>
-
-        <div class="field">
-          <label>Health issues / injuries / allergies</label>
-          <textarea id="f_health" placeholder="e.g. Lower back pain, lactose intolerant, knee injury..."></textarea>
-        </div>
-
-        <div class="field">
-          <label>Message to your trainer</label>
-          <textarea id="f_message" placeholder="Anything specific you want in your plan, your schedule, budget, etc..."></textarea>
-        </div>
-
-        <div class="form-error" id="formError">Please fill in all required fields</div>
-
-        <button class="submit-btn" id="submitBtn" onclick="submitForm()">
-          Pay &#8377;49 &amp; Get My Plan &#8594;
-        </button>
-        <div class="submit-note">Reviews personally &#8212; no bots, no auto-replies.</div>
-
       </div>
+
+      <!-- COMBO -->
+      <div class="plan-card card-combo" onclick="goToPlan('Combo Plan.html', this)">
+        <div class="plan-particles">
+          <div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div><div class="plan-particle"></div>
+        </div>
+        <div class="plan-card-top">
+          <div class="plan-icon-wrap">
+            <div class="plan-icon-ring"></div>
+            &#128293;
+          </div>
+          <div class="plan-card-left">
+            <div class="plan-name">Meal + Workout Combo</div>
+            <div class="plan-tagline">Diet &amp; training synced for 2x faster results</div>
+            <div class="plan-features">
+              <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Everything in Meal Plan</div>
+              <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Everything in Workout Plan</div>
+              <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Diet &amp; training synced together</div>
+              <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Weekly check-in for first month</div>
+              <div class="plan-feature"><div class="plan-feature-icon">&#10003;</div> Priority WhatsApp support</div>
+            </div>
+          </div>
+        </div>
+        <div class="plan-card-bottom">
+          <div class="plan-badge popular-badge">&#11088; Most Popular</div>
+          <div class="plan-arrow">&#8594;</div>
+        </div>
+      </div>
+
     </div>
-
-  </div><!-- /reveal-inner -->
-  </div><!-- /reveal-wrap -->
-
+  </div>
 </div>
 
 <div class="footer">
-  Designed by <a href="https://instagram.com/akash.liftsup">FitPlan</a> &middot; @akash.liftsup &middot; Personal Coaching
+  <div style="margin-bottom:0.5rem">
+    <a href="about.html" style="color:#a78bfa;text-decoration:none;margin:0 0.75rem">About</a>
+    <a href="contact.html" style="color:#a78bfa;text-decoration:none;margin:0 0.75rem">Contact</a>
+    <a href="https://instagram.com/akash.liftsup" target="_blank" style="color:#a78bfa;text-decoration:none;margin:0 0.75rem">Instagram</a>
+  </div>
+  Designed by <a href="https://instagram.com/akash.liftsup" style="color:#a78bfa">FitPlan</a> &middot; @akash.liftsup &middot; Personal Training
 </div>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-/* ================================================================
-   CONFIG
-   ================================================================ */
-const WEB3FORMS_KEY   = '1af83a9e-c1c8-443b-8cad-e47575ad3bab';
-const TG_BOT_TOKEN    = '8323966181:AAHkRHr-JXaEK_yVv1kG-fRXbtta4BBgT_8';
-const TG_CHAT_ID      = '676917032';
-const TG_BOT_USERNAME = 'AkashCoachBot';
-const RAZORPAY_KEY_ID = 'YOUR_RAZORPAY_KEY_ID';
-const WHATSAPP_NUMBER = '919999999999';
-
-/* ── PLANS ── */
-const PLANS = {
-  diet:    { name: '\uD83E\uDD57 Custom Meal Plan',        icon: '\uD83C\uDF53' },
-  workout: { name: '\uD83C\uDFCB\uFE0F Custom Workout Plan', icon: '\uD83C\uDFCB\uFE0F' },
-  combo:   { name: '\uD83D\uDD25 Meal + Workout Combo',    icon: '\uD83D\uDD25' },
-};
-
-/* ── REVEAL PLANS ── */
 function revealPlans() {
   const wrap = document.getElementById('revealWrap');
   const cta = document.getElementById('heroCta');
-  cta.classList.add('hidden');
+  cta.style.display = 'none';
   wrap.classList.add('show');
   setTimeout(() => {
     wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 100);
 }
 
-/* ── PLAN SELECTION ── */
-let selectedPlan = 'diet';
-let selectedDuration = 1;
-let selectedPrice = 49;
-
-function selectPlan(key) {
-  const isFirstSelect = !document.querySelector('.plan-card.selected');
-  selectedPlan = key;
-  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
-  document.getElementById('card-' + key).classList.add('selected');
-  // Reset all cards' duration buttons to 1-month, then read the active one
-  document.querySelectorAll('.plan-dur-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.dur === '1');
-  });
-  const activeBtn = document.querySelector('#card-' + key + ' .plan-dur-btn.active');
-  selectedDuration = 1;
-  selectedPrice = parseInt(activeBtn.dataset.price);
-  updateSummary();
-  updateFieldVisibility();
-  // Reveal form on first plan selection
-  if (isFirstSelect) {
-    const formWrap = document.querySelector('.form-wrap');
-    formWrap.classList.add('show');
-    setTimeout(() => {
-      formWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 150);
-  }
+function goToPlan(url, el) {
+  if (el.classList.contains('redirecting')) return;
+  el.classList.add('selected', 'redirecting');
+  setTimeout(() => {
+    window.location.href = url;
+  }, 400);
 }
-
-function selectDuration(btn, e) {
-  e.stopPropagation();
-  const planKey = btn.dataset.plan;
-  const dur = parseInt(btn.dataset.dur);
-  const price = parseInt(btn.dataset.price);
-
-  // Select the parent card if not already selected
-  if (planKey !== selectedPlan) {
-    selectPlan(planKey);
-  }
-
-  // Update active state on duration buttons within this card
-  const card = document.getElementById('card-' + planKey);
-  card.querySelectorAll('.plan-dur-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-
-  selectedDuration = dur;
-  selectedPrice = price;
-  updateSummary();
-}
-
-function updateSummary() {
-  const p = PLANS[selectedPlan];
-  const durLabel = selectedDuration + ' month' + (selectedDuration > 1 ? 's' : '');
-  document.getElementById('summaryName').textContent = p.name + ' \u2014 ' + durLabel;
-  document.getElementById('summaryPrice').textContent = '\u20B9' + selectedPrice;
-  const btn = document.getElementById('submitBtn');
-  btn.textContent = `Pay \u20B9${selectedPrice} & Get My Plan \u2192`;
-}
-
-/* ── FIELD VISIBILITY ── */
-function updateFieldVisibility() {
-  const trainingField = document.getElementById('trainingField');
-  const activity = document.getElementById('f_activity').value;
-  const isWorkoutOrCombo = selectedPlan === 'workout' || selectedPlan === 'combo';
-  const isActive = activity !== 'Sedentary (desk job)';
-
-  if (isWorkoutOrCombo && isActive) {
-    trainingField.style.display = '';
-  } else {
-    trainingField.style.display = 'none';
-  }
-}
-
-/* ── CHIPS ── */
-document.querySelectorAll('.chip-opt').forEach(chip => {
-  chip.addEventListener('click', () => {
-    const group = chip.dataset.group;
-    document.querySelectorAll(`[data-group="${group}"]`).forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
-    document.getElementById('f_' + group).value = chip.dataset.val;
-    if (group === 'gender') {
-      document.getElementById('hipsField').style.display = chip.dataset.val === 'Female' ? '' : 'none';
-    }
-    if (group === 'activity') {
-      updateFieldVisibility();
-    }
-  });
-});
-
-/* ── COLLECT DATA ── */
-function collectData() {
-  const durLabel = selectedDuration + ' month' + (selectedDuration > 1 ? 's' : '');
-  const trainingField = document.getElementById('f_training');
-  const trainingVisible = document.getElementById('trainingField').style.display !== 'none';
-  return {
-    plan:     PLANS[selectedPlan].name + ' (' + durLabel + ')',
-    price:    '\u20B9' + selectedPrice,
-    name:     document.getElementById('f_name').value.trim(),
-    phone:    document.getElementById('f_phone').value.trim(),
-    email:    document.getElementById('f_email').value.trim() || '',
-    age:      document.getElementById('f_age').value.trim(),
-    gender:   document.getElementById('f_gender').value,
-    weight:   document.getElementById('f_weight').value.trim(),
-    height:   document.getElementById('f_height').value.trim(),
-    goal:     document.getElementById('f_goal').value,
-    training: trainingVisible ? trainingField.value : 'N/A',
-    diet:     document.getElementById('f_diet').value,
-    whey:     document.getElementById('f_whey').value,
-    waist:    document.getElementById('f_waist').value || '\u2014',
-    neck:     document.getElementById('f_neck').value || '\u2014',
-    hips:     document.getElementById('f_hips').value || '\u2014',
-    activity: document.getElementById('f_activity').value,
-    health:   document.getElementById('f_health').value.trim() || '\u2014',
-    message:  document.getElementById('f_message').value.trim() || '\u2014',
-  };
-}
-
-/* ── SEND DATA ── */
-async function sendLeadData(data, paymentId = null) {
-  const tgText =
-`\uD83C\uDFCB\uFE0F *New Plan Request*
-\u{1F4B3} *Plan:* ${data.plan} (${data.price})${paymentId ? `\n\u2705 *Payment ID:* \`${paymentId}\`` : ''}
-
-\uD83D\uDC64 *Name:* ${data.name}
-\uD83D\uDCF1 *Phone:* ${data.phone}
-\uD83D\uDCE7 *Email:* ${data.email}
-
-\uD83D\uDCCA *Stats*
-\u2022 Age: ${data.age} | Gender: ${data.gender}
-\u2022 Weight: ${data.weight} kg | Height: ${data.height} cm
-
-\uD83C\uDFAF *Goal:* ${data.goal}
-\uD83C\uDFE0 *Training:* ${data.training}
-\uD83E\uDD57 *Diet:* ${data.diet}
-\uD83E\uDD5B *Whey:* ${data.whey}
-
-\uD83D\uDCCF *Measurements*
-\u2022 Waist: ${data.waist} | Neck: ${data.neck} | Hips: ${data.hips}
-
-\uD83C\uDFC3 *Activity:* ${data.activity}
-\uD83E\uDE7A *Health notes:* ${data.health}
-\uD83D\uDCAC *Message:* ${data.message}`;
-
-  const emailBody =
-`NEW PLAN REQUEST
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-\uD83D\uDCCB PLAN DETAILS
-   Plan: ${data.plan}
-   Price: ${data.price}${paymentId ? `\n   Payment ID: ${paymentId}` : ''}
-
-\uD83D\uDC64 CLIENT INFORMATION
-   Name: ${data.name}
-   Phone: ${data.phone}
-   Email: ${data.email}
-
-\uD83D\uDCCA BODY STATS
-   Age: ${data.age} years  |  Gender: ${data.gender}
-   Weight: ${data.weight} kg  |  Height: ${data.height} cm
-
-\uD83C\uDFAF FITNESS GOALS
-   Goal: ${data.goal}
-   Training: ${data.training}
-   Diet: ${data.diet}
-   Whey Protein: ${data.whey}
-
-\uD83D\uDCCF BODY MEASUREMENTS
-   Waist: ${data.waist} cm  |  Neck: ${data.neck} cm  |  Hips: ${data.hips} cm
-
-\uD83C\uDFC3 LIFESTYLE
-   Activity Level: ${data.activity}
-   Health / Injuries: ${data.health}
-
-\uD83D\uDCAC CLIENT MESSAGE
-   ${data.message}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Submitted via FitPlan \u2014 Fitness Plan`;
-
-  const formRes = await fetch('https://api.web3forms.com/submit', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-    body: JSON.stringify({
-      access_key: WEB3FORMS_KEY,
-      subject: `\uD83C\uDFCB\uFE0F New Plan Request \u2014 ${data.name} (${data.plan})`,
-      from_name: data.name,
-      email: data.email,
-      message: emailBody,
-      Plan: data.plan,
-      Price: data.price,
-      Payment_ID: paymentId || 'N/A',
-      Name: data.name,
-      Phone: data.phone,
-      Email: data.email,
-      Age: data.age,
-      Gender: data.gender,
-      Weight_kg: data.weight,
-      Height_cm: data.height,
-      Goal: data.goal,
-      Training: data.training,
-      Diet: data.diet,
-      Whey: data.whey,
-      Waist_cm: data.waist,
-      Neck_cm: data.neck,
-      Hips_cm: data.hips,
-      Activity: data.activity,
-      Health_Notes: data.health,
-      Client_Message: data.message,
-    }),
-  });
-
-  if (TG_BOT_TOKEN !== 'YOUR_BOT_TOKEN') {
-    fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: TG_CHAT_ID, text: tgText }),
-    }).catch(() => {});
-  }
-
-  if (!formRes.ok) {
-    const errBody = await formRes.json().catch(() => ({}));
-    return errBody.message || ('HTTP ' + formRes.status);
-  }
-  return true;
-}
-
-/* ── SHOW SUCCESS ── */
-function showSuccess() {
-  document.getElementById('formCard').classList.add('hide');
-  document.getElementById('successCard').classList.add('show');
-  document.querySelectorAll('.plan-section, .hook-box').forEach(el => el.style.display = 'none');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-/* ── SUBMIT ── */
-async function submitForm() {
-  const btn = document.getElementById('submitBtn');
-  const errEl = document.getElementById('formError');
-  errEl.classList.remove('show');
-
-  const required = {
-    'Name':   document.getElementById('f_name').value.trim(),
-    'Phone':  document.getElementById('f_phone').value.trim(),
-    'Email':  document.getElementById('f_email').value.trim(),
-    'Age':    document.getElementById('f_age').value.trim(),
-    'Weight': document.getElementById('f_weight').value.trim(),
-    'Height': document.getElementById('f_height').value.trim(),
-  };
-  const missing = Object.entries(required).filter(([,v]) => !v).map(([k]) => k);
-  if (missing.length) {
-    errEl.textContent = `Please fill in: ${missing.join(', ')}`;
-    errEl.classList.add('show');
-    return;
-  }
-
-  const data = collectData();
-
-  if (RAZORPAY_KEY_ID === 'YOUR_RAZORPAY_KEY_ID') {
-    errEl.textContent = '\u26A0\uFE0F Payment not set up yet. Please contact us on WhatsApp directly.';
-    errEl.classList.add('show');
-    return;
-  }
-
-  const plan = PLANS[selectedPlan];
-  const rzp = new Razorpay({
-    key: RAZORPAY_KEY_ID,
-    amount: selectedPrice * 100,
-    currency: 'INR',
-    name: 'FitPlan',
-    description: plan.name,
-    prefill: {
-      name: data.name,
-      contact: data.phone,
-      email: data.email !== '\u2014' ? data.email : '',
-    },
-    theme: { color: '#7c3aed' },
-    handler: async function(response) {
-      btn.disabled = true;
-      btn.textContent = 'Confirming...';
-      try {
-        if (await sendLeadData(data, response.razorpay_payment_id)) {
-          showSuccess();
-        } else throw new Error();
-      } catch {
-        errEl.textContent = `Payment done \u2713 (ID: ${response.razorpay_payment_id}) \u2014 but form failed. Send this ID to us on WhatsApp.`;
-        errEl.classList.add('show');
-        btn.disabled = false;
-        btn.textContent = `Pay \u20B9${selectedPrice} & Get My Plan \u2192`;
-      }
-    },
-    modal: {
-      ondismiss: () => {
-        btn.disabled = false;
-        btn.textContent = `Pay \u20B9${selectedPrice} & Get My Plan \u2192`;
-      }
-    }
-  });
-  rzp.open();
-}
-
-/* ── INIT ── */
-window.addEventListener('DOMContentLoaded', () => {
-  document.querySelector('.success-wa-note a').href = `https://wa.me/${WHATSAPP_NUMBER}`;
-  updateFieldVisibility();
-});
 </script>
 </body>
 </html>

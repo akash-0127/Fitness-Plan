@@ -1,0 +1,2151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Akash Singh — Workout Generator</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --green:#7eca5a;--gl:#1a2e12;--orange:#f97316;--ol:#2a1a08;
+  --blue:#3b82f6;--bl:#0c1a2e;--red:#ef4444;--rl:#2a0c0c;
+  --gold:#fbbf24;--goldl:#2a2008;--bg:#050508;--card:#0e0e14;
+  --card2:#14141c;--card-hover:#1a1a28;
+  --text:#f2f2f5;--muted:#7a7a8e;--border:rgba(255,255,255,0.06);
+  --border-solid:#1a1a24;--r:14px;--rs:10px;
+  --accent:#7c3aed;--accent2:#a78bfa;--accent-dim:rgba(124,58,237,0.15);
+  --success:#34d399;--purple:#a78bfa;--cyan:#22d3ee
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeInScale{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,0)}50%{box-shadow:0 0 20px 4px rgba(124,58,237,0.3)}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes borderGlow{0%,100%{border-color:rgba(124,58,237,0.15)}50%{border-color:rgba(124,58,237,0.35)}}
+@keyframes iconBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes brainPulse{0%,100%{transform:scale(1);opacity:0.7}50%{transform:scale(1.1);opacity:1}}
+@keyframes thinkingDots{0%,20%{opacity:0.3}50%{opacity:1}80%,100%{opacity:0.3}}
+@keyframes aiGlow{0%,100%{box-shadow:0 0 30px rgba(124,58,237,0.1)}50%{box-shadow:0 0 60px rgba(124,58,237,0.25)}}
+@keyframes progressStep{from{width:0}to{width:100%}}
+@keyframes cardGlass{from{opacity:0;transform:translateY(16px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* ── MESH GRADIENT BG ── */
+.mesh-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.mesh-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.04;animation:breathe 8s ease-in-out infinite}
+.mesh-orb:nth-child(1){width:600px;height:600px;background:#7c3aed;top:-10%;left:30%;animation-delay:0s}
+.mesh-orb:nth-child(2){width:500px;height:500px;background:#3b82f6;bottom:10%;right:10%;animation-delay:2s}
+.mesh-orb:nth-child(3){width:400px;height:400px;background:#22d3ee;top:40%;left:5%;animation-delay:4s}
+
+/* ── TOP NAV ── */
+.topnav{position:sticky;top:0;z-index:200;background:rgba(5,5,8,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-solid);padding:0.75rem 2rem;display:flex;align-items:center;justify-content:space-between}
+.topnav .nav-brand{font-size:1rem;font-weight:800;color:var(--accent);text-decoration:none}
+.topnav .nav-links{display:flex;gap:1.2rem;align-items:center}
+.topnav .nav-links a{color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:500;transition:color 0.2s}
+.topnav .nav-links a:hover{color:var(--accent2)}
+.back-link{color:var(--accent2);text-decoration:none;font-size:0.85rem;font-weight:600;transition:color 0.2s;display:flex;align-items:center;gap:6px}
+.back-link:hover{color:var(--accent)}
+
+/* ── HEADER ── */
+.header{background:rgba(14,14,20,0.8);backdrop-filter:blur(16px);color:#fff;padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;border-bottom:1px solid rgba(124,58,237,0.15);animation:fadeIn 0.5s ease}
+.hl h1{font-size:1.5rem;font-weight:800}.hl h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hl p{font-size:0.78rem;color:var(--muted);margin-top:3px;font-style:italic}
+.hbadge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:0.7rem;padding:5px 14px;border-radius:999px;font-weight:700;margin-top:8px;display:inline-block;box-shadow:0 2px 12px rgba(124,58,237,0.3)}
+.hr{font-size:0.82rem;color:var(--muted);text-align:right}
+.hr a{color:var(--accent2);text-decoration:none;font-weight:600;transition:color 0.2s}
+.hr a:hover{color:var(--accent)}
+
+/* ── STAT CARDS ── */
+.stat-cards{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.stat-card{background:var(--accent-dim);border:1px solid rgba(124,58,237,0.3);border-radius:var(--rs);padding:6px 12px;text-align:center;min-width:70px;transition:transform 0.2s,border-color 0.2s}
+.stat-card:hover{transform:translateY(-2px);border-color:rgba(124,58,237,0.5)}
+.sc-v{font-size:1rem;font-weight:800;color:var(--accent2)}
+.sc-l{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
+
+/* ── LAYOUT ── */
+.wrap{max-width:1000px;margin:0 auto;padding:2rem 1.25rem;position:relative;z-index:1}
+.card{background:rgba(14,14,20,0.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:18px;padding:1.75rem;margin-bottom:1.75rem;box-shadow:0 4px 24px rgba(0,0,0,0.3);animation:cardGlass 0.6s ease 0.1s both;transition:border-color 0.3s,box-shadow 0.3s}
+.card:hover{border-color:rgba(124,58,237,0.2);box-shadow:0 8px 32px rgba(0,0,0,0.4),0 0 16px rgba(124,58,237,0.05)}
+.stitle{font-size:0.7rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:0.9rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+
+/* ── FORM ── */
+.row{display:flex;flex-wrap:wrap;gap:1.25rem;align-items:flex-end;margin-bottom:1.25rem}
+.fg{display:flex;flex-direction:column;gap:6px}
+.fg label{font-size:0.68rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em}
+.req{color:var(--red)}
+input[type=text],input[type=number]{border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:10px 14px;font-size:0.85rem;background:var(--card2);color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s}
+input[type=text]:focus,input[type=number]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,0.1)}
+input[type=text]{width:170px}
+input[type=number]{width:85px}
+input.err{border-color:var(--red);background:var(--rl)!important}
+.ferr{font-size:0.68rem;color:var(--red);display:none;margin-top:2px;font-weight:600}
+.ferr.on{display:block}
+input[type=tel],input[type=email]{border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:10px 14px;font-size:0.85rem;background:var(--card2);color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s;width:170px}
+input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,0.1)}
+
+/* ── CHIPS ── */
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--border-solid);border-radius:999px;padding:7px 16px;font-size:0.78rem;cursor:pointer;background:var(--card2);color:var(--text);transition:all 0.2s;font-weight:500;user-select:none}
+.chip:hover{border-color:var(--accent);color:var(--accent2);transform:translateY(-1px)}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 12px rgba(124,58,237,0.3)}
+
+/* ── SPLIT CHIPS ── */
+.sc-wrap{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.sc{border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:8px 12px;cursor:pointer;background:var(--card2);transition:all 0.2s;min-width:130px;user-select:none}
+.sc:hover{border-color:var(--accent);background:rgba(124,58,237,0.1)}
+.sc.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.sc.rec{border-color:var(--accent);background:var(--accent-dim)}
+.sc.on.rec{background:var(--accent);color:#fff}
+.sc .sn{font-size:0.78rem;font-weight:700;display:block}
+.sc .ss{font-size:0.62rem;color:var(--muted);display:block;margin-top:2px;line-height:1.4}
+.sc.on .ss{color:rgba(255,255,255,0.7)}
+.sc .rt{font-size:0.58rem;background:var(--accent);color:#fff;padding:1px 6px;border-radius:999px;font-weight:800;display:inline-block;margin-top:3px}
+.sc.on .rt{background:var(--accent);color:#fff}
+.split-ex{font-size:0.72rem;color:var(--muted);margin-top:6px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:6px;line-height:1.5;min-height:30px}
+#splitBadge{font-size:0.63rem;background:var(--bl);color:var(--blue);padding:2px 8px;border-radius:999px;font-weight:700;margin-left:6px}
+
+/* ── UNIT TOGGLE ── */
+.unit-row{display:flex;gap:8px;align-items:center}
+.unit-toggle{display:flex;border:1.5px solid var(--border-solid);border-radius:var(--rs);overflow:hidden}
+.unit-btn{padding:7px 12px;font-size:0.72rem;cursor:pointer;background:var(--card2);color:var(--text);transition:all 0.2s;font-weight:600;border:none}
+.unit-btn.active{background:var(--accent);color:#fff}
+.unit-btn:hover:not(.active){background:var(--accent);color:#fff}
+
+/* ── NAVY PANEL ── */
+.navy{margin-top:1rem;background:var(--card2);border:1.5px solid rgba(124,58,237,0.15);border-radius:var(--rs);padding:1rem 1.25rem}
+.navy-t{font-size:0.67rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:0.65rem}
+.navy-h{font-size:0.7rem;color:var(--muted);margin-top:0.5rem}
+
+/* ── BMI PANEL ── */
+#bmiPanel{display:none;margin-top:1.25rem;background:rgba(14,14,20,0.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:var(--rs);padding:1rem 1.25rem}
+.bmi-inner{display:flex;flex-wrap:wrap;gap:1rem;align-items:center}
+.bmi-s{text-align:center}
+.bmi-v{font-size:1.6rem;font-weight:800;color:var(--text)}
+.bmi-l{font-size:0.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
+.bmi-c{font-size:0.7rem;font-weight:700;margin-top:2px}
+.bmi-div{width:1px;height:45px;background:var(--border-solid)}
+.bmi-bw{flex:1;min-width:200px}
+.bmi-bar{background:var(--border-solid);border-radius:99px;height:8px;position:relative;overflow:hidden}
+.bmi-fill{position:absolute;left:0;top:0;height:100%;border-radius:99px;transition:width 0.6s cubic-bezier(0.4,0,0.2,1);background:linear-gradient(90deg,var(--accent),var(--accent2));width:0}
+.bmi-labs{display:flex;justify-content:space-between;font-size:0.58rem;color:var(--muted);margin-top:3px}
+
+/* ── BUTTONS ── */
+.gbtn{background:linear-gradient(135deg,var(--accent),#6d28d9);color:#fff;border:none;border-radius:var(--rs);padding:12px 28px;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(124,58,237,0.25)}
+.gbtn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);transition:left 0.5s}
+.gbtn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(124,58,237,0.4)}
+.gbtn:hover::before{left:100%}
+.gbtn:active{transform:scale(0.97)}
+.pbtn{background:linear-gradient(135deg,var(--gold),#f59e0b);color:#1a1200;border:none;border-radius:var(--rs);padding:12px 28px;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.25s;box-shadow:0 4px 16px rgba(251,191,36,0.2)}
+.pbtn:hover{filter:brightness(1.07);transform:translateY(-2px);box-shadow:0 6px 24px rgba(251,191,36,0.35)}
+
+/* ── AI LOADING OVERLAY ── */
+.loading{display:none;position:fixed;inset:0;background:rgba(5,5,8,0.92);backdrop-filter:blur(12px);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem}
+.loading.on{display:flex;animation:fadeIn 0.3s ease}
+.ai-brain{width:72px;height:72px;border-radius:50%;background:var(--accent-dim);border:2px solid rgba(124,58,237,0.3);display:flex;align-items:center;justify-content:center;font-size:2rem;animation:brainPulse 2s ease-in-out infinite}
+.ai-steps{display:flex;flex-direction:column;gap:10px;min-width:280px}
+.ai-step{display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--muted);transition:color 0.3s}
+.ai-step.active{color:var(--text)}
+.ai-step.done{color:var(--success)}
+.ai-step-dot{width:8px;height:8px;border-radius:50%;background:var(--border-solid);flex-shrink:0;transition:all 0.3s}
+.ai-step.active .ai-step-dot{background:var(--accent);box-shadow:0 0 8px rgba(124,58,237,0.5);animation:brainPulse 1s ease-in-out infinite}
+.ai-step.done .ai-step-dot{background:var(--success)}
+.ai-progress{width:280px;height:3px;background:var(--border-solid);border-radius:99px;overflow:hidden}
+.ai-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:width 0.5s cubic-bezier(0.4,0,0.2,1);width:0}
+
+/* ── OUTPUT ── */
+.output{display:none;background:rgba(14,14,20,0.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:18px;padding:2rem;box-shadow:0 8px 40px rgba(0,0,0,0.4);margin-top:1.5rem}
+.output.show{display:block;animation:fadeInUp 0.5s ease}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;padding-bottom:1.25rem;border-bottom:2px solid var(--border);margin-bottom:1.5rem}
+.pbrand{font-size:0.68rem;color:var(--muted);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px}
+.ptitle{font-size:1.4rem;font-weight:800;color:var(--text)}
+.psub{font-size:0.76rem;color:var(--muted);margin-top:3px}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.badge{font-size:0.68rem;padding:4px 12px;border-radius:999px;font-weight:700}
+.b-green{background:var(--gl);color:var(--green)}
+.b-orange{background:var(--ol);color:var(--orange)}
+.b-blue{background:var(--bl);color:var(--blue)}
+.b-gold{background:var(--goldl);color:var(--gold);border:1px solid rgba(251,191,36,0.3)}
+.b-red{background:var(--rl);color:var(--red)}
+
+/* ── STAT GRID ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
+.stat{background:var(--card2);border:1px solid var(--border-solid);border-radius:var(--rs);padding:14px;text-align:center;animation:popIn 0.3s ease both;transition:transform 0.2s,border-color 0.2s}
+.stat:hover{transform:translateY(-2px);border-color:rgba(124,58,237,0.3)}
+.stat-v{font-size:1.1rem;font-weight:800;color:var(--text)}
+.stat-l{font-size:0.62rem;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:0.05em}
+.stat:nth-child(1){animation-delay:0s}
+.stat:nth-child(2){animation-delay:0.05s}
+.stat:nth-child(3){animation-delay:0.1s}
+.stat:nth-child(4){animation-delay:0.15s}
+
+/* ── SECTION LABELS ── */
+.slbl{font-size:0.67rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin:1.5rem 0 0.75rem;display:flex;align-items:center;gap:10px}
+.slbl::after{content:'';flex:1;height:1px;background:var(--border)}
+.slbl.gold{color:var(--gold)}
+
+/* ── SECTION FRAMES ── */
+.sf{border:1px solid var(--border);border-radius:var(--rs);overflow:hidden;margin-bottom:1.25rem}
+.sh{background:var(--card);color:var(--text);font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:10px 16px;display:flex;align-items:center;gap:8px}
+.ptag{background:linear-gradient(135deg,var(--gold),#f59e0b);color:#1a1200;font-size:0.58rem;padding:2px 8px;border-radius:999px;font-weight:800}
+
+/* ── WORKOUT DAYS ── */
+.wd{padding:14px 16px;border-bottom:1px solid var(--border)}
+.wd:last-child{border-bottom:none}
+.wdh{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.wdl{font-size:0.7rem;font-weight:800;color:var(--text);background:var(--card2);border:1px solid var(--border-solid);border-radius:6px;padding:3px 10px;white-space:nowrap}
+.wdf{font-size:0.78rem;font-weight:700;color:var(--blue)}
+.wu{font-size:0.74rem;color:var(--green);font-weight:600;margin-bottom:5px}
+.fin{font-size:0.74rem;color:var(--orange);font-weight:600;margin-top:5px}
+
+/* ── EXERCISE TABLE ── */
+.ext{width:100%;border-collapse:collapse;font-size:0.79rem;margin-top:5px}
+.ext th{background:var(--card2);font-size:0.63rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);padding:6px 10px;text-align:left;border-bottom:1px solid var(--border-solid)}
+.ext td{padding:6px 10px;border-bottom:1px solid var(--border-solid);vertical-align:top}
+.ext tr:last-child td{border-bottom:none}
+.ext tr:hover td{background:rgba(124,58,237,0.05)}
+
+/* ── PROGRESSION TABLE ── */
+.pt{width:100%;border-collapse:collapse;font-size:0.79rem}
+.pt th{background:var(--card);color:var(--text);font-size:0.63rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;padding:8px 12px;text-align:left}
+.pt td{padding:7px 12px;border-bottom:1px solid var(--border-solid)}
+.pt tr:nth-child(even) td{background:rgba(14,14,20,0.5)}
+.pt tr:last-child td{border-bottom:none}
+
+/* ── INFO BOXES ── */
+.ib{border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:1.25rem}
+.ib h3{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
+.ib-green{background:var(--gl);border:1px solid #3a5a20}.ib-green h3{color:var(--green)}
+.ib-red{background:var(--rl);border:1px solid #712B13}.ib-red h3{color:var(--red)}
+.ib-blue{background:var(--bl);border:1px solid #185FA5}.ib-blue h3{color:var(--blue)}
+.ib-orange{background:var(--ol);border:1px solid #b96b10}.ib-orange h3{color:var(--orange)}
+.ib-dark{background:var(--card);color:#f0f0f0;border-left:4px solid var(--gold)}.ib-dark h3{color:var(--gold)}
+.ib ul{list-style:none;padding:0}
+.ib ul li{font-size:0.82rem;padding:3px 0;display:flex;gap:7px;line-height:1.5}
+.ib-green ul li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:7px}
+.ib-red ul li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:7px}
+.ib-blue ul li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:7px}
+.ib-dark ul li{color:#ddd}
+.ib-dark ul li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:7px}
+
+/* ── CARDIO ── */
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ci{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px}
+.ct{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--blue);margin-bottom:4px}
+.cd{font-size:0.79rem;color:#ccc;line-height:1.5}
+
+/* ── RECOVERY ── */
+.rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:10px;margin-bottom:1.25rem}
+.ri{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px}
+.ri-i{font-size:1.2rem;margin-bottom:4px}
+.ri-t{font-size:0.74rem;font-weight:700;color:var(--text);margin-bottom:3px}
+.ri-d{font-size:0.74rem;color:var(--muted);line-height:1.5}
+
+/* ── PREMIUM NOTE ── */
+.pnote{background:var(--card);color:#f0f0f0;border-radius:var(--rs);padding:0.85rem 1.25rem;font-size:0.81rem;line-height:1.65;border-left:4px solid var(--gold);margin-bottom:1.25rem}
+.pnote strong{color:var(--gold)}
+
+/* ── BODY COMP ROW ── */
+#bcRow{display:none;background:var(--card2);border:1px solid var(--border);border-radius:var(--rs);padding:0.85rem 1.1rem;margin-bottom:1.25rem}
+
+/* ── INJURY ALERT ── */
+#injAlert{display:none;background:var(--rl);border:1px solid #712B13;border-left:4px solid var(--red);border-radius:var(--rs);padding:0.85rem 1.1rem;margin-bottom:1.25rem;font-size:0.82rem;color:var(--text);line-height:1.65}
+
+/* ── EXPORT ── */
+.btn{border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:10px 22px;font-size:0.81rem;cursor:pointer;background:var(--card2);color:var(--text);font-weight:600;transition:all 0.2s}
+.btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(124,58,237,0.2)}
+.btn-p{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ── AI GENERATED BADGE ── */
+.ai-badge{display:none;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(167,139,250,0.15));border:1px solid rgba(124,58,237,0.25);border-radius:999px;padding:4px 14px;font-size:0.68rem;font-weight:700;color:var(--accent2);margin-top:8px;animation:fadeInUp 0.4s ease}
+.ai-badge.show{display:inline-flex}
+.ai-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:brainPulse 1.5s ease-in-out infinite}
+
+/* ── FOOTER ── */
+.footer{text-align:center;margin-top:2.5rem;padding:1.5rem 1.25rem;border-top:1px solid var(--border-solid);font-size:0.75rem;color:var(--muted)}
+.footer a{color:var(--accent2);font-weight:600;text-decoration:none;transition:color 0.2s}
+.footer a:hover{color:var(--accent)}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#222;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#333}
+::selection{background:rgba(124,58,237,0.25);color:#fff}
+
+/* ── PREMIUM PRICING OVERLAY ── */
+.prem-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:500;justify-content:center;align-items:center;padding:1rem}
+.prem-overlay.on{display:flex}
+.prem-modal{background:rgba(14,14,20,0.95);border:1px solid rgba(251,191,36,0.3);border-radius:18px;padding:2rem 1.75rem;max-width:420px;width:100%;text-align:center;animation:fadeInScale 0.35s ease;box-shadow:0 8px 48px rgba(251,191,36,0.12),0 0 80px rgba(124,58,237,0.08)}
+.prem-modal h2{font-size:1.2rem;font-weight:800;margin-bottom:0.3rem;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.prem-modal .pm-sub{font-size:0.78rem;color:var(--muted);margin-bottom:1.25rem}
+.prem-plan{background:var(--bg);border:1px solid var(--border-solid);border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:1rem;text-align:left}
+.prem-plan h4{font-size:0.85rem;font-weight:800;color:var(--gold);margin-bottom:0.4rem}
+.prem-plan ul{list-style:none;padding:0}
+.prem-plan li{font-size:0.78rem;color:var(--text);padding:4px 0;display:flex;align-items:flex-start;gap:6px}
+.prem-plan li::before{content:'✓';color:var(--success);font-weight:800;flex-shrink:0}
+.prem-price{font-size:1.5rem;font-weight:800;color:var(--gold);margin:0.5rem 0 0.25rem}
+.prem-price-note{font-size:0.7rem;color:var(--muted);margin-bottom:1rem}
+.pm-btns{display:flex;gap:10px;justify-content:center}
+.pm-btn{padding:10px 28px;border-radius:var(--rs);border:none;font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.2s}
+.pm-btn-primary{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000}
+.pm-btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(251,191,36,0.3)}
+.pm-btn-cancel{background:var(--card2);color:var(--muted);border:1px solid var(--border-solid)}
+.pm-btn-cancel:hover{color:var(--text);border-color:rgba(255,255,255,0.15)}
+.qr-wrap{background:#fff;border-radius:14px;padding:16px;display:inline-block;margin:0.75rem 0}
+.qr-wrap img{display:block;width:200px;height:200px;border-radius:10px}
+.qr-upi{font-size:0.75rem;color:var(--muted);margin-top:8px;word-break:break-all}
+
+/* ── SUCCESS BANNER ── */
+.success-banner{display:none;background:rgba(16,185,129,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:1.25rem;animation:fadeInScale 0.3s ease}
+.success-banner.on{display:block}
+.success-banner h4{font-size:0.88rem;font-weight:800;color:var(--success);margin-bottom:0.3rem}
+.success-banner p{font-size:0.78rem;color:var(--text);line-height:1.5}
+.success-banner .sb-close{float:right;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;padding:0 4px}
+.success-banner .sb-close:hover{color:var(--text)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .cg{grid-template-columns:1fr}
+  .rg{grid-template-columns:1fr 1fr}
+  .topnav{padding:0.6rem 1rem}
+  .header{padding:1rem 1.25rem}
+  .wrap{padding:1.25rem 0.75rem}
+  .card{padding:1.25rem}
+  .output{padding:1.25rem}
+}
+@media print{
+  .card,.gbtn,.pbtn,.header,.footer,.navy,#bmiPanel,.topnav,.mesh-bg,.ai-badge{display:none!important}
+  body{background:#fff}
+  .output{box-shadow:none;border:none;background:#fff}
+  @page{margin:14mm;size:A4}
+}
+</style>
+</head>
+<body>
+
+<div class="mesh-bg">
+  <div class="mesh-orb"></div>
+  <div class="mesh-orb"></div>
+  <div class="mesh-orb"></div>
+</div>
+
+<nav class="topnav">
+  <a href="index.html" class="back-link">← Back to FitPlan</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</nav>
+
+<div class="loading" id="loading">
+  <div class="ai-brain">🧠</div>
+  <div class="ai-steps">
+    <div class="ai-step" id="aiStep1"><div class="ai-step-dot"></div>Calculating your body metrics</div>
+    <div class="ai-step" id="aiStep2"><div class="ai-step-dot"></div>Designing your workout split</div>
+    <div class="ai-step" id="aiStep3"><div class="ai-step-dot"></div>Building exercise plan</div>
+    <div class="ai-step" id="aiStep4"><div class="ai-step-dot"></div>Adding warmup, cardio & recovery</div>
+  </div>
+  <div class="ai-progress"><div class="ai-progress-fill" id="aiProgressFill"></div></div>
+  <div class="lt" id="lt" style="color:var(--muted);font-size:0.82rem">Preparing your plan...</div>
+</div>
+
+<div class="prem-overlay" id="premOverlay">
+  <div class="prem-modal">
+    <h2>⭐ Premium Workout Plan</h2>
+    <div class="pm-sub">Custom-crafted by Akash Singh — advanced programming with periodisation & progressive overload</div>
+    <div class="prem-plan">
+      <h4>What's Included</h4>
+      <ul>
+        <li>Advanced training split (extra training day)</li>
+        <li>12-week periodisation with progressive overload</li>
+        <li>Premium tempo prescriptions (3-1-2 tempo)</li>
+        <li>Advanced techniques: drop sets, supersets, rest-pause</li>
+        <li>Custom warm-up protocols & injury prevention</li>
+        <li>1-on-1 WhatsApp/Instagram support for 30 days</li>
+        <li>Monthly plan adjustments based on progress</li>
+      </ul>
+    </div>
+    <div class="prem-price">₹99</div>
+    <div class="prem-price-note">One-time payment · Lifetime plan · Free revisions</div>
+    <div class="pm-btns">
+      <button class="pm-btn pm-btn-primary" onclick="confirmPremium()">Proceed — Pay ₹99</button>
+      <button class="pm-btn pm-btn-cancel" onclick="closePremOverlay()">Go Back</button>
+    </div>
+  </div>
+</div>
+
+<div class="prem-overlay" id="qrOverlay">
+  <div class="prem-modal">
+    <h2>📱 Scan to Pay</h2>
+    <div class="pm-sub">Scan the QR code below with any UPI app to complete payment</div>
+    <div class="qr-wrap">
+      <img id="qrImage" src="" alt="UPI QR Code"/>
+    </div>
+    <div class="prem-price" id="qrAmount">₹99</div>
+    <div class="qr-upi">UPI ID: skyce@ybl</div>
+    <div class="prem-price-note">One-time payment · Lifetime plan · Free revisions</div>
+    <div class="pm-btns">
+      <button class="pm-btn pm-btn-primary" onclick="confirmPayment()">I've Paid — Confirm</button>
+      <button class="pm-btn pm-btn-cancel" onclick="closeQrOverlay()">Go Back</button>
+    </div>
+  </div>
+</div>
+
+<div class="success-banner" id="successBanner">
+  <button class="sb-close" onclick="this.parentElement.classList.remove('on')">&times;</button>
+  <h4>✅ Payment Confirmed!</h4>
+  <p id="successMsg">Your premium workout plan request has been received. Akash will contact you within 24 hours via WhatsApp/Instagram.</p>
+</div>
+
+<div class="header">
+  <div class="hl">
+    <h1><span>FitPlan</span></h1>
+    <div class="stat-cards">
+      <div class="stat-card"><div class="sc-v">1000+</div><div class="sc-l">Plans Generated</div></div>
+      <div class="stat-card"><div class="sc-v">15+</div><div class="sc-l">Diet Types</div></div>
+      <div class="stat-card"><div class="sc-v">5</div><div class="sc-l">Goal Categories</div></div>
+      <div class="stat-card"><div class="sc-v">0</div><div class="sc-l">Internet Needed</div></div>
+    </div>
+    <div class="hbadge">💪 Workout Plan Generator</div>
+    <div class="ai-badge" id="aiGeneratedBadge"><div class="ai-badge-dot"></div>AI Generated Plan</div>
+  </div>
+  <div class="hr">
+    <a href="https://instagram.com/akash.liftsup" target="_blank">@akash.liftsup</a>
+    <div style="font-size:0.7rem;color:var(--muted);margin-top:3px">Science-Based Training · No Fluff</div>
+  </div>
+</div>
+
+<div class="wrap">
+<div class="card">
+
+  <!-- PERSONAL -->
+  <div class="stitle">&#x1F464; Personal Details</div>
+  <div class="row">
+    <div class="fg"><label>Client Name <span class="req">*</span></label><input type="text" id="cName" placeholder="e.g. Rahul Sharma"/><span class="ferr" id="eName">Name is required</span></div>
+    <div class="fg"><label>Phone (+91) <span class="req">*</span></label><input type="tel" id="phone" placeholder="98765 43210" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'')"/><span class="ferr" id="ePhone">Enter valid 10-digit Indian number</span></div>
+    <div class="fg"><label>Email <span class="req">*</span></label><input type="email" id="email" placeholder="rahul@email.com"/><span class="ferr" id="eEmail">Enter valid email address</span></div>
+    <div class="fg"><label>Weight <span class="req">*</span></label>
+      <div class="unit-row">
+        <input type="number" id="wt" value="70" min="15" max="450"/>
+        <div class="unit-toggle" id="weightUnit">
+          <div class="unit-btn active" data-val="kg" onclick="setUnit('weight',this)">kg</div>
+          <div class="unit-btn" data-val="lbs" onclick="setUnit('weight',this)">lbs</div>
+        </div>
+      </div>
+      <span class="ferr" id="eWt">Enter realistic weight</span>
+    </div>
+    <div class="fg"><label>Height <span class="req">*</span></label>
+      <div class="unit-row">
+        <input type="number" id="ht" value="170" min="36" max="300"/>
+        <div class="unit-toggle" id="heightUnit">
+          <div class="unit-btn active" data-val="cm" onclick="setUnit('height',this)">cm</div>
+          <div class="unit-btn" data-val="in" onclick="setUnit('height',this)">in</div>
+        </div>
+      </div>
+      <span class="ferr" id="eHt">Enter realistic height</span>
+    </div>
+    <div class="fg"><label>Age</label><input type="number" id="age" value="25" min="15" max="70"/></div>
+    <div class="fg"><label>Gender</label>
+      <div class="chips">
+        <div class="chip on" data-g="gender" data-v="male">&#x2642; Male</div>
+        <div class="chip" data-g="gender" data-v="female">&#x2640; Female</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOAL + LEVEL -->
+  <div class="stitle">&#x1F3AF; Goal &amp; Experience</div>
+  <div class="row">
+    <div class="fg"><label>Fitness Goal</label>
+      <div class="chips">
+        <div class="chip on" data-g="goal" data-v="fatloss">&#x1F525; Fat Loss</div>
+        <div class="chip" data-g="goal" data-v="muscle">&#x1F4AA; Muscle Gain</div>
+        <div class="chip" data-g="goal" data-v="recomp">&#x2696; Recomposition</div>
+        <div class="chip" data-g="goal" data-v="strength">&#x1F3CB; Strength</div>
+        <div class="chip" data-g="goal" data-v="endurance">&#x1F3C3; Endurance</div>
+      </div>
+    </div>
+    <div class="fg"><label>Fitness Level</label>
+      <div class="chips">
+        <div class="chip on" data-g="level" data-v="beginner">Beginner</div>
+        <div class="chip" data-g="level" data-v="intermediate">Intermediate</div>
+        <div class="chip" data-g="level" data-v="advanced">Advanced</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRAINING SETUP -->
+  <div class="stitle">&#x1F3CB; Training Setup</div>
+  <div class="row">
+    <div class="fg"><label>Location</label>
+      <div class="chips">
+        <div class="chip on" data-g="training" data-v="gym">&#x1F3CB; Gym</div>
+        <div class="chip" data-g="training" data-v="home">&#x1F3E0; Home</div>
+      </div>
+    </div>
+    <div class="fg"><label>Session Duration</label>
+      <div class="chips">
+        <div class="chip" data-g="duration" data-v="45">45 min</div>
+        <div class="chip on" data-g="duration" data-v="60">60 min</div>
+        <div class="chip" data-g="duration" data-v="90">90 min</div>
+      </div>
+    </div>
+    <div class="fg"><label>Workout Time</label>
+      <div class="chips">
+        <div class="chip on" data-g="timing" data-v="morning">&#x1F305; Morning</div>
+        <div class="chip" data-g="timing" data-v="evening">&#x1F306; Evening</div>
+        <div class="chip" data-g="timing" data-v="flexible">&#x23F1; Flexible</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAYS + SMART SPLIT -->
+  <div class="stitle">&#x1F4C5; Training Schedule</div>
+  <div class="row" style="align-items:flex-start">
+    <div class="fg">
+      <label>Days Per Week</label>
+      <div class="chips">
+        <div class="chip" data-g="days" data-v="3">3 Days</div>
+        <div class="chip on" data-g="days" data-v="4">4 Days</div>
+        <div class="chip" data-g="days" data-v="5">5 Days</div>
+        <div class="chip" data-g="days" data-v="6">6 Days</div>
+      </div>
+    </div>
+    <div class="fg" style="flex:1;min-width:280px">
+      <label>Training Split <span id="splitBadge"></span></label>
+      <div class="sc-wrap" id="splitChips"></div>
+      <div class="split-ex" id="splitEx"></div>
+    </div>
+  </div>
+
+  <!-- HOME EQUIPMENT -->
+  <div id="homeEquip" style="display:none;margin-bottom:1.25rem">
+    <div class="fg"><label>Home Equipment</label>
+      <div class="chips">
+        <div class="chip on" data-g="equipment" data-v="none">None / Bodyweight</div>
+        <div class="chip" data-g="equipment" data-v="dumbbells">Dumbbells</div>
+        <div class="chip" data-g="equipment" data-v="bands">Resistance Bands</div>
+        <div class="chip" data-g="equipment" data-v="full">Full Setup</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOMISATION -->
+  <div class="stitle">&#x1F3AF; Customisation</div>
+  <div class="row">
+    <div class="fg"><label>Priority / Weak Point</label>
+      <div class="chips">
+        <div class="chip on" data-g="priority" data-v="none">No Preference</div>
+        <div class="chip" data-g="priority" data-v="chest">Chest</div>
+        <div class="chip" data-g="priority" data-v="back">Back</div>
+        <div class="chip" data-g="priority" data-v="legs">Legs</div>
+        <div class="chip" data-g="priority" data-v="glutes">Glutes</div>
+        <div class="chip" data-g="priority" data-v="shoulders">Shoulders</div>
+        <div class="chip" data-g="priority" data-v="arms">Arms</div>
+        <div class="chip" data-g="priority" data-v="core">Core</div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="fg"><label>Injury / Limitation</label>
+      <div class="chips">
+        <div class="chip on" data-g="injury" data-v="none">None</div>
+        <div class="chip" data-g="injury" data-v="knee">Knee Issue</div>
+        <div class="chip" data-g="injury" data-v="shoulder">Shoulder Issue</div>
+        <div class="chip" data-g="injury" data-v="back">Lower Back</div>
+        <div class="chip" data-g="injury" data-v="wrist">Wrist Issue</div>
+      </div>
+    </div>
+    <div class="fg"><label>Cardio Preference</label>
+      <div class="chips">
+        <div class="chip on" data-g="cardio" data-v="both">LISS + HIIT</div>
+        <div class="chip" data-g="cardio" data-v="liss">LISS Only</div>
+        <div class="chip" data-g="cardio" data-v="hiit">HIIT Only</div>
+        <div class="chip" data-g="cardio" data-v="none">No Cardio</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVY METHOD -->
+  <div class="navy">
+    <div class="navy-t">&#x1F4CF; Body Measurements — Navy Method Body Fat Calculator (Optional)</div>
+    <div class="row" style="margin-bottom:0;gap:1rem">
+      <div class="fg"><label>Waist (cm)</label><input type="number" id="waist" placeholder="e.g. 85" style="width:100px"/></div>
+      <div class="fg"><label>Neck (cm)</label><input type="number" id="neck" placeholder="e.g. 38" style="width:100px"/></div>
+      <div class="fg" id="hipGrp" style="display:none"><label>Hip (cm) — females</label><input type="number" id="hip" placeholder="e.g. 95" style="width:100px"/></div>
+      <div class="fg" style="justify-content:flex-end">
+        <label style="visibility:hidden">x</label>
+        <button onclick="calcBMI()"
+          style="border:1.5px solid var(--border);background:var(--gl);color:var(--green);border-radius:var(--rs);padding:9px 16px;font-size:0.79rem;font-weight:700;cursor:pointer;white-space:nowrap"
+          onmouseover="this.style.background='var(--green)';this.style.color='#fff'"
+          onmouseout="this.style.background='var(--gl)';this.style.color='var(--green)'">
+          &#x1F4CA; Calculate BMI &amp; Body Fat %
+        </button>
+      </div>
+    </div>
+    <div class="navy-h">&#x1F4A1; Optional — measurements give accurate body fat %. Otherwise BMI estimate is used automatically.</div>
+  </div>
+
+  <!-- BMI RESULT -->
+  <div id="bmiPanel">
+    <div style="font-size:0.67rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:0.75rem">&#x1F4CA; Body Composition Analysis</div>
+    <div class="bmi-inner">
+      <div class="bmi-s"><div class="bmi-v" id="bmiV">-</div><div class="bmi-l">BMI</div><div class="bmi-c" id="bmiC">-</div></div>
+      <div class="bmi-div"></div>
+      <div class="bmi-s"><div class="bmi-v" id="fatV">-</div><div class="bmi-l">Body Fat %</div><div class="bmi-c" id="fatC">-</div></div>
+      <div class="bmi-div"></div>
+      <div class="bmi-s"><div class="bmi-v" id="leanV">-</div><div class="bmi-l">Lean Mass (kg)</div><div class="bmi-c" id="fmV" style="font-size:0.7rem;color:var(--muted)">-</div></div>
+      <div class="bmi-bw">
+        <div style="font-size:0.69rem;color:var(--muted);margin-bottom:4px" id="bmiNote">-</div>
+        <div class="bmi-bar"><div class="bmi-fill" id="bmiFill"></div></div>
+        <div class="bmi-labs"><span>Underweight</span><span>Normal</span><span>Overweight</span><span>Obese</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:10px;margin-top:1.5rem;flex-wrap:wrap">
+    <button class="gbtn" onclick="generate('normal')">Generate Normal Plan &#x2192;</button>
+    <button class="gbtn pbtn" onclick="generate('premium')">&#x2B50; Generate Premium Plan &#x2192;</button>
+  </div>
+</div>
+
+<!-- OUTPUT SECTION -->
+<div class="output" id="output">
+  <div class="ph">
+    <div>
+      <div class="pbrand">Akash Singh &middot; Personalised Workout Plan</div>
+      <div class="ptitle" id="outTitle">-</div>
+      <div class="psub" id="outSub">-</div>
+    </div>
+    <div class="badges" id="outBadges"></div>
+  </div>
+
+  <div class="stats" id="outStats"></div>
+
+  <div id="bcRow">
+    <div style="font-size:0.63rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">&#x1F4CA; Body Composition</div>
+    <div style="display:flex;flex-wrap:wrap;gap:1.25rem">
+      <div><span style="font-size:1.1rem;font-weight:800;color:#f2f2f5" id="bcFat">-</span> <span style="font-size:0.63rem;color:var(--muted)">Body Fat %</span> <span style="font-size:0.7rem;font-weight:700" id="bcFatC"></span></div>
+      <div><span style="font-size:1.1rem;font-weight:800;color:#f2f2f5" id="bcLean">-</span> <span style="font-size:0.63rem;color:var(--muted)">Lean Mass</span></div>
+      <div><span style="font-size:1.1rem;font-weight:800;color:#f2f2f5" id="bcFM">-</span> <span style="font-size:0.63rem;color:var(--muted)">Fat Mass</span></div>
+      <div style="flex:1;font-size:0.74rem;color:var(--muted)" id="bcNote"></div>
+    </div>
+  </div>
+
+  <div class="ib ib-blue" id="outParams" style="margin-bottom:1.25rem"></div>
+  <div id="injAlert"></div>
+
+  <div id="normalSec">
+    <div class="slbl">Workout Plan</div>
+    <div class="sf"><div class="sh">&#x1F4C5; Weekly Workout Schedule</div><div id="outWk"></div></div>
+    <div class="slbl">&#x1F4C8; Progressive Overload</div>
+    <div class="sf"><div class="sh">Week-by-Week Progression Guide</div><div id="outProg"></div></div>
+  </div>
+
+  <div id="premSec" style="display:none">
+    <div class="slbl gold">&#x2B50; Premium Workout Plan</div>
+    <div class="sf"><div class="sh">&#x2B50; Premium Schedule <span class="ptag">Premium</span></div><div id="outWkP"></div></div>
+    <div class="pnote" id="outPN"></div>
+    <div class="slbl gold">&#x1F4C8; 8-Week Periodization</div>
+    <div class="sf"><div class="sh">Progressive Overload Plan <span class="ptag">Premium</span></div><div id="outPeriod"></div></div>
+  </div>
+
+  <div class="slbl">&#x1F3C3; Cardio</div>
+  <div class="ib ib-blue" style="margin-bottom:1.25rem"><h3>LISS + HIIT Protocol</h3><div class="cg" id="outCardio"></div></div>
+
+  <div class="slbl">&#x1F9D8; Stretching &amp; Mobility</div>
+  <div class="sf"><div class="sh">Daily Stretching Routine</div><div id="outStretch"></div></div>
+
+  <div class="slbl">&#x1F634; Recovery Strategy</div>
+  <div class="rg" id="outRecov"></div>
+
+  <div class="ib ib-orange" style="margin-bottom:1.25rem"><h3>Injury Prevention Tips</h3><ul id="outInj"></ul></div>
+  <div class="ib ib-green" style="margin-bottom:1.25rem"><h3>Akash's Training Rules</h3><ul id="outRules"></ul></div>
+  <div class="ib ib-red" style="margin-bottom:1.25rem"><h3>Strictly Avoid</h3><ul id="outAvoid"></ul></div>
+  <div class="ib ib-dark" id="outNote" style="margin-bottom:1.25rem"></div>
+
+  <div style="margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1rem" id="printWrap">
+    <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Export Options</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-p" onclick="doCopy()">&#x1F4CB; Copy as Text</button>
+      <button class="btn" onclick="window.print()">&#x1F5A8; Print / Save PDF</button>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Designed by <a href="https://instagram.com/akash.liftsup">Akash Singh</a> &middot; @akash.liftsup &middot; Personal Training Use Only</div>
+</div>
+
+<!-- JS GOES HERE — Parts 2 and 3 inject below -->
+
+
+<script>
+// ============================================================
+// PART 2: ALL DATA
+// ============================================================
+
+// SPLIT DEFINITIONS BY DAYS
+var SPLITS = {
+  '3': [
+    {v:'fullbody', n:'Full Body', s:'Mon / Wed / Fri',
+     d:'Every session trains all major muscle groups. 3x per week per muscle. Best choice for 3 days. Ideal for beginners and intermediates.', rec:true},
+    {v:'ppl', n:'Push / Pull / Legs', s:'Push - Pull - Legs',
+     d:'Day 1: Chest + Shoulders + Triceps. Day 2: Back + Biceps + Rear Delts. Day 3: Legs + Core. Each muscle 1x per week. Good for intermediates who want more isolation.', rec:false}
+  ],
+  '4': [
+    {v:'upperlower', n:'Upper / Lower', s:'Upper - Lower - Upper - Lower',
+     d:'Day 1: Upper Push. Day 2: Lower Quad. Day 3: Upper Pull. Day 4: Lower Hip. Each muscle 2x per week. Best balance of frequency and volume. Recommended for all levels.', rec:true},
+    {v:'ppl', n:'PPL + Full Body', s:'Push - Pull - Legs - Full Body',
+     d:'Day 1: Push. Day 2: Pull. Day 3: Legs. Day 4: Full Body compounds. Good variety with decent frequency on upper body.', rec:false},
+    {v:'hybrid', n:'Arnold Split', s:'Chest+Back - Shoulders+Arms - Legs - Repeat',
+     d:'Day 1: Chest + Back (antagonist pairs). Day 2: Shoulders + Arms. Day 3: Legs. Day 4: Rest or repeat. Popularised by Arnold Schwarzenegger. Classic bodybuilding structure.', rec:false}
+  ],
+  '5': [
+    {v:'ppl', n:'PPL + Upper/Lower', s:'Push - Pull - Legs - Upper - Lower',
+     d:'Hybrid of PPL and Upper/Lower. Each muscle 1.5 to 2x per week. High volume + decent frequency. Best for intermediate lifters wanting both splits benefits.', rec:true},
+    {v:'bro', n:'Bro Split (5-Day)', s:'Chest - Back - Legs - Shoulders - Arms',
+     d:'Classic bodybuilder split: 1 muscle per day. Maximum per-session volume, lower frequency (1x per week). Better for advanced lifters with good mind-muscle connection.', rec:false},
+    {v:'upperlower', n:'Upper/Lower + Full Body', s:'Upper - Lower - Upper - Lower - Full Body',
+     d:'Standard Upper/Lower 4 days + Full Body on Day 5. Extra volume and frequency for all muscles. Good for intermediate to advanced.', rec:false},
+    {v:'hybrid', n:'PPL + Push/Pull', s:'Push - Pull - Legs - Push - Pull',
+     d:'PPL with Chest and Back trained twice per week. Legs once. Ideal for those prioritising upper body development over legs.', rec:false}
+  ],
+  '6': [
+    {v:'ppl', n:'PPL x 2 (Classic)', s:'Push - Pull - Legs - Push - Pull - Legs',
+     d:'Each muscle group trained 2x per week. Gold standard 6-day split. Can use identical or varied sessions for A and B days. For advanced lifters who have built a solid base.', rec:true},
+    {v:'bro', n:'Bro Split (6-Day)', s:'Chest - Back - Shoulders - Legs - Arms - Core',
+     d:'Full bro split with dedicated Arms and Core days. Each muscle 1x per week with very high per-session volume. For advanced bodybuilders.', rec:false},
+    {v:'upperlower', n:'Upper/Lower x 3', s:'Upper - Lower - Upper - Lower - Upper - Lower',
+     d:'3 Upper and 3 Lower sessions per week. Highest muscle frequency (3x per week). Advanced athletes only. Requires excellent recovery.', rec:false},
+    {v:'hybrid', n:'Hybrid PPL/UL', s:'Push - Pull - Legs - Upper - Lower - Full Body',
+     d:'Alternates PPL and Upper/Lower structure. Maximum variety and training stimulus. Each week brings different split angles. Advanced lifters only.', rec:false}
+  ]
+};
+
+// REP RANGES BY GOAL
+var RR = {
+  fatloss:   {s:'3-4 sets x 12-15 reps', rest:'45-60s', intensity:'Moderate (65-75% 1RM)'},
+  muscle:    {s:'4 sets x 8-12 reps',    rest:'60-90s', intensity:'Moderate-High (70-80% 1RM)'},
+  recomp:    {s:'3-4 sets x 10-12 reps', rest:'60-75s', intensity:'Moderate (65-75% 1RM)'},
+  strength:  {s:'5 sets x 3-6 reps',     rest:'2-3 min', intensity:'Heavy (80-90% 1RM)'},
+  endurance: {s:'3 sets x 15-20 reps',   rest:'30-45s', intensity:'Light (50-65% 1RM)'}
+};
+
+// ============================================================
+// GYM WORKOUTS — MALE
+// ============================================================
+var GYM = {};
+
+// FAT LOSS
+GYM.fatloss = {};
+
+GYM.fatloss.ppl_4 = [
+  {day:'Monday', focus:'Push — Chest, Shoulders, Triceps',
+   warmup:'5 min treadmill + arm circles + chest opener stretch',
+   exercises:[
+     {name:'Flat Barbell Bench Press', sets:'4x12', rest:'60s', note:'Primary chest compound'},
+     {name:'Incline Dumbbell Press', sets:'3x12', rest:'60s', note:'Upper chest focus'},
+     {name:'Cable Chest Fly (mid)', sets:'3x15', rest:'45s', note:'Full stretch at bottom'},
+     {name:'Dumbbell Shoulder Press', sets:'3x12', rest:'60s', note:'Compound shoulder'},
+     {name:'Lateral Raise', sets:'4x15', rest:'45s', note:'Slow eccentric — feel it'},
+     {name:'Tricep Rope Pushdown', sets:'3x15', rest:'45s', note:'Isolation'},
+     {name:'Overhead Tricep Extension', sets:'3x12', rest:'45s', note:'Long head'}
+   ], finisher:'10 min HIIT: 30s push-ups / 30s rest x 10 rounds'},
+  {day:'Tuesday', focus:'Pull — Back, Biceps, Rear Delts',
+   warmup:'5 min row machine + band pull-apart x20 + cat-cow',
+   exercises:[
+     {name:'Deadlift', sets:'3x10', rest:'90s', note:'Controlled descent always'},
+     {name:'Lat Pulldown (wide grip)', sets:'4x12', rest:'60s', note:'Lat width'},
+     {name:'Seated Cable Row', sets:'3x12', rest:'60s', note:'Mid-back thickness'},
+     {name:'Single-Arm Dumbbell Row', sets:'3x12 each', rest:'60s', note:'Unilateral balance'},
+     {name:'Face Pull (rope)', sets:'3x15', rest:'45s', note:'Rear delts + rotator cuff health'},
+     {name:'Barbell Curl', sets:'3x12', rest:'45s', note:'Bicep compound'},
+     {name:'Hammer Curl', sets:'3x12', rest:'45s', note:'Brachialis + forearm'}
+   ], finisher:'10 min steady cycling at 65% HR'},
+  {day:'Thursday', focus:'Legs + Core',
+   warmup:'5 min bike + leg swings + bodyweight squat x15 + hip circles',
+   exercises:[
+     {name:'Back Squat', sets:'4x12', rest:'90s', note:'Primary leg compound'},
+     {name:'Romanian Deadlift', sets:'3x12', rest:'75s', note:'Hamstring + glute'},
+     {name:'Leg Press', sets:'3x15', rest:'60s', note:'Quad volume'},
+     {name:'Walking Lunges', sets:'3x12 each', rest:'60s', note:'Unilateral'},
+     {name:'Leg Curl (lying)', sets:'3x15', rest:'45s', note:'Hamstring isolation'},
+     {name:'Calf Raise (standing)', sets:'4x20', rest:'30s', note:'Full ROM'},
+     {name:'Plank', sets:'4x45s', rest:'30s', note:'Anti-extension core'},
+     {name:'Hanging Leg Raise', sets:'3x15', rest:'30s', note:'Lower abs'}
+   ], finisher:'20 min incline treadmill walk (incline 8, pace 5.5 kmph)'},
+  {day:'Saturday', focus:'Full Body Metabolic Circuit',
+   warmup:'5 min jump rope + squat + push-up warm-up round',
+   exercises:[
+     {name:'Goblet Squat', sets:'4x15', rest:'45s', note:'Metabolic compound'},
+     {name:'Dumbbell Romanian Deadlift', sets:'3x12', rest:'45s', note:'Posterior chain'},
+     {name:'Push-Up', sets:'4x max', rest:'45s', note:'Chest + core stability'},
+     {name:'Seated Cable Row', sets:'3x15', rest:'45s', note:'Back pull'},
+     {name:'Dumbbell Shoulder Press', sets:'3x12', rest:'45s', note:'Shoulder compound'},
+     {name:'Mountain Climbers', sets:'3x30', rest:'30s', note:'Core + cardio'},
+     {name:'Battle Ropes 30s', sets:'5x30s', rest:'30s', note:'Cardio finisher'}
+   ], finisher:'5 rounds AMRAP: 5 burpees + 10 push-ups + 15 squats'}
+];
+
+GYM.fatloss.upperlower_4 = [
+  {day:'Monday', focus:'Upper — Push Focus',
+   warmup:'5 min row + arm circles + chest opener',
+   exercises:[
+     {name:'Barbell Bench Press', sets:'4x10', rest:'75s', note:'Primary push compound'},
+     {name:'Incline Dumbbell Press', sets:'3x12', rest:'60s', note:'Upper chest'},
+     {name:'Overhead Press', sets:'3x10', rest:'75s', note:'Shoulder compound'},
+     {name:'Lateral Raise', sets:'3x15', rest:'45s', note:'Side delts'},
+     {name:'Tricep Overhead Extension', sets:'3x12', rest:'45s', note:'Long head'},
+     {name:'Tricep Pushdown', sets:'3x15', rest:'45s', note:'Isolation'}
+   ], finisher:'15 min HIIT cardio'},
+  {day:'Tuesday', focus:'Lower — Quad Dominant',
+   warmup:'5 min bike + leg swings + hip circles',
+   exercises:[
+     {name:'Back Squat', sets:'4x12', rest:'90s', note:'Compound king'},
+     {name:'Leg Press', sets:'3x15', rest:'60s', note:'Quad volume'},
+     {name:'Walking Lunges', sets:'3x12 each', rest:'60s', note:'Unilateral'},
+     {name:'Leg Extension', sets:'3x15', rest:'45s', note:'Quad finisher'},
+     {name:'Calf Raise', sets:'4x20', rest:'30s', note:'Full ROM'},
+     {name:'Plank', sets:'3x45s', rest:'30s', note:'Core'}
+   ], finisher:'20 min incline walk'},
+  {day:'Thursday', focus:'Upper — Pull Focus',
+   warmup:'5 min row + band pull-apart + cat-cow',
+   exercises:[
+     {name:'Deadlift', sets:'3x8', rest:'90s', note:'Full posterior chain'},
+     {name:'Pull-Up or Lat Pulldown', sets:'4x10', rest:'75s', note:'Lat width'},
+     {name:'Seated Cable Row', sets:'3x12', rest:'60s', note:'Mid-back'},
+     {name:'Face Pull', sets:'3x15', rest:'45s', note:'Rear delts + health'},
+     {name:'Barbell Curl', sets:'3x12', rest:'45s', note:'Bicep'},
+     {name:'Hammer Curl', sets:'3x12', rest:'45s', note:'Brachialis'}
+   ], finisher:'15 min HIIT'},
+  {day:'Saturday', focus:'Lower — Hip Dominant + Core',
+   warmup:'5 min bike + glute bridge x20 + hip circles',
+   exercises:[
+     {name:'Romanian Deadlift', sets:'4x12', rest:'75s', note:'Primary hip hinge'},
+     {name:'Hip Thrust (barbell)', sets:'4x12', rest:'60s', note:'Glute max'},
+     {name:'Sumo Squat', sets:'3x15', rest:'60s', note:'Inner quad + glutes'},
+     {name:'Leg Curl (lying)', sets:'3x15', rest:'45s', note:'Hamstring'},
+     {name:'Hanging Leg Raise', sets:'3x15', rest:'30s', note:'Lower abs'},
+     {name:'Cable Crunch', sets:'3x20', rest:'30s', note:'Upper abs'}
+   ], finisher:'20 min LISS cardio'}
+];
+
+GYM.fatloss.fullbody_3 = [
+  {day:'Monday', focus:'Full Body — Strength Focus',
+   warmup:'5 min treadmill + dynamic stretching',
+   exercises:[
+     {name:'Barbell Squat', sets:'4x10', rest:'90s', note:'Primary lower'},
+     {name:'Bench Press', sets:'4x10', rest:'90s', note:'Primary push'},
+     {name:'Barbell Row', sets:'4x10', rest:'75s', note:'Primary pull'},
+     {name:'Overhead Press', sets:'3x10', rest:'75s', note:'Shoulder compound'},
+     {name:'Romanian Deadlift', sets:'3x12', rest:'75s', note:'Posterior chain'},
+     {name:'Plank', sets:'3x45s', rest:'30s', note:'Core'}
+   ], finisher:'15 min incline walk'},
+  {day:'Wednesday', focus:'Full Body — Volume Focus',
+   warmup:'5 min bike + arm circles + leg swings',
+   exercises:[
+     {name:'Leg Press', sets:'4x15', rest:'60s', note:'Quad volume'},
+     {name:'Incline DB Press', sets:'3x12', rest:'60s', note:'Upper chest'},
+     {name:'Lat Pulldown', sets:'3x12', rest:'60s', note:'Back width'},
+     {name:'Lateral Raise', sets:'3x15', rest:'45s', note:'Side delts'},
+     {name:'Hammer Curl', sets:'3x12', rest:'45s', note:'Bicep'},
+     {name:'Tricep Pushdown', sets:'3x12', rest:'45s', note:'Tricep'},
+     {name:'Leg Raises', sets:'3x15', rest:'30s', note:'Core'}
+   ], finisher:'20 min LISS'},
+  {day:'Friday', focus:'Full Body — Metabolic Circuit',
+   warmup:'5 min jump rope + bodyweight round',
+   exercises:[
+     {name:'Goblet Squat', sets:'4x15', rest:'45s', note:'Metabolic lower'},
+     {name:'Dumbbell Row', sets:'4x12 each', rest:'45s', note:'Unilateral pull'},
+     {name:'Push-Up (feet elevated)', sets:'4x max', rest:'45s', note:'Push'},
+     {name:'Hip Thrust', sets:'4x15', rest:'45s', note:'Glute'},
+     {name:'Face Pull', sets:'3x15', rest:'30s', note:'Rear delts'},
+     {name:'Bicycle Crunch', sets:'3x20', rest:'30s', note:'Core'}
+   ], finisher:'5 rounds: 5 burpees + 10 squats + 15s plank'}
+];
+
+GYM.fatloss.bro_5 = [
+  {day:'Monday', focus:'Chest Day',
+   warmup:'5 min treadmill + chest opener + arm circles',
+   exercises:[
+     {name:'Flat Barbell Bench Press', sets:'4x12', rest:'60s', note:'Primary'},
+     {name:'Incline Dumbbell Press', sets:'3x12', rest:'60s', note:'Upper chest'},
+     {name:'Decline Barbell Press', sets:'3x12', rest:'60s', note:'Lower chest'},
+     {name:'Cable Fly (mid)', sets:'3x15', rest:'45s', note:'Isolation stretch'},
+     {name:'Dumbbell Pullover', sets:'3x12', rest:'45s', note:'Serratus + chest'},
+     {name:'Push-Up to failure', sets:'2x max', rest:'45s', note:'Burnout'}
+   ], finisher:'10 min HIIT'},
+  {day:'Tuesday', focus:'Back Day',
+   warmup:'5 min row + band pull-apart + cat-cow',
+   exercises:[
+     {name:'Deadlift', sets:'4x8', rest:'90s', note:'Foundation'},
+     {name:'Pull-Up / Lat Pulldown', sets:'4x10', rest:'75s', note:'Lat width'},
+     {name:'Barbell Bent-Over Row', sets:'4x10', rest:'75s', note:'Thickness'},
+     {name:'Seated Cable Row', sets:'3x12', rest:'60s', note:'Mid-back'},
+     {name:'Single-Arm DB Row', sets:'3x12 each', rest:'60s', note:'Unilateral'},
+     {name:'Face Pull', sets:'3x15', rest:'45s', note:'Rear delts + health'}
+   ], finisher:'20 min steady cardio'},
+  {day:'Wednesday', focus:'Legs Day',
+   warmup:'5 min bike + leg swings + bodyweight squat x15',
+   exercises:[
+     {name:'Back Squat', sets:'4x12', rest:'90s', note:'King of legs'},
+     {name:'Romanian Deadlift', sets:'3x12', rest:'75s', note:'Hamstring'},
+     {name:'Leg Press', sets:'3x15', rest:'60s', note:'Quad volume'},
+     {name:'Walking Lunges', sets:'3x12 each', rest:'60s', note:'Unilateral'},
+     {name:'Leg Curl', sets:'3x15', rest:'45s', note:'Hamstring isolation'},
+     {name:'Seated Calf Raise', sets:'4x20', rest:'30s', note:'Full ROM'}
+   ], finisher:'20 min incline walk'},
+  {day:'Friday', focus:'Shoulders Day',
+   warmup:'5 min jump rope + shoulder rotation + band pull-apart',
+   exercises:[
+     {name:'Barbell Overhead Press', sets:'4x10', rest:'75s', note:'Primary compound'},
+     {name:'Arnold Press', sets:'3x10', rest:'60s', note:'Full rotation'},
+     {name:'Lateral Raise', sets:'4x15', rest:'45s', note:'Slow eccentric'},
+     {name:'Rear Delt Fly (cable)', sets:'3x15', rest:'45s', note:'Rear delts'},
+     {name:'Barbell Shrug', sets:'3x15', rest:'45s', note:'Traps'},
+     {name:'Face Pull', sets:'3x15', rest:'30s', note:'Rotator cuff health'}
+   ], finisher:'15 min HIIT'},
+  {day:'Saturday', focus:'Arms + Core',
+   warmup:'5 min bike + wrist circles + light curl warm-up',
+   exercises:[
+     {name:'Barbell Curl', sets:'4x12', rest:'60s', note:'Primary bicep'},
+     {name:'Incline Dumbbell Curl', sets:'3x12', rest:'45s', note:'Long head stretch'},
+     {name:'Hammer Curl', sets:'3x12', rest:'45s', note:'Brachialis'},
+     {name:'Close-Grip Bench Press', sets:'4x10', rest:'60s', note:'Tricep compound'},
+     {name:'Skull Crusher', sets:'3x12', rest:'45s', note:'Tricep long head'},
+     {name:'Rope Pushdown', sets:'3x15', rest:'45s', note:'Isolation'},
+     {name:'Plank', sets:'3x45s', rest:'30s', note:'Core'},
+     {name:'Hanging Leg Raise', sets:'3x15', rest:'30s', note:'Lower abs'}
+   ], finisher:'20 min LISS'}
+];
+
+GYM.fatloss.hybrid_4 = GYM.fatloss.upperlower_4;
+
+// MUSCLE GAIN
+GYM.muscle = {};
+
+GYM.muscle.ppl_5 = [
+  {day:'Monday', focus:'Push — Chest, Shoulders, Triceps (Heavy)',
+   warmup:'5 min light cardio + rotator cuff warm-up + empty bar bench x15',
+   exercises:[
+     {name:'Flat Barbell Bench Press', sets:'5x8-10', rest:'90s', note:'Log weight every session'},
+     {name:'Incline Dumbbell Press', sets:'4x10', rest:'75s', note:'Upper chest'},
+     {name:'Cable Fly (mid)', sets:'3x12', rest:'60s', note:'Full stretch'},
+     {name:'Dumbbell Shoulder Press', sets:'4x10', rest:'75s', note:'Overhead compound'},
+     {name:'Lateral Raise', sets:'4x12', rest:'60s', note:'Slow eccentric'},
+     {name:'Skull Crusher', sets:'3x10', rest:'60s', note:'Tricep long head'},
+     {name:'Rope Pushdown', sets:'3x12', rest:'45s', note:'Isolation'}
+   ], finisher:'Optional: 2 sets push-ups to failure'},
+  {day:'Tuesday', focus:'Pull — Back, Biceps (Heavy)',
+   warmup:'5 min row + band pull-apart x25 + shoulder mobility',
+   exercises:[
+     {name:'Deadlift', sets:'4x6-8', rest:'2 min', note:'Primary posterior compound'},
+     {name:'Weighted Pull-Up / Lat Pulldown', sets:'4x8', rest:'90s', note:'Lat width'},
+     {name:'Barbell Bent-Over Row', sets:'4x8-10', rest:'90s', note:'Back thickness'},
+     {name:'Seated Cable Row', sets:'3x12', rest:'60s', note:'Mid-back'},
+     {name:'Face Pull', sets:'3x15', rest:'45s', note:'Rear delts + rotator health'},
+     {name:'Barbell Curl', sets:'4x10', rest:'60s', note:'Bicep'},
+     {name:'Incline Dumbbell Curl', sets:'3x12', rest:'45s', note:'Long head stretch'}
+   ], finisher:'None — save energy'},
+  {day:'Wednesday', focus:'Legs — Full (Heavy)',
+   warmup:'5 min bike + bodyweight squat x20 + hip circles',
+   exercises:[
+     {name:'Back Squat', sets:'5x8-10', rest:'2 min', note:'King — log every session'},
+     {name:'Romanian Deadlift', sets:'4x10', rest:'90s', note:'Hamstring + glutes'},
+     {name:'Leg Press', sets:'4x12', rest:'75s', note:'Quad volume'},
+     {name:'Walking Lunges', sets:'3x12 each', rest:'75s', note:'Unilateral'},
+     {name:'Leg Curl', sets:'3x12', rest:'60s', note:'Hamstring isolation'},
+     {name:'Leg Extension', sets:'3x12', rest:'60s', note:'Quad finisher'},
+     {name:'Standing Calf Raise', sets:'4x20', rest:'30s', note:'Full ROM'},
+     {name:'Seated Calf Raise', sets:'4x20', rest:'30s', note:'Soleus focus'}
+   ], finisher:'None — legs need full recovery'},
+  {day:'Friday', focus:'Push — Shoulders Primary',
+   warmup:'5 min treadmill + shoulder circles + face pull warm-up',
+   exercises:[
+     {name:'Barbell Overhead Press', sets:'4x8', rest:'90s', note:'Primary shoulder compound'},
+     {name:'Arnold Press', sets:'3x10', rest:'60s', note:'Full rotation'},
+     {name:'Lateral Raise', sets:'4x12-15', rest:'45s', note:'Side delt volume'},
+     {name:'Rear Delt Cable Fly', sets:'3x15', rest:'45s', note:'Posterior shoulder'},
+     {name:'Incline DB Press', sets:'3x10', rest:'75s', note:'Chest volume'},
+     {name:'Overhead Tricep Extension', sets:'3x12', rest:'45s', note:'Long head'},
+     {name:'Dips', sets:'3x10', rest:'60s', note:'Tricep compound'}
+   ], finisher:'None'},
+  {day:'Saturday', focus:'Pull — Arms + Accessories',
+   warmup:'5 min bike + wrist mobility + light curl warm-up',
+   exercises:[
+     {name:'Barbell Curl', sets:'4x10', rest:'60s', note:'Primary bicep'},
+     {name:'Hammer Curl', sets:'3x12', rest:'45s', note:'Brachialis'},
+     {name:'Cable Curl', sets:'3x15', rest:'45s', note:'Peak contraction'},
+     {name:'Close-Grip Bench Press', sets:'4x10', rest:'60s', note:'Tricep compound'},
+     {name:'Skull Crusher', sets:'3x10', rest:'45s', note:'Long head'},
+     {name:'Rope Pushdown', sets:'3x15', rest:'45s', note:'Isolation'},
+     {name:'Lat Pulldown (close grip)', sets:'3x12', rest:'60s', note:'Lower lat'},
+     {name:'Cable Row (wide grip)', sets:'3x12', rest:'60s', note:'Upper back'}
+   ], finisher:'20 min light LISS — optional'}
+];
+
+GYM.muscle.upperlower_4 = [
+  {day:'Monday', focus:'Upper A — Horizontal Push/Pull',
+   warmup:'5 min row + rotator warm-up',
+   exercises:[
+     {name:'Flat Barbell Bench Press', sets:'4x8', rest:'90s', note:'Progressive overload focus'},
+     {name:'Barbell Row', sets:'4x8', rest:'90s', note:'Paired with bench'},
+     {name:'Incline DB Press', sets:'3x10', rest:'75s', note:'Upper chest'},
+     {name:'Seated Cable Row', sets:'3x12', rest:'60s', note:'Mid-back'},
+     {name:'Lateral Raise', sets:'3x15', rest:'45s', note:'Delts'},
+     {name:'Hammer Curl', sets:'3x12', rest:'45s', note:'Bicep'},
+     {name:'Tricep Pushdown', sets:'3x15', rest:'45s', note:'Tricep'}
+   ], finisher:'None'},
+  {day:'Tuesday', focus:'Lower A — Squat Pattern',
+   warmup:'5 min bike + squat mob + leg swings',
+   exercises:[
+     {name:'Back Squat', sets:'4x8', rest:'2 min', note:'Primary quad compound'},
+     {name:'Romanian Deadlift', sets:'3x10', rest:'90s', note:'Posterior chain'},
+     {name:'Leg Press', sets:'3x12', rest:'75s', note:'Volume'},
+     {name:'Leg Extension', sets:'3x15', rest:'60s', note:'Quad finisher'},
+     {name:'Leg Curl', sets:'3x15', rest:'60s', note:'Hamstring'},
+     {name:'Calf Raise', sets:'4x20', rest:'30s', note:'Full ROM'}
+   ], finisher:'None'},
+  {day:'Thursday', focus:'Upper B — Vertical Push/Pull',
+   warmup:'5 min treadmill + shoulder mob',
+   exercises:[
+     {name:'Overhead Press (barbell)', sets:'4x8', rest:'90s', note:'Vertical push'},
+     {name:'Pull-Up / Lat Pulldown', sets:'4x8', rest:'90s', note:'Vertical pull'},
+     {name:'Arnold Press', sets:'3x10', rest:'60s', note:'Shoulder volume'},
+     {name:'Face Pull', sets:'3x15', rest:'45s', note:'Rear delts'},
+     {name:'Barbell Curl', sets:'4x10', rest:'60s', note:'Bicep'},
+     {name:'Close-Grip Bench / Dips', sets:'3x10', rest:'60s', note:'Tricep compound'}
+   ], finisher:'None'},
+  {day:'Saturday', focus:'Lower B — Hip Pattern',
+   warmup:'5 min row + glute bridge + hip circles',
+   exercises:[
+     {name:'Deadlift', sets:'4x6', rest:'2 min', note:'Hip hinge — heaviest of week'},
+     {name:'Hip Thrust (barbell)', sets:'4x10', rest:'75s', note:'Glutes'},
+     {name:'Bulgarian Split Squat', sets:'3x10 each', rest:'90s', note:'Unilateral'},
+     {name:'Lying Leg Curl', sets:'3x12', rest:'60s', note:'Hamstring'},
+     {name:'Standing Calf Raise', sets:'4x20', rest:'30s', note:'Full ROM'},
+     {name:'Ab Wheel Rollout', sets:'3x10', rest:'45s', note:'Core stability'}
+   ], finisher:'None'}
+];
+
+GYM.muscle.fullbody_3 = [
+  {day:'Monday', focus:'Full Body A — Strength',
+   warmup:'5 min cardio + joint mob full body',
+   exercises:[
+     {name:'Squat', sets:'4x8', rest:'2 min', note:'Lower compound'},
+     {name:'Bench Press', sets:'4x8', rest:'2 min', note:'Upper push'},
+     {name:'Barbell Row', sets:'4x8', rest:'2 min', note:'Upper pull'},
+     {name:'Overhead Press', sets:'3x8', rest:'90s', note:'Shoulder'},
+     {name:'Romanian Deadlift', sets:'3x10', rest:'90s', note:'Posterior'},
+     {name:'Plank', sets:'3x60s', rest:'30s', note:'Core'}
+   ], finisher:'None'},
+  {day:'Wednesday', focus:'Full Body B — Hypertrophy',
+   warmup:'5 min bike + dynamic stretch',
+   exercises:[
+     {name:'Leg Press', sets:'4x12', rest:'75s', note:'Quad volume'},
+     {name:'Incline DB Press', sets:'4x12', rest:'75s', note:'Upper push'},
+     {name:'Lat Pulldown', sets:'4x12', rest:'75s', note:'Back'},
+     {name:'Lateral Raise', sets:'4x15', rest:'45s', note:'Delts'},
+     {name:'Barbell Curl', sets:'3x12', rest:'60s', note:'Bicep'},
+     {name:'Skull Crusher', sets:'3x10', rest:'60s', note:'Tricep'},
+     {name:'Hanging Leg Raise', sets:'3x15', rest:'30s', note:'Core'}
+   ], finisher:'None'},
+  {day:'Friday', focus:'Full Body C — Power + Volume',
+   warmup:'5 min row + squat + push-up round',
+   exercises:[
+     {name:'Deadlift', sets:'4x6', rest:'2 min', note:'Power compound'},
+     {name:'Hip Thrust', sets:'4x10', rest:'75s', note:'Glute power'},
+     {name:'Pull-Up', sets:'4x max', rest:'90s', note:'Lat pull'},
+     {name:'Dumbbell Press', sets:'4x10', rest:'75s', note:'Chest'},
+     {name:'Hammer Curl', sets:'3x12', rest:'45s', note:'Bicep'},
+     {name:'Tricep Pushdown', sets:'3x15', rest:'45s', note:'Tricep'},
+     {name:'Cable Crunch', sets:'3x15', rest:'30s', note:'Abs'}
+   ], finisher:'None'}
+];
+
+// Cross-link other goals to appropriate base plans
+GYM.recomp   = GYM.muscle;
+GYM.strength = GYM.muscle;
+GYM.endurance = GYM.fatloss;
+
+// ============================================================
+// FEMALE GYM WORKOUTS
+// ============================================================
+var FGYM = {};
+
+FGYM.fatloss = {};
+FGYM.fatloss.upperlower_4 = [
+  {day:'Monday', focus:'Glutes + Lower Body Power',
+   warmup:'5 min elliptical + hip circles + glute bridge x15',
+   exercises:[
+     {name:'Barbell Hip Thrust', sets:'4x15', rest:'60s', note:'Primary glute builder'},
+     {name:'Sumo Squat (barbell/DB)', sets:'4x15', rest:'60s', note:'Inner thigh + glute'},
+     {name:'Cable Kickback', sets:'3x20 each', rest:'45s', note:'Glute isolation'},
+     {name:'Romanian Deadlift', sets:'3x12', rest:'60s', note:'Hamstring + glutes'},
+     {name:'Hip Abductor Machine', sets:'3x20', rest:'45s', note:'Glute med'},
+     {name:'Standing Calf Raise', sets:'4x20', rest:'30s', note:'Full ROM'}
+   ], finisher:'20 min elliptical at 65% HR'},
+  {day:'Tuesday', focus:'Upper Body Tone',
+   warmup:'5 min row + arm circles + band pull-apart',
+   exercises:[
+     {name:'Dumbbell Chest Press', sets:'3x12', rest:'60s', note:'Chest — moderate weight'},
+     {name:'Seated Cable Row', sets:'3x12', rest:'60s', note:'Mid-back'},
+     {name:'Dumbbell Shoulder Press', sets:'3x12', rest:'60s', note:'Shoulders'},
+     {name:'Lateral Raise', sets:'3x15', rest:'45s', note:'Side delts'},
+     {name:'Tricep Pushdown', sets:'3x15', rest:'45s', note:'Arm tone'},
+     {name:'Bicep Curl (dumbbell)', sets:'3x12', rest:'45s', note:'Arm tone'},
+     {name:'Face Pull', sets:'3x15', rest:'30s', note:'Rear delts + posture'}
+   ], finisher:'10 min HIIT'},
+  {day:'Thursday', focus:'Legs + Core',
+   warmup:'5 min bike + leg swings + hip circles',
+   exercises:[
+     {name:'Back Squat', sets:'4x12', rest:'75s', note:'Quad compound'},
+     {name:'Walking Lunge', sets:'3x12 each', rest:'60s', note:'Unilateral'},
+     {name:'Leg Press', sets:'3x15', rest:'60s', note:'Quad volume'},
+     {name:'Leg Curl', sets:'3x15', rest:'45s', note:'Hamstring'},
+     {name:'Plank', sets:'4x45s', rest:'30s', note:'Core'},
+     {name:'Bicycle Crunch', sets:'3x20', rest:'30s', note:'Obliques'},
+     {name:'Leg Raises', sets:'3x15', rest:'30s', note:'Lower abs'}
+   ], finisher:'25 min incline walk (incline 8)'},
+  {day:'Saturday', focus:'Full Body Metabolic + Cardio',
+   warmup:'5 min treadmill + bodyweight round',
+   exercises:[
+     {name:'Goblet Squat', sets:'4x15', rest:'45s', note:'Metabolic lower'},
+     {name:'DB Row', sets:'3x12 each', rest:'45s', note:'Back'},
+     {name:'Push-Up or DB Chest Press', sets:'3x15', rest:'45s', note:'Push'},
+     {name:'Hip Thrust', sets:'4x20', rest:'45s', note:'Glutes'},
+     {name:'Cable Kickback', sets:'3x20 each', rest:'30s', note:'Glute isolation'},
+     {name:'Mountain Climber', sets:'3x25', rest:'30s', note:'Core + cardio'}
+   ], finisher:'10 min AMRAP: 10 jump squats + 10 push-ups + 20 mountain climbers'}
+];
+
+FGYM.muscle = {};
+FGYM.muscle.upperlower_4 = [
+  {day:'Monday', focus:'Glutes + Legs — Power Day',
+   warmup:'5 min bike + hip circles + glute bridge x15',
+   exercises:[
+     {name:'Barbell Hip Thrust', sets:'5x10-12', rest:'75s', note:'Primary glute builder — go heavy'},
+     {name:'Back Squat', sets:'4x10', rest:'90s', note:'Quad compound'},
+     {name:'Romanian Deadlift', sets:'4x10', rest:'75s', note:'Posterior chain'},
+     {name:'Cable Kickback', sets:'4x20 each', rest:'45s', note:'Glute isolation'},
+     {name:'Walking Lunge', sets:'3x12 each', rest:'60s', note:'Unilateral'},
+     {name:'Calf Raise', sets:'4x20', rest:'30s', note:'Full ROM'}
+   ], finisher:'None — save energy for growth'},
+  {day:'Tuesday', focus:'Upper Body Strength',
+   warmup:'5 min row + arm circles + band pull-apart',
+   exercises:[
+     {name:'Dumbbell Bench Press', sets:'4x10', rest:'75s', note:'Chest'},
+     {name:'Dumbbell Shoulder Press', sets:'4x10', rest:'75s', note:'Shoulders'},
+     {name:'Lat Pulldown', sets:'4x10', rest:'75s', note:'Back width'},
+     {name:'Seated Cable Row', sets:'3x12', rest:'60s', note:'Mid-back'},
+     {name:'Lateral Raise', sets:'4x15', rest:'45s', note:'Side delts'},
+     {name:'Overhead Tricep Extension', sets:'3x12', rest:'45s', note:'Arm tone'},
+     {name:'Dumbbell Curl', sets:'3x12', rest:'45s', note:'Arm tone'}
+   ], finisher:'None'},
+  {day:'Thursday', focus:'Glutes + Legs — Volume Day',
+   warmup:'5 min bike + glute bridge + hip circles',
+   exercises:[
+     {name:'Leg Press', sets:'5x15', rest:'75s', note:'High volume quad'},
+     {name:'Single-Leg Hip Thrust', sets:'4x15 each', rest:'75s', note:'Unilateral glute'},
+     {name:'Leg Curl', sets:'4x15', rest:'60s', note:'Hamstring isolation'},
+     {name:'Hip Abductor Machine', sets:'4x20', rest:'45s', note:'Glute med'},
+     {name:'Sumo Squat', sets:'3x15', rest:'60s', note:'Inner thigh + glute'},
+     {name:'Seated Calf Raise', sets:'4x20', rest:'30s', note:'Soleus focus'}
+   ], finisher:'None'},
+  {day:'Saturday', focus:'Full Body Compound + Core',
+   warmup:'5 min treadmill + full body dynamic stretch',
+   exercises:[
+     {name:'Deadlift', sets:'4x8', rest:'90s', note:'Full posterior chain'},
+     {name:'Goblet Squat', sets:'3x12', rest:'75s', note:'Quad + glute'},
+     {name:'Barbell Row', sets:'3x10', rest:'75s', note:'Back thickness'},
+     {name:'Dumbbell Press', sets:'3x10', rest:'75s', note:'Push'},
+     {name:'Plank', sets:'3x60s', rest:'30s', note:'Core stability'},
+     {name:'Hanging Leg Raise', sets:'3x15', rest:'30s', note:'Lower abs'}
+   ], finisher:'None'}
+];
+
+FGYM.fatloss.fullbody_3 = GYM.fatloss.fullbody_3;
+FGYM.fatloss.ppl_4 = GYM.fatloss.ppl_4;
+FGYM.recomp = FGYM.fatloss;
+FGYM.strength = FGYM.muscle;
+FGYM.endurance = FGYM.fatloss;
+
+// ============================================================
+// HOME WORKOUTS
+// ============================================================
+var HOME = {};
+
+HOME.fatloss = {};
+HOME.fatloss.fullbody_3 = [
+  {day:'Monday', focus:'Full Body Strength',
+   warmup:'5 min jog in place + arm circles + bodyweight squat x15',
+   exercises:[
+     {name:'Push-Up', sets:'4x15-20', rest:'45s', note:'Chest + triceps + core'},
+     {name:'Jump Squat', sets:'4x15', rest:'45s', note:'Lower body power + cardio'},
+     {name:'Reverse Lunge', sets:'3x12 each', rest:'45s', note:'Unilateral lower'},
+     {name:'Pike Push-Up', sets:'3x12', rest:'45s', note:'Shoulder press sub'},
+     {name:'Superman Hold', sets:'3x12', rest:'30s', note:'Lower back + glutes'},
+     {name:'Plank', sets:'4x45s', rest:'30s', note:'Core stability'},
+     {name:'Glute Bridge', sets:'4x20', rest:'30s', note:'Glutes + hamstrings'}
+   ], finisher:'10 min HIIT: 30s high knees / 30s rest x10'},
+  {day:'Wednesday', focus:'HIIT Circuit',
+   warmup:'5 min light jog + hip circles + chest opener',
+   exercises:[
+     {name:'Burpee', sets:'4x10', rest:'45s', note:'Full body fat burn'},
+     {name:'Mountain Climber', sets:'4x30', rest:'30s', note:'Core + cardio'},
+     {name:'Jump Lunge', sets:'3x12 each', rest:'45s', note:'Lower power'},
+     {name:'Diamond Push-Up', sets:'3x12', rest:'45s', note:'Tricep focus'},
+     {name:'High Knees', sets:'4x45s', rest:'30s', note:'Cardio burst'},
+     {name:'V-Up', sets:'3x15', rest:'30s', note:'Core — full abs'},
+     {name:'Bear Crawl', sets:'3x20m', rest:'45s', note:'Core + shoulder stability'}
+   ], finisher:'5 rounds: 5 burpees + 10 push-ups + 15 squats'},
+  {day:'Friday', focus:'Lower Body + Core',
+   warmup:'5 min jog + glute bridge x15 + leg swings',
+   exercises:[
+     {name:'Bulgarian Split Squat', sets:'4x12 each', rest:'45s', note:'Primary unilateral'},
+     {name:'Hip Thrust (floor)', sets:'4x20', rest:'45s', note:'Glutes'},
+     {name:'Wall Sit', sets:'4x60s', rest:'30s', note:'Isometric quad'},
+     {name:'Donkey Kick', sets:'3x20 each', rest:'30s', note:'Glute isolation'},
+     {name:'Calf Raise (step)', sets:'4x25', rest:'20s', note:'Full ROM'},
+     {name:'Leg Raise (lying)', sets:'3x15', rest:'30s', note:'Lower abs'},
+     {name:'Bicycle Crunch', sets:'3x20', rest:'30s', note:'Obliques'}
+   ], finisher:'25 min brisk walk or jog'}
+];
+
+HOME.fatloss.upperlower_4 = [
+  {day:'Monday', focus:'Upper Push',
+   warmup:'5 min jog + arm circles + chest opener',
+   exercises:[
+     {name:'Wide Push-Up', sets:'4x20', rest:'45s', note:'Chest primary'},
+     {name:'Pike Push-Up', sets:'4x15', rest:'45s', note:'Shoulder press'},
+     {name:'Diamond Push-Up', sets:'3x12', rest:'45s', note:'Tricep'},
+     {name:'Chair Dip', sets:'3x15', rest:'45s', note:'Tricep compound'},
+     {name:'Decline Push-Up (feet on chair)', sets:'3x12', rest:'45s', note:'Upper chest'},
+     {name:'Shoulder Tap Plank', sets:'3x20 each', rest:'30s', note:'Core + shoulder'}
+   ], finisher:'15 min HIIT'},
+  {day:'Tuesday', focus:'Lower Body',
+   warmup:'5 min jog + hip circles + bodyweight squat x15',
+   exercises:[
+     {name:'Squat', sets:'5x20', rest:'45s', note:'High volume lower'},
+     {name:'Jump Squat', sets:'4x15', rest:'45s', note:'Power'},
+     {name:'Reverse Lunge', sets:'3x15 each', rest:'45s', note:'Unilateral'},
+     {name:'Glute Bridge', sets:'4x25', rest:'30s', note:'Glutes'},
+     {name:'Wall Sit', sets:'3x60s', rest:'30s', note:'Isometric quad'},
+     {name:'Calf Raise', sets:'4x25', rest:'20s', note:'Full ROM'}
+   ], finisher:'20 min brisk walk'},
+  {day:'Thursday', focus:'Upper Pull + Core',
+   warmup:'5 min jog + cat-cow + band pull-apart',
+   exercises:[
+     {name:'Table / Door Inverted Row', sets:'4x12', rest:'45s', note:'Back pull primary'},
+     {name:'Resistance Band Row', sets:'4x15', rest:'45s', note:'Mid-back'},
+     {name:'Superman Hold', sets:'3x15s', rest:'30s', note:'Lower back + glutes'},
+     {name:'Band Bicep Curl', sets:'3x15', rest:'45s', note:'Bicep'},
+     {name:'Plank', sets:'4x45s', rest:'30s', note:'Anti-extension'},
+     {name:'Dead Bug', sets:'3x10 each', rest:'30s', note:'Core stability'},
+     {name:'Side Plank', sets:'3x30s each', rest:'20s', note:'Obliques'}
+   ], finisher:'15 min HIIT'},
+  {day:'Saturday', focus:'Full Body Fat Burn',
+   warmup:'5 min jog + jumping jacks x30',
+   exercises:[
+     {name:'Burpee', sets:'4x10', rest:'45s', note:'Full body'},
+     {name:'Push-Up', sets:'3x20', rest:'45s', note:'Push'},
+     {name:'Jump Squat', sets:'4x15', rest:'45s', note:'Lower power'},
+     {name:'Mountain Climber', sets:'3x30', rest:'30s', note:'Core + cardio'},
+     {name:'Hip Thrust', sets:'4x20', rest:'30s', note:'Glutes'},
+     {name:'V-Up', sets:'3x15', rest:'30s', note:'Core'}
+   ], finisher:'25 min jog or skip rope'}
+];
+
+HOME.muscle = {};
+HOME.muscle.upperlower_4 = [
+  {day:'Monday', focus:'Upper — Push Focus',
+   warmup:'5 min jog + arm circles + push-up warm-up x10',
+   exercises:[
+     {name:'Push-Up (3-0-1 tempo)', sets:'5x15-20', rest:'75s', note:'Slow eccentric builds muscle'},
+     {name:'Pike Push-Up', sets:'4x15', rest:'60s', note:'Shoulder press'},
+     {name:'Decline Push-Up (feet on chair)', sets:'4x15', rest:'60s', note:'Upper chest'},
+     {name:'Diamond Push-Up', sets:'3x15', rest:'60s', note:'Tricep'},
+     {name:'Chair Dip', sets:'4x15', rest:'60s', note:'Tricep compound'},
+     {name:'Band Lateral Raise', sets:'3x20', rest:'45s', note:'Side delts'}
+   ], finisher:'2 sets push-up to failure'},
+  {day:'Tuesday', focus:'Lower — Squat Pattern',
+   warmup:'5 min jog + hip circles + bodyweight squat x20',
+   exercises:[
+     {name:'Jump Squat', sets:'4x15', rest:'60s', note:'Power + strength'},
+     {name:'Squat (3s eccentric)', sets:'4x20', rest:'75s', note:'Hypertrophy via tempo'},
+     {name:'Bulgarian Split Squat', sets:'4x12 each', rest:'90s', note:'Primary unilateral'},
+     {name:'Wall Sit', sets:'4x75s', rest:'45s', note:'Isometric quad'},
+     {name:'Sumo Squat', sets:'3x20', rest:'45s', note:'Inner thigh + glute'},
+     {name:'Calf Raise (step)', sets:'5x25', rest:'20s', note:'Full ROM'}
+   ], finisher:'None'},
+  {day:'Thursday', focus:'Upper — Pull Focus',
+   warmup:'5 min jog + cat-cow + band pull-apart x20',
+   exercises:[
+     {name:'Inverted Row (table)', sets:'5x15', rest:'75s', note:'Primary back pull'},
+     {name:'Resistance Band Row', sets:'4x20', rest:'60s', note:'Mid-back'},
+     {name:'Band Face Pull', sets:'4x20', rest:'45s', note:'Rear delts'},
+     {name:'Band Curl (3s eccentric)', sets:'4x15', rest:'60s', note:'Bicep hypertrophy'},
+     {name:'Superman Hold (3s peak)', sets:'4x12', rest:'30s', note:'Lower back + glutes'},
+     {name:'Reverse Curl (band)', sets:'3x12', rest:'45s', note:'Brachioradialis'}
+   ], finisher:'None'},
+  {day:'Saturday', focus:'Lower — Hip Pattern',
+   warmup:'5 min jog + glute bridge x20 + hamstring stretch',
+   exercises:[
+     {name:'Single-Leg Hip Thrust (weighted backpack)', sets:'5x12 each', rest:'75s', note:'Primary glute'},
+     {name:'Romanian Deadlift (band or backpack)', sets:'4x15', rest:'75s', note:'Hip hinge'},
+     {name:'Jump Lunge', sets:'4x12 each', rest:'60s', note:'Power'},
+     {name:'Donkey Kick (band)', sets:'3x20 each', rest:'30s', note:'Glute med'},
+     {name:'Calf Raise', sets:'4x25', rest:'20s', note:'Full ROM'},
+     {name:'Ab Wheel or Plank Walkout', sets:'3x10', rest:'45s', note:'Core anti-extension'}
+   ], finisher:'None'}
+];
+
+HOME.fatloss.ppl_4 = HOME.fatloss.upperlower_4;
+HOME.recomp   = HOME.fatloss;
+HOME.strength = HOME.muscle;
+HOME.endurance = HOME.fatloss;
+
+// ============================================================
+// CARDIO DATA
+// ============================================================
+var CARDIO = {
+  fatloss:[
+    {t:'LISS Cardio', d:'25-35 min incline treadmill walk (incline 8-10, pace 5.5 kmph) OR cycling/elliptical. 3-4x per week, AFTER weights. Target HR: 60-70% max. Best for direct fat oxidation without muscle loss.'},
+    {t:'HIIT Cardio', d:'20 min: 40s sprint / 20s rest x 15 rounds. MAX 2x per week — more raises cortisol and blocks fat loss. On non-weight days. Jump rope, sprint, or cycling.'}
+  ],
+  muscle:[
+    {t:'Light Cardio (Optional)', d:'15-20 min light walk or cycling 2x per week. Goal: heart health + recovery. NOT calorie burn. Avoid intense cardio — it competes with hypertrophy.'},
+    {t:'Active Recovery Walks', d:'20-30 min brisk walk on rest days. Improves blood flow, reduces soreness, supports recovery. Non-negotiable for premium results.'}
+  ],
+  recomp:[
+    {t:'LISS Cardio', d:'20-25 min incline walk or cycling. 3x per week post-weights. Keeps calorie balance in check without overstressing the body.'},
+    {t:'HIIT (Light)', d:'15 min HIIT, 2x per week max. Moderate intensity — cycling intervals or rowing. Goal: improve insulin sensitivity.'}
+  ],
+  strength:[
+    {t:'No Cardio on Lift Days', d:'CNS-intensive strength training and cardio compete for recovery. Keep completely separate. If cardio needed: separate session 6+ hrs later.'},
+    {t:'Low-Intensity Active Recovery', d:'20 min easy walk or bike on rest days. Keep HR below 120 bpm. Maintains aerobic base without interfering with strength gains.'}
+  ],
+  endurance:[
+    {t:'Zone 2 Cardio', d:'30-45 min sustained aerobic: jogging, cycling, rowing, swimming. 4-5x per week. Target HR: 60-70% max. This is the primary training modality.'},
+    {t:'HIIT Intervals', d:'2x per week: 8-10 rounds of 30s all-out / 60s recovery. Builds VO2 max. Not more than 2x — recovery from intervals is significant.'}
+  ]
+};
+
+// ============================================================
+// STRETCHING
+// ============================================================
+var STRETCH = [
+  {d:'Pre-Workout (5 min)',
+   x:'Leg swings x10 each side. Arm circles x20 forward and back. Hip circles x10 each side. Bodyweight squat x15 — slow. Push-up to downward dog x10. Cat-cow x10 breaths.'},
+  {d:'Post-Workout (10 min)',
+   x:'Pigeon pose 60s each side (hip flexors + glutes). Doorway chest stretch 45s each side. Child\'s pose 60s (lower back + lats). 90/90 hip stretch 45s each side. Standing quad stretch 30s each. Seated hamstring stretch 45s each. Cross-body shoulder stretch 30s each.'},
+  {d:'Daily Mobility (10 min — morning or night)',
+   x:'Thoracic rotation x10 each side. Hip 90/90 transitions x10. Ankle circles x15 each. Couch stretch 60s each side (hip flexors). Spinal twist lying 45s each side. Neck rolls x10 slow. Wrist circles + extension stretch.'}
+];
+
+// ============================================================
+// RECOVERY
+// ============================================================
+var RECOV = [
+  {ic:'😴', t:'Sleep — Priority #1', d:'7-9 hrs every night. Growth hormone is released in deep sleep. No sleep = no muscle growth, no fat loss. Same time each night — consistency matters.'},
+  {ic:'💧', t:'Hydration', d:'3.5-4 litres water daily. More on training days. Dehydration drops performance by 10-20%. Start every morning with 500ml water before anything else.'},
+  {ic:'🧊', t:'Post-Workout Recovery', d:'Cold shower 90s post-workout reduces inflammation. Foam roll major muscle groups 5-10 min. Never skip the warm-down — it accelerates recovery.'},
+  {ic:'📅', t:'Deload Weeks', d:'Every 6th week: reduce volume by 40%, keep same exercises. Body needs planned recovery to grow stronger. Skipping deloads = plateau and injury.'},
+  {ic:'🧘', t:'Active Recovery Days', d:'Light yoga, swimming, or 30 min brisk walk. Not complete rest. Blood flow accelerates muscle repair. Foam rolling mandatory on rest days.'},
+  {ic:'⚡', t:'Muscle Soreness (DOMS)', d:'Peaks 24-72 hrs post-workout. Light movement helps. Sharp joint pain = stop training immediately. DOMS does not equal effective training.'}
+];
+
+// ============================================================
+// INJURY PREVENTION
+// ============================================================
+var INJ_PREV = [
+  'Never skip warm-up — cold muscles tear. 5 min minimum, 10 min before heavy compound lifts.',
+  'Ego lifting kills careers. Use weight you can control through full ROM with perfect form.',
+  'Learn movement patterns before adding load — especially squat, hinge, and press.',
+  'Shoulder health: include face pulls (3x15) at least 2x per week — rotator cuff protection.',
+  'Knee health: keep knees tracking over toes in all squats and lunges. Strengthen VMO.',
+  'Lower back: brace core before every pull — imagine taking a punch. Never hyperextend under load.',
+  'Listen to sharp pain — stop immediately. Dull soreness is fine; sharp or joint pain means stop.',
+  'Bilateral imbalance: if one side is weaker, do unilateral work (single-leg, single-arm) to correct.',
+  'Flat shoes for squats and deadlifts. Running shoes for cardio. Wrong footwear causes injuries.',
+  'Rest 48 hrs between training the same muscle group — especially for beginners.'
+];
+
+// ============================================================
+// INJURY MODIFICATIONS
+// ============================================================
+var INJ_MODS = {
+  knee:'<strong>Knee Issue:</strong> Avoid deep squats below parallel. Replace barbell squat with leg press and box squat. No jump squats or jump lunges. Step-ups and hip thrusts are safe. Strengthen VMO: terminal knee extensions 3x15 daily.',
+  shoulder:'<strong>Shoulder Issue:</strong> Avoid behind-neck press and wide-grip upright rows. Replace barbell OHP with DB press in neutral grip. Include face pulls 3x15 every single session. Add rotator cuff external rotations daily.',
+  back:'<strong>Lower Back Issue:</strong> Avoid conventional deadlift — use trap bar or Romanian DL with light weight only. No good mornings. Brace core before every pull. Strengthen core first: dead bugs, bird dogs, McGill Big 3.',
+  wrist:'<strong>Wrist Issue:</strong> Use wrist wraps on all pressing movements. Replace straight bar with dumbbell or cable in neutral grip. Use EZ bar or hammer grip instead of straight bar for curls.'
+};
+
+// ============================================================
+// PROGRESSION PLANS (NORMAL)
+// ============================================================
+var PROG = {
+  fatloss:[
+    {w:'Weeks 1-2', f:'Foundation', a:'Learn all exercises with correct form. Use lighter weight. Build the training habit. Do not max out or go to failure yet.'},
+    {w:'Weeks 3-4', f:'Load Progression', a:'Increase weight 2.5-5 kg on compound lifts. Add 1-2 reps to isolation exercises each session.'},
+    {w:'Weeks 5-6', f:'Volume Push', a:'Add 1 set to each major exercise. Reduce rest by 10s. Increase cardio intensity by 5%.'},
+    {w:'Week 7 (Deload)', f:'Recovery', a:'Reduce weights 30-40%, keep same exercises. This is mandatory — body adapts during rest.'},
+    {w:'Weeks 8+', f:'New Cycle', a:'Return stronger. Set new PRs. Introduce drop sets on last isolation exercise set.'}
+  ],
+  muscle:[
+    {w:'Weeks 1-2', f:'Baseline', a:'Establish baseline weights. Perfect form on all compounds. Goal: log your starting numbers accurately.'},
+    {w:'Weeks 3-4', f:'Linear Overload', a:'Add 2.5 kg upper / 5 kg lower per week. Maintain all rep targets.'},
+    {w:'Weeks 5-6', f:'Volume Intensification', a:'If weight stalls: add 1-2 reps instead. Both methods equal progressive overload.'},
+    {w:'Week 7 (Deload)', f:'Mandatory Recovery', a:'Volume drops 40%. Same exercises, lighter weight. CNS and connective tissue repair happens here.'},
+    {w:'Weeks 8-10', f:'Strength Phase', a:'Drop to 5-8 reps, increase weight. Builds neural strength for next hypertrophy phase.'},
+    {w:'Week 11+', f:'Hypertrophy Phase', a:'Return to 8-12 reps with now-heavier weights. This is where real muscle growth happens.'}
+  ],
+  recomp:[
+    {w:'Weeks 1-2', f:'Baseline', a:'Learn movements, log weights, build the habit.'},
+    {w:'Weeks 3-5', f:'Simultaneous Overload', a:'Increase compound weight weekly. Track body measurements — not just scale.'},
+    {w:'Weeks 6-7', f:'Plateau Break', a:'Switch rep ranges: go heavier with fewer reps for 2 weeks to break adaptation.'},
+    {w:'Week 8 (Deload)', f:'Recovery', a:'Volume down 40%. Body recomposition happens mostly during recovery phases.'},
+    {w:'Weeks 9-12', f:'Advanced Phase', a:'Add supersets, drop sets. Increase training density — more work in same time.'}
+  ],
+  strength:[
+    {w:'Weeks 1-2', f:'Technique', a:'5x5 at 70-75% 1RM. Perfect every single rep. Form is the only thing that matters now.'},
+    {w:'Weeks 3-6', f:'Linear Progression', a:'Add 2.5 kg upper / 5 kg lower every single session. This is the rule of strength.'},
+    {w:'Week 7 (Deload)', f:'Recovery', a:'Drop to 60% 1RM, 3x5. CNS and connective tissue need this — do not skip.'},
+    {w:'Weeks 8-12', f:'Texas Method', a:'Monday: 5x5 at 90% max. Wednesday: 3x5 recovery. Friday: 1x5 at new max.'},
+    {w:'Weeks 12+', f:'Intermediate', a:'Move to weekly instead of daily progression. Begin RPE-based training.'}
+  ],
+  endurance:[
+    {w:'Weeks 1-2', f:'Base Building', a:'Low intensity, high duration. Build aerobic base — no rushing intensity.'},
+    {w:'Weeks 3-4', f:'Volume Increase', a:'Add 10% more duration per week. No more than 10% — overuse injury risk.'},
+    {w:'Weeks 5-6', f:'Add Intensity', a:'Introduce HIIT 2x per week. Shorten rest periods in strength training.'},
+    {w:'Week 7 (Deload)', f:'Recovery', a:'Reduce all volumes 30%. Light activity only.'},
+    {w:'Weeks 8+', f:'Peak Phase', a:'Train for specific event or goal. Combine LISS + HIIT + strength in periodization.'}
+  ]
+};
+
+// ============================================================
+// PERIODIZATION (PREMIUM — 8 WEEKS)
+// ============================================================
+var PERIOD = {
+  fatloss:[
+    {w:'Week 1', t:'Hypertrophy', d:'10-15 reps, 60-75s rest, 70% 1RM, 4 sets per exercise', c:'2x LISS 25 min + 1x HIIT 15 min'},
+    {w:'Week 2', t:'Volume +1', d:'Add 1-2 reps to each set. Same weight and rest.', c:'2x LISS 30 min + 2x HIIT 20 min'},
+    {w:'Week 3', t:'Load Up', d:'+2.5-5 kg compounds, +1-2.5 kg isolation. Return to base reps.', c:'3x LISS 30 min + 2x HIIT 20 min'},
+    {w:'Week 4', t:'Intensity Peak', d:'Drop sets on last isolation set. Compounds: same weight x more reps.', c:'3x LISS 35 min + 2x HIIT 20 min'},
+    {w:'Week 5', t:'Density Block', d:'Superset all isolation exercises. Rest 30s between supersets only.', c:'3x LISS 30 min + 2x HIIT 20 min'},
+    {w:'Week 6', t:'Overreach', d:'Max effort week. Add 1 extra set to every compound lift.', c:'4x LISS 30 min + 2x HIIT 20 min'},
+    {w:'Week 7', t:'DELOAD', d:'40% volume reduction. Same exercises, lighter weight. Body recomps here.', c:'2x LISS 20 min only'},
+    {w:'Week 8+', t:'New Cycle', d:'Start at Week 1 weight + 5 kg on compounds. Everything resets stronger.', c:'Maintain Week 6 cardio'}
+  ],
+  muscle:[
+    {w:'Week 1', t:'Hypertrophy A', d:'8-12 reps, 75-90s rest, 75% 1RM, 4 sets', c:'2x walk 20 min'},
+    {w:'Week 2', t:'Volume Increase', d:'Add 1 set to all compound lifts (now 5 sets). Same weight.', c:'2x walk 20 min'},
+    {w:'Week 3', t:'Intensification', d:'+2.5-5 kg all compound lifts. Return to 4 sets.', c:'2x walk 20 min'},
+    {w:'Week 4', t:'Drop Set Week', d:'Final isolation set: drop 30%, rep to failure, drop again.', c:'2x walk 25 min'},
+    {w:'Week 5', t:'Strength Block', d:'4-6 reps, 2-3 min rest, 85% 1RM. Lower volume, max weight.', c:'2x walk 20 min'},
+    {w:'Week 6', t:'Strength Peak', d:'5x5 on all primary compounds. New PRs.', c:'1x walk 20 min only'},
+    {w:'Week 7', t:'DELOAD', d:'Volume down 40%. Perfect form check. Growth happens in recovery.', c:'2x easy walk 20 min'},
+    {w:'Week 8+', t:'Hypertrophy B', d:'8-12 reps with Week 5/6 strength weights = MAXIMUM HYPERTROPHY', c:'2x walk 25 min'}
+  ],
+  strength:[
+    {w:'Week 1', t:'Volume Foundation', d:'5x5 at 75% 1RM. Form perfect on every rep.', c:'None'},
+    {w:'Week 2', t:'Load +2.5/5 kg', d:'Upper: +2.5 kg, Lower: +5 kg. Same sets and reps.', c:'None'},
+    {w:'Week 3', t:'Load +2.5/5 kg', d:'Continue linear progression without exception.', c:'None'},
+    {w:'Week 4', t:'Intensity Singles', d:'3x3 at 90% 1RM + 1x1 near max. Volume lower, intensity max.', c:'None'},
+    {w:'Week 5', t:'Load +2.5/5 kg', d:'Return to 5x5, heavier than Week 3.', c:'None'},
+    {w:'Week 6', t:'Peak Week', d:'3x3 at 95% 1RM. Test new 1RM on Friday session.', c:'None'},
+    {w:'Week 7', t:'DELOAD', d:'3x5 at 60% 1RM. CNS recovery mandatory — non-negotiable.', c:'Easy walk only'},
+    {w:'Week 8+', t:'New Cycle', d:'Reset with new 1RM numbers. Heavier starting point.', c:'None'}
+  ],
+  recomp:[
+    {w:'Week 1', t:'Maintenance Load', d:'10-12 reps, 75s rest, 70% 1RM. Build habit and baseline.', c:'2x LISS 20 min'},
+    {w:'Week 2', t:'Volume +', d:'Add 1 set per major compound. Small cardio increase.', c:'3x LISS 25 min'},
+    {w:'Week 3', t:'Load +', d:'+2.5 kg on compounds. Maintain bodyweight.', c:'2x LISS 25 + 1x HIIT 15'},
+    {w:'Week 4', t:'Technique', d:'Focus on tempo: 3-1-2 on all exercises. Same weights.', c:'3x LISS 25 + 1x HIIT 15'},
+    {w:'Week 5', t:'Intensification', d:'Increase to 80% 1RM. 6-8 reps with new weights.', c:'3x LISS 30 + 2x HIIT 20'},
+    {w:'Week 6', t:'Peak', d:'Supersets: pair antagonistic muscles (chest/back, bicep/tricep).', c:'3x LISS 30 + 2x HIIT 20'},
+    {w:'Week 7', t:'DELOAD', d:'40% volume reduction. Recomposition peaks during recovery.', c:'2x easy walk 20 min'},
+    {w:'Week 8+', t:'New Cycle', d:'Take measurements. Build new plan based on results.', c:'Per goal'}
+  ],
+  endurance:[
+    {w:'Week 1', t:'Aerobic Base', d:'15-20 reps, 45s rest + 30 min Zone 2 cardio', c:'4x Zone 2 30 min'},
+    {w:'Week 2', t:'Volume Up', d:'Add 5 min to cardio. Add 1 set per exercise.', c:'4x Zone 2 35 min'},
+    {w:'Week 3', t:'HIIT Intro', d:'Replace 1 LISS with HIIT 20 min. Maintain strength volume.', c:'3x LISS 35 + 1x HIIT 20'},
+    {w:'Week 4', t:'Circuits', d:'Train in 3-4 exercise circuits with 30s rest between stations.', c:'3x LISS 35 + 2x HIIT 20'},
+    {w:'Week 5', t:'Density', d:'Reduce rest periods by 10s across all strength work.', c:'3x LISS 40 + 2x HIIT 20'},
+    {w:'Week 6', t:'Peak Endurance', d:'All circuits back-to-back, 60s rest between rounds.', c:'4x LISS 40 + 2x HIIT 20'},
+    {w:'Week 7', t:'DELOAD', d:'Light movement, yoga, easy walks. Full aerobic recovery.', c:'3x easy walk 25 min'},
+    {w:'Week 8+', t:'Performance', d:'Event-specific training or increase all volumes 10%.', c:'Per event'}
+  ]
+};
+
+// ============================================================
+// RULES, AVOID, COACH NOTES, PREMIUM NOTES
+// ============================================================
+var RULES = {
+  fatloss:['Train consistently — 4-5 days per week, every week, no excuses','LISS cardio after weights for maximum fat oxidation','48 hr recovery per muscle group minimum','Track every workout — if you are not logging, you are not progressing','Sleep 8 hrs — cortisol is the number 1 enemy of fat loss','Deload every 6th week — this is when body composition actually changes'],
+  muscle:['Progressive overload every session — add weight or reps, always','Log every set — memory is unreliable for tracking progress','Prioritize compound movements — they stimulate the most muscle','Sleep 8 hrs minimum — growth hormone released in deep sleep','48 hr muscle group recovery minimum between sessions','Deload every 6th week — this is when real growth happens'],
+  recomp:['Simultaneous fat loss and muscle gain is real but slow — be patient','Progressive overload still required — recomp needs strength stimulus','Track measurements weekly — not just scale weight','Sleep 8 hrs — hormonal balance is critical for recomp','Cardio moderate — 2-3x per week max','Protein 2g per kg minimum — muscle preservation while losing fat'],
+  strength:['Never miss a session — consistency is everything in strength training','Technique before load — always, without any exception','Log every session — strength gains require precise tracking','CNS recovery: 48-72 hr between heavy sessions','Sleep 9 hrs on heavy training days — strength is built during sleep','Deload every 4th week — more frequent than hypertrophy training'],
+  endurance:['Zone 2 is your foundation — build aerobic base before adding intensity','HIIT max 2x per week — more destroys recovery and causes burnout','Hydration critical — 500ml pre, sip during, 500ml post training','Sleep 8 hrs — aerobic adaptations happen during sleep','Progress cardio by 10% max per week — avoid overuse injuries','Deload every 6th week — endurance athletes overtrain frequently']
+};
+
+var AVOID = {
+  fatloss:['Skipping warm-up — cold muscles have very high injury risk','Excessive cardio — more than 5 sessions per week raises cortisol significantly','Training same muscle group two days in a row without recovery','Extreme calorie restriction — you lose muscle not just fat','Comparing progress week to week — look at 6-week trends instead'],
+  muscle:['Ego lifting — sloppy form equals injury, not muscle growth','Too much cardio during bulk — directly competes with muscle growth signals','Ignoring legs — largest muscles in body, most hormonal stimulus','Skipping deload weeks — overtraining breaks you down, not up','Training through joint pain — rest, assess carefully, then return'],
+  recomp:['Extreme calorie restriction — muscle loss will follow immediately','Ignoring progressive overload — recomp requires consistent strength stimulus','Excessive cardio — competes with muscle retention on a deficit','Skipping protein — minimum 2g per kg or muscle will not be retained'],
+  strength:['Training on acute joint pain — stop, assess carefully, recover fully','Missing warm-up sets before maximal lifting efforts','Skipping deload weeks — overreaching without recovery means regression','Cardio on heavy training days — drains CNS significantly','Maxing out too often — reserve 1RM testing for end of cycles'],
+  endurance:['Increasing intensity and volume simultaneously — injury risk is very high','Skipping rest days — overuse injuries end training careers','HIIT more than 2x per week during base building phase','Ignoring recovery nutrition — bonking destroys the next session completely']
+};
+
+var COACH_NOTES = {
+  fatloss:'<strong>Akash says:</strong> Fat loss is 80% mindset, 20% science. The plan is given — your job is to execute with zero excuses. Missing 1 session is OK. Missing 2 in a row builds a bad habit. <strong>Consistency over intensity, every single time.</strong> Track your workouts. Sleep your 8 hours. Do your cardio. Results will follow — they always do.',
+  muscle:'<strong>Akash says:</strong> Muscle is built outside the gym — in the kitchen and in your sleep. The gym is just the stimulus. If you train hard but do not recover hard (sleep, food, deload), you are leaving 50% of your results on the table. <strong>Progressive overload + sleep + patience = physique transformation.</strong>',
+  recomp:'<strong>Akash says:</strong> Recomposition is the slow game. The scale will not move much — but your mirror will change significantly. Take photos every 4 weeks, measure waist, chest, hips, arms. That is your real progress tracker. <strong>Trust the process. It works — but only if you work it consistently.</strong>',
+  strength:'<strong>Akash says:</strong> Strength is a skill — not a quality. You practice it by lifting heavy, consistently, with perfect technique. There are no shortcuts. Every kilo you add to the bar is a testament to your discipline. <strong>Log it. Show up. Get stronger.</strong>',
+  endurance:'<strong>Akash says:</strong> Endurance training is about teaching your body to suffer gracefully. Zone 2 cardio feels easy — that is the point. You are building an aerobic engine that will serve you for decades. <strong>Slow down to speed up. Build the base first, then add intensity.</strong>'
+};
+
+var PREM_NOTES = {
+  fatloss:'<strong>Premium Fat Loss Protocol:</strong> Supersets used throughout to elevate heart rate and increase EPOC (post-workout calorie burn). Tempo: 3-0-1 on all lifts (3s eccentric, 0 pause, 1s concentric). Track heart rate — maintain 65-80% max HR during sets. Progressive overload: add 1-2 reps weekly before adding weight. Deload every 6th week: reduce volume 40%. HIIT max 3x per week — overtraining raises cortisol which stores fat. Sleep 8 hrs — cortisol is the enemy of fat loss.',
+  muscle:'<strong>Premium Muscle Gain Protocol:</strong> Progressive overload is mandatory — log every set, weight, and rep in a notebook or app. Periodization: Weeks 1-3 moderate weight (8-12 reps), Weeks 4-6 heavy (4-6 reps), Week 7 deload. Advanced techniques: drop sets on final isolation set, rest-pause on compounds, tempo 3-1-2. Target 0.5-1 kg weight gain per month — beyond this is fat. Creatine 5g daily — non-negotiable.',
+  recomp:'<strong>Premium Recomposition Protocol:</strong> Recomp requires simultaneous muscle stimulus + slight calorie control. Time under tension: 3-1-2 tempo. Progressive overload still mandatory — track every session. Prioritize compounds, minimize cardio (max 3x per week 20 min). Monitor body measurements weekly — scale may not move but inches will change.',
+  strength:'<strong>Premium Strength Protocol:</strong> 5x5 for all primary lifts. Linear progression: add 2.5 kg upper and 5 kg lower each week. Never train to failure on strength days — leave 1-2 reps in reserve. CNS recovery critical — sleep 8-9 hrs. No cardio on strength training days. Technique is non-negotiable — record your lifts.',
+  endurance:'<strong>Premium Endurance Protocol:</strong> Circuit training with minimal rest to build cardiovascular and muscular endurance simultaneously. Progressive overload: reduce rest by 5s each week, add 1 rep per set weekly. Target HR: 70-80% max during circuits. Incorporate both aerobic (LISS 30+ min) and anaerobic (HIIT) training. Recovery: active rest days with yoga and mobility work.'
+};
+
+
+// ============================================================
+// PART 3: ALL LOGIC
+// ============================================================
+
+// STATE
+var S = {
+  goal:'fatloss', level:'beginner', training:'gym', gender:'male',
+  days:'4', split:'upperlower', equipment:'none',
+  duration:'60', timing:'morning', priority:'none',
+  injury:'none', cardio:'both'
+};
+
+// BUILD SPLIT CHIPS
+function buildSplits(days) {
+  var list = SPLITS[days] || SPLITS['4'];
+  var rec = null;
+  for (var i = 0; i < list.length; i++) { if (list[i].rec) { rec = list[i]; break; } }
+  if (!rec) rec = list[0];
+  S.split = rec.v;
+
+  var container = document.getElementById('splitChips');
+  container.innerHTML = '';
+
+  for (var j = 0; j < list.length; j++) {
+    (function(sp) {
+      var el = document.createElement('div');
+      var cls = 'sc';
+      if (sp.rec) cls += ' rec';
+      if (sp.v === S.split) cls += ' on';
+      el.className = cls;
+      el.setAttribute('data-sv', sp.v);
+
+      var inner = '<span class="sn">' + sp.n + '</span>';
+      inner += '<span class="ss">' + sp.s + '</span>';
+      if (sp.rec) inner += '<span class="rt">Recommended</span>';
+      el.innerHTML = inner;
+
+      el.onclick = function() {
+        var chips = document.querySelectorAll('#splitChips .sc');
+        for (var k = 0; k < chips.length; k++) chips[k].classList.remove('on');
+        el.classList.add('on');
+        S.split = sp.v;
+        document.getElementById('splitEx').textContent = sp.d;
+      };
+      container.appendChild(el);
+    })(list[j]);
+  }
+
+  document.getElementById('splitEx').textContent = rec.d;
+  document.getElementById('splitBadge').textContent = list.length + ' options for ' + days + ' days';
+}
+
+// CHIP HANDLER
+var chips = document.querySelectorAll('.chip');
+for (var ci = 0; ci < chips.length; ci++) {
+  (function(c) {
+    c.onclick = function() {
+      var g = c.getAttribute('data-g');
+      var v = c.getAttribute('data-v');
+      var group = document.querySelectorAll('[data-g="' + g + '"]');
+      for (var gi = 0; gi < group.length; gi++) group[gi].classList.remove('on');
+      c.classList.add('on');
+      S[g] = v;
+      if (g === 'days') buildSplits(v);
+      if (g === 'training') document.getElementById('homeEquip').style.display = v === 'home' ? 'block' : 'none';
+      if (g === 'gender') document.getElementById('hipGrp').style.display = v === 'female' ? '' : 'none';
+    };
+  })(chips[ci]);
+}
+
+// INIT
+buildSplits('4');
+document.getElementById('hipGrp').style.display = 'none';
+
+// BMI CALCULATOR
+function calcBMI() {
+  var wt = parseFloat(document.getElementById('wt').value) || 70;
+  var ht = parseFloat(document.getElementById('ht').value) || 170;
+  var age = parseFloat(document.getElementById('age').value) || 25;
+  var waist = parseFloat(document.getElementById('waist').value) || 0;
+  var neck = parseFloat(document.getElementById('neck').value) || 0;
+  var hip = parseFloat(document.getElementById('hip').value) || 0;
+  var g = S.gender;
+  var htM = ht / 100;
+  var bmi = wt / (htM * htM);
+  var fat;
+
+  if (g === 'male' && waist > 0 && neck > 0) {
+    fat = 86.010 * Math.log10(waist - neck) - 70.041 * Math.log10(ht) + 36.76;
+  } else if (g === 'female' && waist > 0 && neck > 0 && hip > 0) {
+    fat = 163.205 * Math.log10(waist + hip - neck) - 97.684 * Math.log10(ht) - 78.387;
+  } else {
+    fat = (1.20 * bmi) + (0.23 * age) - (10.8 * (g === 'male' ? 1 : 0)) - 5.4;
+  }
+  fat = Math.max(3, Math.min(60, fat));
+
+  var lean = wt - (fat / 100 * wt);
+  var fm = (fat / 100 * wt);
+  var bmiCat = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
+  var bmiCol = bmi < 18.5 ? '#3b82f6' : bmi < 25 ? '#7eca5a' : bmi < 30 ? '#f97316' : '#ef4444';
+
+  var fatCat, fatCol;
+  if (g === 'male') {
+    fatCat = fat < 14 ? 'Athletic' : fat < 18 ? 'Fitness' : fat < 25 ? 'Average' : 'High';
+    fatCol = fat < 18 ? '#7eca5a' : fat < 25 ? '#f97316' : '#ef4444';
+  } else {
+    fatCat = fat < 21 ? 'Athletic' : fat < 25 ? 'Fitness' : fat < 32 ? 'Average' : 'High';
+    fatCol = fat < 25 ? '#7eca5a' : fat < 32 ? '#f97316' : '#ef4444';
+  }
+
+  document.getElementById('bmiV').textContent = bmi.toFixed(1);
+  document.getElementById('bmiC').textContent = bmiCat;
+  document.getElementById('bmiC').style.color = bmiCol;
+  document.getElementById('fatV').textContent = fat.toFixed(1) + '%';
+  document.getElementById('fatC').textContent = fatCat;
+  document.getElementById('fatC').style.color = fatCol;
+  document.getElementById('leanV').textContent = lean.toFixed(1) + ' kg';
+  document.getElementById('fmV').textContent = 'Fat: ' + fm.toFixed(1) + ' kg';
+  document.getElementById('bmiNote').textContent = 'BMI ' + bmi.toFixed(1) + ' — ' + bmiCat;
+
+  var pct = Math.min(100, ((bmi - 10) / 30) * 100);
+  document.getElementById('bmiFill').style.width = pct + '%';
+  var fillC = {Underweight:'#3b82f6', Normal:'#7c3aed', Overweight:'#f97316', Obese:'#ef4444'};
+  document.getElementById('bmiFill').style.background = fillC[bmiCat] || '#7c3aed';
+  document.getElementById('bmiPanel').style.display = 'block';
+}
+
+// WORKOUT SELECTION
+function getWDs(goal, training, gender, days, split) {
+  var db = training === 'home' ? HOME : (gender === 'female' ? FGYM : GYM);
+  var gDb = db[goal] || db.fatloss;
+  if (!gDb) gDb = GYM.fatloss;
+
+  var key = split + '_' + days;
+  if (gDb[key]) return gDb[key];
+
+  var fbKeys = [
+    'ppl_' + days, 'upperlower_' + days, 'fullbody_' + days, 'hybrid_' + days, 'bro_' + days,
+    'upperlower_4', 'ppl_4', 'fullbody_3', 'ppl_5', 'bro_5', 'hybrid_4'
+  ];
+  for (var i = 0; i < fbKeys.length; i++) {
+    if (gDb[fbKeys[i]]) return gDb[fbKeys[i]];
+  }
+  return GYM.fatloss.upperlower_4 || GYM.fatloss.ppl_4;
+}
+
+// RENDER WORKOUT DAYS
+function renderWDs(wds, isPrem) {
+  if (!wds || !wds.length) {
+    return '<div style="padding:1rem;color:var(--muted)">No plan found for this combination. Please try a different split or goal.</div>';
+  }
+  var html = '';
+  for (var i = 0; i < wds.length; i++) {
+    var d = wds[i];
+    var exRows = '';
+    var exes = d.exercises || [];
+    var maxEx = isPrem ? exes.length : Math.min(4, exes.length);
+    for (var j = 0; j < maxEx; j++) {
+      var e = exes[j];
+      exRows += '<tr>';
+      exRows += '<td style="font-weight:600;color:#f2f2f5">' + e.name + '</td>';
+      exRows += '<td style="color:var(--blue);font-weight:700">' + e.sets + '</td>';
+      exRows += '<td style="font-size:0.74rem;color:var(--muted)">' + (e.rest || '-') + '</td>';
+      exRows += '<td style="font-size:0.74rem;color:var(--muted)">' + (e.note || '') + '</td>';
+      exRows += '</tr>';
+    }
+    html += '<div class="wd">';
+    html += '<div class="wdh"><span class="wdl">' + d.day + '</span><span class="wdf">' + d.focus + '</span></div>';
+    if (d.warmup) html += '<div class="wu">Warm-Up: ' + d.warmup + '</div>';
+    html += '<table class="ext"><thead><tr><th>Exercise</th><th>Sets x Reps</th><th>Rest</th><th>Note</th></tr></thead><tbody>' + exRows + '</tbody></table>';
+    if (d.finisher) html += '<div class="fin">Finisher: ' + d.finisher + '</div>';
+    if (isPrem) html += '<div style="font-size:0.71rem;color:var(--gold);margin-top:5px">Premium: Apply 3-1-2 tempo. Drop set on last isolation exercise. Log all weights.</div>';
+    html += '</div>';
+  }
+  return html;
+}
+
+// RENDER PROGRESSION
+function renderProg(goal) {
+  var p = PROG[goal] || PROG.fatloss;
+  var rows = '';
+  for (var i = 0; i < p.length; i++) {
+    rows += '<tr>';
+    rows += '<td style="font-weight:700;white-space:nowrap">' + p[i].w + '</td>';
+    rows += '<td style="color:var(--blue);font-weight:600">' + p[i].f + '</td>';
+    rows += '<td>' + p[i].a + '</td>';
+    rows += '</tr>';
+  }
+  return '<table class="pt"><thead><tr><th>Phase</th><th>Focus</th><th>Action</th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+
+// RENDER PERIODIZATION
+function renderPeriod(goal) {
+  var p = PERIOD[goal] || PERIOD.fatloss;
+  var rows = '';
+  for (var i = 0; i < p.length; i++) {
+    var col = p[i].t === 'DELOAD' ? 'var(--gold)' : 'var(--blue)';
+    rows += '<tr>';
+    rows += '<td style="font-weight:700;white-space:nowrap">' + p[i].w + '</td>';
+    rows += '<td style="color:' + col + ';font-weight:600">' + p[i].t + '</td>';
+    rows += '<td>' + p[i].d + '</td>';
+    rows += '<td style="font-size:0.74rem;color:var(--muted)">' + (p[i].c || '-') + '</td>';
+    rows += '</tr>';
+  }
+  return '<table class="pt"><thead><tr><th>Week</th><th>Type</th><th>Load Details</th><th>Cardio</th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+
+// GET CARDIO FILTERED BY PREFERENCE
+function getCardio(goal, pref) {
+  var all = CARDIO[goal] || CARDIO.fatloss;
+  if (pref === 'none') return [];
+  if (pref === 'liss') {
+    var out = [];
+    for (var i = 0; i < all.length; i++) {
+      if (/liss|zone|light|active|walk/i.test(all[i].t)) out.push(all[i]);
+    }
+    return out.length ? out : [all[0]];
+  }
+  if (pref === 'hiit') {
+    var out2 = [];
+    for (var j = 0; j < all.length; j++) {
+      if (/hiit|interval/i.test(all[j].t)) out2.push(all[j]);
+    }
+    return out2.length ? out2 : [all[1] || all[0]];
+  }
+  return all;
+}
+
+// GENERATE
+// ============================================================
+// VALIDATION
+// ============================================================
+function validate() {
+  var ok=true;
+  function chk(id,eid,bad) {
+    var el=document.getElementById(id), er=document.getElementById(eid);
+    if(!el||!er) return;
+    if(bad){el.classList.add('err');er.classList.add('on');ok=false;}
+    else{el.classList.remove('err');er.classList.remove('on');}
+  }
+  chk('cName','eName',!document.getElementById('cName').value.trim());
+
+  var phone=document.getElementById('phone').value.replace(/\s/g,'');
+  chk('phone','ePhone',!/^[6-9]\d{9}$/.test(phone));
+
+  var email=document.getElementById('email').value.trim();
+  chk('email','eEmail',!email||!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email));
+
+  var wt=parseFloat(document.getElementById('wt').value);
+  var wtU=document.querySelector('#weightUnit .unit-btn.active');
+  var wtKg=(wtU&&wtU.dataset.val==='lbs')?wt/2.205:wt;
+  chk('wt','eWt',!wt||wtKg<20||wtKg>300);
+
+  var ht=parseFloat(document.getElementById('ht').value);
+  var htU=document.querySelector('#heightUnit .unit-btn.active');
+  var htCm=(htU&&htU.dataset.val==='in')?ht*2.54:ht;
+  chk('ht','eHt',!ht||htCm<100||htCm>260);
+
+  return ok;
+}
+
+// ============================================================
+// UNIT TOGGLE
+// ============================================================
+function setUnit(type, el) {
+  var c=document.getElementById(type+'Unit');
+  if(!c) return;
+  c.querySelectorAll('.unit-btn').forEach(function(b){b.classList.remove('active')});
+  el.classList.add('active');
+}
+
+// ============================================================
+// GENERATE FUNCTION
+// ============================================================
+function generate(mode) {
+  if (!validate()) return;
+
+  if (mode === 'premium') {
+    document.getElementById('premOverlay').classList.add('on');
+    return;
+  }
+
+  var wtU=document.querySelector('#weightUnit .unit-btn.active');
+  var htU=document.querySelector('#heightUnit .unit-btn.active');
+  var wtEl=document.getElementById('wt');
+  var htEl=document.getElementById('ht');
+  var origWt=wtEl.value, origHt=htEl.value;
+  if(wtU&&wtU.dataset.val==='lbs'&&origWt) wtEl.value=(parseFloat(origWt)/2.205).toFixed(1);
+  if(htU&&htU.dataset.val==='in'&&origHt) htEl.value=(parseFloat(origHt)*2.54).toFixed(1);
+
+  var ov = document.getElementById('loading');
+  ov.classList.add('on');
+  var steps = [document.getElementById('aiStep1'),document.getElementById('aiStep2'),document.getElementById('aiStep3'),document.getElementById('aiStep4')];
+  var fill = document.getElementById('aiProgressFill');
+  var currentStep = 0;
+  var stepInterval = setInterval(function() {
+    if (currentStep < steps.length) {
+      if (currentStep > 0) { steps[currentStep-1].classList.remove('active'); steps[currentStep-1].classList.add('done'); }
+      steps[currentStep].classList.add('active');
+      fill.style.width = ((currentStep+1)/steps.length*100)+'%';
+      currentStep++;
+    } else {
+      clearInterval(stepInterval);
+      setTimeout(function() {
+        ov.classList.remove('on');
+        steps.forEach(function(s){s.classList.remove('active','done')});
+        fill.style.width='0';
+        renderPlan(mode);
+        wtEl.value=origWt;
+        htEl.value=origHt;
+        if(mode!=='premium') document.getElementById('aiGeneratedBadge').classList.add('show');
+      }, 400);
+    }
+  }, 500);
+}
+
+// ============================================================
+// PREMIUM OVERLAY FUNCTIONS
+// ============================================================
+function closePremOverlay() {
+  document.getElementById('premOverlay').classList.remove('on');
+}
+function confirmPremium() {
+  var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?data=upi://pay?pa=skyce%40ybl&pn=Akash%20Singh&am=99&cu=INR&size=200x200';
+  document.getElementById('qrImage').src = qrUrl;
+  document.getElementById('qrAmount').textContent = '₹99';
+  document.getElementById('premOverlay').classList.remove('on');
+  document.getElementById('qrOverlay').classList.add('on');
+}
+function closeQrOverlay() {
+  document.getElementById('qrOverlay').classList.remove('on');
+}
+function sendTg(chatId, text, cb) {
+  fetch('https://api.telegram.org/bot8323966181:AAHkRHr-JXaEK_yVv1kG-fRXbtta4BBgT_8/sendMessage', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({chat_id: chatId, text: text})
+  }).then(function(){ if(cb) cb(); }).catch(function(){ if(cb) cb(); });
+}
+function isAdmin() { return window.location.search.indexOf('admin=1') > -1; }
+function confirmPayment() {
+  var _n = document.getElementById('cName').value.trim() || 'Not provided';
+  var _p = document.getElementById('phone').value.trim() || 'Not provided';
+  var _e = document.getElementById('email').value.trim() || 'Not provided';
+  var _g = document.querySelector('[data-g="goal"].active');
+  var _goal = _g ? _g.textContent.trim() : 'Not selected';
+  var _tr = document.querySelector('[data-g="training"].active');
+  var _training = _tr ? _tr.textContent.trim() : 'Not selected';
+  var _lv = document.querySelector('[data-g="level"].active');
+  var _level = _lv ? _lv.textContent.trim() : 'Not selected';
+  var _header = '💰 PREMIUM WORKOUT PLAN — PAYMENT CONFIRMED\n━━━━━━━━━━━━━━━━━━\nName: ' + _n + '\nPhone: ' + _p + '\nEmail: ' + _e + '\nGoal: ' + _goal + '\nTraining: ' + _training + '\nLevel: ' + _level + '\nAmount: ₹99\n━━━━━━━━━━━━━━━━━━\n\nGenerating plan...\n';
+  document.getElementById('qrOverlay').classList.remove('on');
+  document.getElementById('loading').classList.add('on');
+  var steps=['aiStep1','aiStep2','aiStep3','aiStep4'];
+  var fill=document.getElementById('aiProgressFill');
+  var currentStep=0;
+  var stepInterval=setInterval(function(){
+    if(currentStep<steps.length){
+      var el=document.getElementById(steps[currentStep]);
+      if(currentStep>0){document.getElementById(steps[currentStep-1]).classList.remove('active');document.getElementById(steps[currentStep-1]).classList.add('done');}
+      if(el)el.classList.add('active');
+      fill.style.width=((currentStep+1)/steps.length*100)+'%';
+      currentStep++;
+    }else{
+      clearInterval(stepInterval);
+      setTimeout(function(){
+        document.getElementById('loading').classList.remove('on');
+        steps.forEach(function(s){document.getElementById(s).classList.remove('active','done');});
+        fill.style.width='0';
+        try { renderPlan('premium'); } catch(err) { console.error(err); }
+        if (!isAdmin()) {
+          document.getElementById('output').style.display = 'none';
+          document.getElementById('output').setAttribute('data-premium-generated','1');
+        }
+        setTimeout(function(){
+          var out = document.getElementById('output');
+          var planText = out ? out.innerText : '';
+          if (planText.length > 3800) planText = planText.substring(0, 3800) + '\n...[truncated]';
+          var fullMsg = _header + '\n' + planText;
+          if (fullMsg.length > 4000) {
+            sendTg('676917032', fullMsg.substring(0, 4000));
+            setTimeout(function(){ sendTg('676917032', fullMsg.substring(4000)); }, 1500);
+          } else {
+            sendTg('676917032', fullMsg);
+          }
+        }, 500);
+        var sb = document.getElementById('successBanner');
+        document.getElementById('successMsg').textContent = 'Payment confirmed, ' + _n + '! Your premium workout plan has been generated and sent to Akash. He will share it with you shortly.';
+        sb.classList.add('on');
+        setTimeout(function(){ sb.classList.remove('on'); }, 8000);
+      },400);
+    }
+  },500);
+}
+
+// RENDER PLAN
+function renderPlan(mode) {
+  var g = S.goal, lv = S.level, tr = S.training, gn = S.gender;
+  var dy = S.days, sp = S.split, dur = S.duration;
+  var tm = S.timing, pri = S.priority, inj = S.injury, cp = S.cardio;
+
+  var wt = parseInt(document.getElementById('wt').value) || 70;
+  var ht = parseInt(document.getElementById('ht').value) || 170;
+  var age = parseInt(document.getElementById('age').value) || 25;
+  var name = document.getElementById('cName').value.trim();
+  var bmi = (wt / ((ht / 100) * (ht / 100))).toFixed(1);
+
+  var GL = {fatloss:'Fat Loss', muscle:'Muscle Gain', recomp:'Recomposition', strength:'Strength', endurance:'Endurance'};
+  var LL = {beginner:'Beginner', intermediate:'Intermediate', advanced:'Advanced'};
+  var DL = {'45':'45 min', '60':'60 min', '90':'90 min'};
+  var TL = {morning:'Morning', evening:'Evening', flexible:'Flexible'};
+  var PL = {none:'No Preference', chest:'Chest', back:'Back', legs:'Legs', glutes:'Glutes', shoulders:'Shoulders', arms:'Arms', core:'Core'};
+  var IL = {none:'None', knee:'Knee Issue', shoulder:'Shoulder Issue', back:'Lower Back', wrist:'Wrist Issue'};
+  var GBC = {fatloss:'background:#1a1208;color:#f97316', muscle:'background:#1a0808;color:#ef4444', recomp:'background:#0a1020;color:#3b82f6', strength:'background:#1a0a20;color:#a78bfa', endurance:'background:#1a1508;color:#fbbf24'};
+
+  var splitList = SPLITS[dy] || SPLITS['4'];
+  var selSplit = null;
+  for (var si = 0; si < splitList.length; si++) { if (splitList[si].v === sp) { selSplit = splitList[si]; break; } }
+  if (!selSplit) selSplit = splitList[0];
+
+  var rr = RR[g] || RR.fatloss;
+
+  // Title
+  document.getElementById('outTitle').textContent = name ? name + "'s Workout Plan" : 'Custom Workout Plan';
+  document.getElementById('outSub').textContent = wt + 'kg · ' + ht + 'cm · ' + age + ' yrs · BMI ' + bmi + ' · ' + (gn === 'female' ? 'Female' : 'Male') + ' · ' + selSplit.n + ' · ' + dy + ' Days/Week';
+
+  // Badges
+  var injBadge = inj !== 'none' ? '<span class="badge" style="background:#1a0808;color:#ef4444">⚠ ' + IL[inj] + '</span>' : '';
+  var priBadge = pri !== 'none' ? '<span class="badge" style="background:#0a1020;color:#3b82f6">🎯 ' + PL[pri] + '</span>' : '';
+  document.getElementById('outBadges').innerHTML =
+    '<span class="badge" style="' + GBC[g] + '">' + GL[g] + '</span>' +
+    '<span class="badge" style="background:' + (tr === 'gym' ? '#0a1020;color:#3b82f6' : '#0e0e1a;color:#a78bfa') + '">' + (tr === 'gym' ? 'Gym' : 'Home') + '</span>' +
+    '<span class="badge" style="background:#0a1020;color:#3b82f6">' + selSplit.n + '</span>' +
+    '<span class="badge" style="background:#1a1a24;color:#999">' + dy + ' Days/Week</span>' +
+    '<span class="badge" style="background:#1a1a24;color:#999">' + DL[dur] + '/session</span>' +
+    '<span class="badge" style="background:' + (gn === 'female' ? '#1a0818;color:#d946ef' : '#0a1020;color:#3b82f6') + '">' + (gn === 'female' ? 'Female' : 'Male') + '</span>' +
+    '<span class="badge" style="background:#1a1a24;color:#999">' + LL[lv] + '</span>' +
+    priBadge + injBadge +
+    '<span class="badge" style="background:' + (mode === 'premium' ? '#1a1508;color:#fbbf24;border:1px solid #fbbf24' : '#1a1a24;color:#999') + '">' + (mode === 'premium' ? '⭐ Premium Plan' : 'Normal Plan') + '</span>';
+
+  // Stats
+  document.getElementById('outStats').innerHTML =
+    '<div class="stat"><div class="stat-v">' + dy + '</div><div class="stat-l">Days/Week</div></div>' +
+    '<div class="stat"><div class="stat-v" style="font-size:0.85rem">' + rr.intensity + '</div><div class="stat-l">Intensity</div></div>' +
+    '<div class="stat"><div class="stat-v" style="font-size:0.85rem">' + rr.rest + '</div><div class="stat-l">Rest Between Sets</div></div>' +
+    '<div class="stat"><div class="stat-v" style="font-size:0.85rem">' + rr.s + '</div><div class="stat-l">Rep Range</div></div>';
+
+  // Body comp (if BMI was calculated)
+  var bp = document.getElementById('bmiPanel');
+  if (bp.style.display !== 'none') {
+    document.getElementById('bcRow').style.display = 'block';
+    document.getElementById('bcFat').textContent = document.getElementById('fatV').textContent;
+    document.getElementById('bcFatC').textContent = document.getElementById('fatC').textContent;
+    document.getElementById('bcFatC').style.color = document.getElementById('fatC').style.color;
+    document.getElementById('bcLean').textContent = document.getElementById('leanV').textContent;
+    document.getElementById('bcFM').textContent = document.getElementById('fmV').textContent;
+    document.getElementById('bcNote').textContent = g === 'fatloss'
+      ? 'Target: Preserve lean mass. Aim for 0.5-0.75 kg fat loss per week.'
+      : g === 'muscle' ? 'Target: Build lean mass. Goal: +0.5-1 kg lean per month.'
+      : 'Target: Improve body composition through consistent training.';
+  } else {
+    document.getElementById('bcRow').style.display = 'none';
+  }
+
+  // Training params
+  document.getElementById('outParams').innerHTML =
+    '<h3>Training Parameters</h3>' +
+    '<div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:0.85rem 1rem;margin-bottom:0.75rem">' +
+    '<div style="font-size:0.92rem;font-weight:800;color:#f2f2f5;margin-bottom:3px">' + selSplit.n + ' — ' + dy + ' Days/Week</div>' +
+    '<div style="font-size:0.78rem;font-weight:600;color:var(--blue);margin-bottom:4px">' + selSplit.s + '</div>' +
+    '<div style="font-size:0.76rem;color:var(--muted);margin-bottom:6px">' + selSplit.d + '</div>' +
+    '<div style="font-size:0.74rem;color:var(--muted)">' +
+    'Time: ' + TL[tm] + ' | Duration: ' + DL[dur] + ' | Cardio: ' + (cp === 'both' ? 'LISS+HIIT' : cp === 'none' ? 'None' : cp.toUpperCase()) +
+    (pri !== 'none' ? ' | Priority: ' + PL[pri] : '') + ' | Level: ' + LL[lv] +
+    '</div></div>' +
+    '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:8px;font-size:0.8rem">' +
+    '<div><strong>Rep Range:</strong> ' + rr.s + '</div>' +
+    '<div><strong>Rest:</strong> ' + rr.rest + '</div>' +
+    '<div><strong>Intensity:</strong> ' + rr.intensity + '</div>' +
+    '<div><strong>Tempo:</strong> ' + (mode === 'premium' ? '3-1-2 (Premium)' : 'Controlled') + '</div>' +
+    '<div><strong>Deload:</strong> Every 6th week (40% drop)</div>' +
+    '<div><strong>Overload:</strong> ' + (g === 'strength' ? '+2.5/5 kg per session' : 'Reps first, then weight') + '</div>' +
+    '</div>';
+
+  // Injury alert
+  var injEl = document.getElementById('injAlert');
+  if (inj !== 'none' && INJ_MODS[inj]) {
+    injEl.style.display = 'block';
+    injEl.innerHTML = INJ_MODS[inj];
+  } else {
+    injEl.style.display = 'none';
+  }
+
+  // Workout days
+  var wds = getWDs(g, tr, gn, dy, sp);
+  var advDays = String(Math.min(6, parseInt(dy) + 1));
+  var pWds = getWDs(g, tr, gn, advDays, sp === 'fullbody' ? 'ppl' : sp);
+
+  if (mode === 'normal') {
+    document.getElementById('normalSec').style.display = 'block';
+    document.getElementById('premSec').style.display = 'none';
+    document.getElementById('outWk').innerHTML = renderWDs(wds, false);
+    document.getElementById('outProg').innerHTML = renderProg(g);
+  } else {
+    document.getElementById('normalSec').style.display = 'none';
+    document.getElementById('premSec').style.display = 'block';
+    document.getElementById('outWkP').innerHTML = renderWDs(pWds, true);
+    document.getElementById('outPN').innerHTML = PREM_NOTES[g] || PREM_NOTES.fatloss;
+    document.getElementById('outPeriod').innerHTML = renderPeriod(g);
+  }
+
+  // Cardio
+  var cardioList = getCardio(g, cp);
+  var cardioHtml = '';
+  if (cardioList.length === 0) {
+    cardioHtml = '<div class="ci" style="grid-column:1/-1"><div class="ct">No Cardio Selected</div><div class="cd">Focus on weights and recovery. Consider 20 min brisk walks on rest days for blood flow and joint health.</div></div>';
+  } else {
+    for (var ci2 = 0; ci2 < cardioList.length; ci2++) {
+      cardioHtml += '<div class="ci"><div class="ct">' + cardioList[ci2].t + '</div><div class="cd">' + cardioList[ci2].d + '</div></div>';
+    }
+  }
+  document.getElementById('outCardio').innerHTML = cardioHtml;
+
+  // Stretching
+  var strHtml = '';
+  for (var sti = 0; sti < STRETCH.length; sti++) {
+    strHtml += '<div class="wd"><div class="wdh"><span class="wdl">' + STRETCH[sti].d + '</span></div>';
+    strHtml += '<div style="font-size:0.81rem;line-height:1.65;color:#ccc">' + STRETCH[sti].x + '</div></div>';
+  }
+  document.getElementById('outStretch').innerHTML = strHtml;
+
+  // Recovery
+  var recHtml = '';
+  for (var ri = 0; ri < RECOV.length; ri++) {
+    recHtml += '<div class="ri"><div class="ri-i">' + RECOV[ri].ic + '</div><div class="ri-t">' + RECOV[ri].t + '</div><div class="ri-d">' + RECOV[ri].d + '</div></div>';
+  }
+  document.getElementById('outRecov').innerHTML = recHtml;
+
+  // Injury prevention
+  var injHtml = '';
+  for (var ii = 0; ii < INJ_PREV.length; ii++) {
+    injHtml += '<li>' + INJ_PREV[ii] + '</li>';
+  }
+  document.getElementById('outInj').innerHTML = injHtml;
+
+  // Rules
+  var rules = RULES[g] || RULES.fatloss;
+  var rulesHtml = '';
+  for (var rii = 0; rii < rules.length; rii++) rulesHtml += '<li>' + rules[rii] + '</li>';
+  document.getElementById('outRules').innerHTML = rulesHtml;
+
+  // Avoid
+  var avoid = AVOID[g] || AVOID.fatloss;
+  var avoidHtml = '';
+  for (var ai = 0; ai < avoid.length; ai++) avoidHtml += '<li>' + avoid[ai] + '</li>';
+  document.getElementById('outAvoid').innerHTML = avoidHtml;
+
+  // Coach note
+  document.getElementById('outNote').innerHTML =
+    '<h3 style="color:#fbbf24;margin-bottom:8px">Akash\'s Note</h3>' +
+    (COACH_NOTES[g] || COACH_NOTES.fatloss);
+
+  // Show output
+  var out = document.getElementById('output');
+  out.className = 'output show';
+  out.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// COPY AS TEXT
+function doCopy() {
+  var g = S.goal, tr = S.training, gn = S.gender, dy = S.days, sp = S.split;
+  var wt = document.getElementById('wt').value || 70;
+  var ht = document.getElementById('ht').value || 170;
+  var age = document.getElementById('age').value || 25;
+  var name = document.getElementById('cName').value.trim();
+  var GL = {fatloss:'Fat Loss', muscle:'Muscle Gain', recomp:'Recomposition', strength:'Strength', endurance:'Endurance'};
+  var rr = RR[g] || RR.fatloss;
+  var splitList = SPLITS[dy] || SPLITS['4'];
+  var sel = splitList[0];
+  for (var i = 0; i < splitList.length; i++) { if (splitList[i].v === sp) { sel = splitList[i]; break; } }
+
+  var t = 'WORKOUT PLAN — ' + (name || 'Client') + '\n';
+  t += 'By Akash Singh (@akash.liftsup)\n';
+  t += '—'.repeat(45) + '\n';
+  t += 'Weight: ' + wt + 'kg | Height: ' + ht + 'cm | Age: ' + age + ' yrs\n';
+  t += 'Goal: ' + GL[g] + ' | ' + (tr === 'gym' ? 'Gym' : 'Home') + ' | ' + sel.n + ' | ' + dy + ' Days/Week\n';
+  t += 'Rep Range: ' + rr.s + ' | Rest: ' + rr.rest + '\n\n';
+  t += 'WORKOUT SCHEDULE\n' + '—'.repeat(45) + '\n';
+
+  var wds = getWDs(g, tr, gn, dy, sp);
+  if (wds) {
+    for (var wi = 0; wi < wds.length; wi++) {
+      var d = wds[wi];
+      t += '\n' + d.day + ' — ' + d.focus + '\n';
+      if (d.warmup) t += 'Warm-Up: ' + d.warmup + '\n';
+      var exes = d.exercises || [];
+      for (var ei = 0; ei < exes.length; ei++) {
+        t += '  • ' + exes[ei].name + ': ' + exes[ei].sets + ', Rest ' + exes[ei].rest + '\n';
+      }
+      if (d.finisher) t += 'Finisher: ' + d.finisher + '\n';
+    }
+  }
+
+  t += '\nTRAINING RULES\n' + '—'.repeat(45) + '\n';
+  var rules = RULES[g] || RULES.fatloss;
+  for (var ri2 = 0; ri2 < rules.length; ri2++) t += '+ ' + rules[ri2] + '\n';
+
+  t += '\nSTRICTLY AVOID\n' + '—'.repeat(45) + '\n';
+  var avoid = AVOID[g] || AVOID.fatloss;
+  for (var ai2 = 0; ai2 < avoid.length; ai2++) t += '- ' + avoid[ai2] + '\n';
+
+  t += '\n' + '—'.repeat(45) + '\nAkash Singh | @akash.liftsup';
+
+  navigator.clipboard.writeText(t).then(function() {
+    var btn = event.target;
+    var orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(function() { btn.textContent = orig; }, 2000);
+  });
+}
+
+</script>
+</body>
+</html>
