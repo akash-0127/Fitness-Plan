@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Privacy Policy — FitPlan</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --green:#7eca5a;--gl:#1a2e12;--orange:#f97316;--ol:#2a1a08;
+  --blue:#3b82f6;--bl:#0c1a2e;--red:#ef4444;--rl:#2a0c0c;
+  --gold:#fbbf24;--goldl:#2a2008;--bg:#050508;--card:#0e0e14;
+  --card2:#14141c;--card-hover:#1a1a28;
+  --text:#f2f2f5;--muted:#7a7a8e;--border:rgba(255,255,255,0.06);
+  --border-solid:#1a1a24;--r:14px;--rs:10px;
+  --accent:#0891b2;--accent2:#0e7490;--accent-dim:rgba(8,145,178,0.08);
+  --success:#34d399;--purple:#67e8f9;--cyan:#22d3ee
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes cardGlass{from{opacity:0;transform:translateY(16px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.mesh-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.mesh-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.04;animation:breathe 8s ease-in-out infinite}
+.mesh-orb:nth-child(1){width:600px;height:600px;background:#0891b2;top:-10%;left:30%}
+.mesh-orb:nth-child(2){width:500px;height:500px;background:#3b82f6;bottom:10%;right:10%;animation-delay:2s}
+.mesh-orb:nth-child(3){width:400px;height:400px;background:#22d3ee;top:40%;left:5%;animation-delay:4s}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 2rem;border-bottom:1px solid var(--border-solid);position:sticky;top:0;z-index:200;background:rgba(5,5,8,0.95);backdrop-filter:blur(10px)}
+.nav-brand{font-size:1.2rem;font-weight:800;color:var(--accent);text-decoration:none}
+.nav-links{display:flex;gap:1.2rem}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:500;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--accent2)}
+.content{max-width:650px;margin:0 auto;padding:3rem 1.5rem;position:relative;z-index:1}
+h1{font-size:2rem;font-weight:800;margin-bottom:0.5rem}
+h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{color:var(--muted);font-size:0.95rem;margin-bottom:2.5rem}
+.section-card{background:rgba(14,14,20,0.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:18px;padding:1.75rem;margin-bottom:1.25rem;opacity:0;animation:cardGlass 0.5s ease forwards}
+.section-card:nth-child(2){animation-delay:0.1s}
+.section-card:nth-child(3){animation-delay:0.2s}
+.section-card:nth-child(4){animation-delay:0.3s}
+.section-card:nth-child(5){animation-delay:0.4s}
+.section-card:nth-child(6){animation-delay:0.5s}
+.section-card:nth-child(7){animation-delay:0.6s}
+.section-card h2{font-size:1.05rem;font-weight:700;margin-bottom:0.75rem;color:var(--accent2)}
+.section-card p,.section-card ul{font-size:0.88rem;color:var(--text);line-height:1.7}
+.section-card ul{padding-left:1.25rem;margin-top:0.5rem}
+.section-card li{margin-bottom:0.4rem}
+.footer{text-align:center;padding:2rem;color:var(--muted);font-size:0.75rem;border-top:1px solid var(--border-solid);margin-top:2rem}
+.footer a{color:var(--accent2);text-decoration:none}
+.content{animation:cardGlass 0.6s ease}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#222;border-radius:3px}
+::selection{background:rgba(8,145,178,0.25);color:#fff}
+</style>
+</head>
+<body>
+
+<div class="mesh-bg">
+  <div class="mesh-orb"></div>
+  <div class="mesh-orb"></div>
+  <div class="mesh-orb"></div>
+</div>
+
+<nav class="nav">
+  <a href="index.html" class="nav-brand">FitPlan</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</nav>
+
+<div class="content">
+  <h1>Privacy <span>Policy</span></h1>
+  <p class="subtitle">Your privacy matters. Here is how we handle your data on FitPlan.</p>
+
+  <div class="section-card">
+    <h2>What Data We Collect</h2>
+    <p>When you use FitPlan, the following information may be collected through the forms on our website:</p>
+    <ul>
+      <li>Name and contact details (phone number, email address)</li>
+      <li>Physical attributes (age, weight, height, body measurements)</li>
+      <li>Health and fitness data (gender, fitness goals, dietary preferences, health conditions)</li>
+    </ul>
+  </div>
+
+  <div class="section-card">
+    <h2>Why We Collect It</h2>
+    <p>We collect this data solely to generate personalised fitness and nutrition plans tailored to your body type, goals, and lifestyle. The information you provide directly influences the plan calculations and recommendations.</p>
+  </div>
+
+  <div class="section-card">
+    <h2>How Your Data Is Used</h2>
+    <p>All calculations and plan generation happen locally in your browser. Your data is not sent to any server unless you choose to purchase a premium plan. For premium plans, selected details are sent via Telegram to our team so your customised plan can be created and delivered to you.</p>
+  </div>
+
+  <div class="section-card">
+    <h2>Data Storage</h2>
+    <p>We do not store your data on any server or database. All fitness plan calculations are processed entirely in your browser. Premium plan data is transmitted via Telegram and is not retained in any centralised system.</p>
+  </div>
+
+  <div class="section-card">
+    <h2>Third-Party Sharing</h2>
+    <p>We do not sell, trade, or share your personal information with any third parties. Telegram is used solely as a communication channel for delivering premium plans and responding to contact form messages.</p>
+  </div>
+
+  <div class="section-card">
+    <h2>Contact</h2>
+    <p>For any privacy-related concerns or requests, please reach out via our <a href="contact.html" style="color:var(--accent2);text-decoration:none">Contact page</a> or email us directly at <a href="mailto:sky270197@gmail.com" style="color:var(--accent2);text-decoration:none">sky270197@gmail.com</a>.</p>
+  </div>
+</div>
+
+<div class="footer">
+  <div style="margin-bottom:0.5rem">
+    <a href="about.html">About</a> · <a href="contact.html">Contact</a> · <a href="disclaimer.html">Medical Disclaimer</a> · <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms &amp; Conditions</a>
+  </div>
+  <div style="margin-bottom:0.5rem">
+    <a href="https://instagram.com/akash.liftsup" target="_blank">Instagram</a> · <a href="https://facebook.com/akashliftsup" target="_blank">Facebook</a> · <a href="https://youtube.com/@akash.liftsup" target="_blank">YouTube</a>
+  </div>
+  Designed by <a href="https://instagram.com/akash.liftsup" target="_blank">Akash Singh</a> · © 2026 FitPlan · All plans are for educational purposes
+  <br/>Last updated: July 2026
+</div>
+
+</body>
+</html>
