@@ -14,8 +14,8 @@ html{scroll-behavior:smooth}
   --card2:#14141c;--card-hover:#1a1a28;
   --text:#f2f2f5;--muted:#7a7a8e;--border:rgba(255,255,255,0.06);
   --border-solid:#1a1a24;--r:14px;--rs:10px;
-  --accent:#7c3aed;--accent2:#a78bfa;--accent-dim:rgba(124,58,237,0.15);
-  --success:#34d399;--purple:#a78bfa;--cyan:#22d3ee
+  --accent:#0891b2;--accent2:#0e7490;--accent-dim:rgba(8,145,178,0.08);
+  --success:#34d399;--purple:#67e8f9;--cyan:#22d3ee
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
@@ -26,7 +26,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 
 .mesh-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
 .mesh-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.04;animation:breathe 8s ease-in-out infinite}
-.mesh-orb:nth-child(1){width:600px;height:600px;background:#7c3aed;top:-10%;left:30%}
+.mesh-orb:nth-child(1){width:600px;height:600px;background:#0891b2;top:-10%;left:30%}
 .mesh-orb:nth-child(2){width:500px;height:500px;background:#3b82f6;bottom:10%;right:10%;animation-delay:2s}
 .mesh-orb:nth-child(3){width:400px;height:400px;background:#22d3ee;top:40%;left:5%;animation-delay:4s}
 
@@ -42,20 +42,20 @@ h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-
 .subtitle{color:var(--muted);font-size:0.95rem;margin-bottom:2.5rem}
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}
 .contact-card{background:rgba(14,14,20,0.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:18px;padding:1.5rem;text-align:center;text-decoration:none;color:var(--text);transition:transform 0.2s,border-color 0.3s,box-shadow 0.3s}
-.contact-card:hover{transform:translateY(-3px);border-color:rgba(124,58,237,0.3);box-shadow:0 8px 32px rgba(0,0,0,0.4),0 0 16px rgba(124,58,237,0.1)}
+.contact-card:hover{transform:translateY(-3px);border-color:rgba(8,145,178,0.3);box-shadow:0 8px 32px rgba(0,0,0,0.4),0 0 16px rgba(8,145,178,0.1)}
 .contact-icon{font-size:2rem;margin-bottom:0.5rem}
 .contact-title{font-size:1rem;font-weight:700;margin-bottom:0.25rem}
 .contact-desc{font-size:0.78rem;color:var(--muted)}
 .form-card{background:rgba(14,14,20,0.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:18px;padding:1.75rem;box-shadow:0 4px 24px rgba(0,0,0,0.3);transition:border-color 0.3s}
-.form-card:hover{border-color:rgba(124,58,237,0.2)}
+.form-card:hover{border-color:rgba(8,145,178,0.2)}
 .form-card h2{font-size:1.1rem;font-weight:700;margin-bottom:1rem;color:var(--accent2)}
 .fg{margin-bottom:1rem}
 .fg label{display:block;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:4px}
 .fg input,.fg textarea{width:100%;border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:10px 14px;font-size:0.85rem;background:var(--card2);color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s;font-family:inherit}
-.fg input:focus,.fg textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,0.1)}
+.fg input:focus,.fg textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(8,145,178,0.1)}
 .fg textarea{resize:vertical;min-height:100px}
-.submit-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),#6d28d9);color:#fff;border:none;border-radius:var(--rs);font-size:0.9rem;font-weight:700;cursor:pointer;transition:transform 0.2s,box-shadow 0.3s;box-shadow:0 4px 16px rgba(124,58,237,0.25)}
-.submit-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(124,58,237,0.4)}
+.submit-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),#0e7490);color:#fff;border:none;border-radius:var(--rs);font-size:0.9rem;font-weight:700;cursor:pointer;transition:transform 0.2s,box-shadow 0.3s;box-shadow:0 4px 16px rgba(8,145,178,0.25)}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(8,145,178,0.4)}
 .footer{text-align:center;padding:2rem;color:var(--muted);font-size:0.75rem;border-top:1px solid var(--border-solid);margin-top:2rem}
 .footer a{color:var(--accent2);text-decoration:none}
 .content{animation:cardGlass 0.6s ease}
@@ -63,7 +63,7 @@ h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:#222;border-radius:3px}
-::selection{background:rgba(124,58,237,0.25);color:#fff}
+::selection{background:rgba(8,145,178,0.25);color:#fff}
 </style>
 </head>
 <body>

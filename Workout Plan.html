@@ -14,8 +14,8 @@ html{scroll-behavior:smooth}
   --card2:#f0f0f3;--card-hover:#eaeaef;
   --text:#1a1a2e;--muted:#6b6b80;--border:rgba(0,0,0,0.08);
   --border-solid:#e0e0e5;--r:14px;--rs:10px;
-  --accent:#7c3aed;--accent2:#6d28d9;--accent-dim:rgba(124,58,237,0.08);
-  --success:#059669;--purple:#7c3aed;--cyan:#0891b2
+  --accent:#0891b2;--accent2:#0e7490;--accent-dim:rgba(8,145,178,0.08);
+  --success:#059669;--purple:#0891b2;--cyan:#0891b2
 }
 @media(prefers-color-scheme:dark){:root{
   --green:#7eca5a;--gl:#1a2e12;--orange:#f97316;--ol:#2a1a08;
@@ -24,8 +24,8 @@ html{scroll-behavior:smooth}
   --card2:#14141c;--card-hover:#1a1a28;
   --text:#f2f2f5;--muted:#7a7a8e;--border:rgba(255,255,255,0.06);
   --border-solid:#1a1a24;--r:14px;--rs:10px;
-  --accent:#7c3aed;--accent2:#a78bfa;--accent-dim:rgba(124,58,237,0.15);
-  --success:#34d399;--purple:#a78bfa;--cyan:#22d3ee
+  --accent:#22d3ee;--accent2:#67e8f9;--accent-dim:rgba(34,211,238,0.12);
+  --success:#34d399;--purple:#67e8f9;--cyan:#22d3ee
 }}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
@@ -33,25 +33,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 @keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes fadeInScale{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
-@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,0)}50%{box-shadow:0 0 20px 4px rgba(124,58,237,0.3)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(8,145,178,0)}50%{box-shadow:0 0 20px 4px rgba(8,145,178,0.3)}}
 @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
 @keyframes slideInRight{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
-@keyframes borderGlow{0%,100%{border-color:rgba(124,58,237,0.15)}50%{border-color:rgba(124,58,237,0.35)}}
+@keyframes borderGlow{0%,100%{border-color:rgba(8,145,178,0.15)}50%{border-color:rgba(8,145,178,0.35)}}
 @keyframes iconBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @keyframes brainPulse{0%,100%{transform:scale(1);opacity:0.7}50%{transform:scale(1.1);opacity:1}}
 @keyframes thinkingDots{0%,20%{opacity:0.3}50%{opacity:1}80%,100%{opacity:0.3}}
-@keyframes aiGlow{0%,100%{box-shadow:0 0 30px rgba(124,58,237,0.1)}50%{box-shadow:0 0 60px rgba(124,58,237,0.25)}}
+@keyframes aiGlow{0%,100%{box-shadow:0 0 30px rgba(8,145,178,0.1)}50%{box-shadow:0 0 60px rgba(8,145,178,0.25)}}
 @keyframes progressStep{from{width:0}to{width:100%}}
 @keyframes cardGlass{from{opacity:0;transform:translateY(16px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 
 /* ── MESH GRADIENT BG ── */
 .mesh-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
 .mesh-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.04;animation:breathe 8s ease-in-out infinite}
-.mesh-orb:nth-child(1){width:600px;height:600px;background:#7c3aed;top:-10%;left:30%;animation-delay:0s}
+.mesh-orb:nth-child(1){width:600px;height:600px;background:#0891b2;top:-10%;left:30%;animation-delay:0s}
 .mesh-orb:nth-child(2){width:500px;height:500px;background:#3b82f6;bottom:10%;right:10%;animation-delay:2s}
 .mesh-orb:nth-child(3){width:400px;height:400px;background:#22d3ee;top:40%;left:5%;animation-delay:4s}
 
@@ -68,22 +68,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .header{background:var(--card);backdrop-filter:blur(16px);color:var(--text);padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;border-bottom:1px solid var(--border);animation:fadeIn 0.5s ease}
 .hl h1{font-size:1.5rem;font-weight:800}.hl h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hl p{font-size:0.78rem;color:var(--muted);margin-top:3px;font-style:italic}
-.hbadge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:0.7rem;padding:5px 14px;border-radius:999px;font-weight:700;margin-top:8px;display:inline-block;box-shadow:0 2px 12px rgba(124,58,237,0.3)}
+.hbadge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:0.7rem;padding:5px 14px;border-radius:999px;font-weight:700;margin-top:8px;display:inline-block;box-shadow:0 2px 12px rgba(8,145,178,0.3)}
 .hr{font-size:0.82rem;color:var(--muted);text-align:right}
 .hr a{color:var(--accent2);text-decoration:none;font-weight:600;transition:color 0.2s}
 .hr a:hover{color:var(--accent)}
 
 /* ── STAT CARDS ── */
 .stat-cards{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.stat-card{background:var(--accent-dim);border:1px solid rgba(124,58,237,0.3);border-radius:var(--rs);padding:6px 12px;text-align:center;min-width:70px;transition:transform 0.2s,border-color 0.2s}
-.stat-card:hover{transform:translateY(-2px);border-color:rgba(124,58,237,0.5)}
+.stat-card{background:var(--accent-dim);border:1px solid rgba(8,145,178,0.3);border-radius:var(--rs);padding:6px 12px;text-align:center;min-width:70px;transition:transform 0.2s,border-color 0.2s}
+.stat-card:hover{transform:translateY(-2px);border-color:rgba(8,145,178,0.5)}
 .sc-v{font-size:1rem;font-weight:800;color:var(--accent2)}
 .sc-l{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
 
 /* ── LAYOUT ── */
 .wrap{max-width:1000px;margin:0 auto;padding:2rem 1.25rem;position:relative;z-index:1}
 .card{background:var(--card);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:18px;padding:1.75rem;margin-bottom:1.75rem;box-shadow:0 4px 24px rgba(0,0,0,0.08);animation:cardGlass 0.6s ease 0.1s both;transition:border-color 0.3s,box-shadow 0.3s}
-.card:hover{border-color:rgba(124,58,237,0.2);box-shadow:0 8px 32px rgba(0,0,0,0.4),0 0 16px rgba(124,58,237,0.05)}
+.card:hover{border-color:rgba(8,145,178,0.2);box-shadow:0 8px 32px rgba(0,0,0,0.4),0 0 16px rgba(8,145,178,0.05)}
 .stitle{font-size:0.7rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:0.9rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
 
 /* ── FORM ── */
@@ -92,25 +92,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .fg label{font-size:0.68rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em}
 .req{color:var(--red)}
 input[type=text],input[type=number]{border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:10px 14px;font-size:0.85rem;background:var(--card2);color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s}
-input[type=text]:focus,input[type=number]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,0.1)}
+input[type=text]:focus,input[type=number]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(8,145,178,0.1)}
 input[type=text]{width:170px}
 input[type=number]{width:85px}
 input.err{border-color:var(--red);background:var(--rl)!important}
 .ferr{font-size:0.68rem;color:var(--red);display:none;margin-top:2px;font-weight:600}
 .ferr.on{display:block}
 input[type=tel],input[type=email]{border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:10px 14px;font-size:0.85rem;background:var(--card2);color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s;width:170px}
-input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,0.1)}
+input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(8,145,178,0.1)}
 
 /* ── CHIPS ── */
 .chips{display:flex;gap:6px;flex-wrap:wrap}
 .chip{border:1.5px solid var(--border-solid);border-radius:999px;padding:7px 16px;font-size:0.78rem;cursor:pointer;background:var(--card2);color:var(--text);transition:all 0.2s;font-weight:500;user-select:none}
 .chip:hover{border-color:var(--accent);color:var(--accent2);transform:translateY(-1px)}
-.chip.on{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 12px rgba(124,58,237,0.3)}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 12px rgba(8,145,178,0.3)}
 
 /* ── SPLIT CHIPS ── */
 .sc-wrap{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
 .sc{border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:8px 12px;cursor:pointer;background:var(--card2);transition:all 0.2s;min-width:130px;user-select:none}
-.sc:hover{border-color:var(--accent);background:rgba(124,58,237,0.1)}
+.sc:hover{border-color:var(--accent);background:rgba(8,145,178,0.1)}
 .sc.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 .sc.rec{border-color:var(--accent);background:var(--accent-dim)}
 .sc.on.rec{background:var(--accent);color:#fff}
@@ -130,7 +130,7 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 .unit-btn:hover:not(.active){background:var(--accent);color:#fff}
 
 /* ── NAVY PANEL ── */
-.navy{margin-top:1rem;background:var(--card2);border:1.5px solid rgba(124,58,237,0.15);border-radius:var(--rs);padding:1rem 1.25rem}
+.navy{margin-top:1rem;background:var(--card2);border:1.5px solid rgba(8,145,178,0.15);border-radius:var(--rs);padding:1rem 1.25rem}
 .navy-t{font-size:0.67rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:0.65rem}
 .navy-h{font-size:0.7rem;color:var(--muted);margin-top:0.5rem}
 
@@ -148,9 +148,9 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 .bmi-labs{display:flex;justify-content:space-between;font-size:0.58rem;color:var(--muted);margin-top:3px}
 
 /* ── BUTTONS ── */
-.gbtn{background:linear-gradient(135deg,var(--accent),#6d28d9);color:#fff;border:none;border-radius:var(--rs);padding:12px 28px;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(124,58,237,0.25)}
+.gbtn{background:linear-gradient(135deg,var(--accent),#0e7490);color:#fff;border:none;border-radius:var(--rs);padding:12px 28px;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(8,145,178,0.25)}
 .gbtn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);transition:left 0.5s}
-.gbtn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(124,58,237,0.4)}
+.gbtn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(8,145,178,0.4)}
 .gbtn:hover::before{left:100%}
 .gbtn:active{transform:scale(0.97)}
 .pbtn{background:linear-gradient(135deg,var(--gold),#f59e0b);color:#1a1200;border:none;border-radius:var(--rs);padding:12px 28px;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.25s;box-shadow:0 4px 16px rgba(251,191,36,0.2)}
@@ -159,13 +159,13 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 /* ── AI LOADING OVERLAY ── */
 .loading{display:none;position:fixed;inset:0;background:var(--bg);backdrop-filter:blur(12px);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem}
 .loading.on{display:flex;animation:fadeIn 0.3s ease}
-.ai-brain{width:72px;height:72px;border-radius:50%;background:var(--accent-dim);border:2px solid rgba(124,58,237,0.3);display:flex;align-items:center;justify-content:center;font-size:2rem;animation:brainPulse 2s ease-in-out infinite}
+.ai-brain{width:72px;height:72px;border-radius:50%;background:var(--accent-dim);border:2px solid rgba(8,145,178,0.3);display:flex;align-items:center;justify-content:center;font-size:2rem;animation:brainPulse 2s ease-in-out infinite}
 .ai-steps{display:flex;flex-direction:column;gap:10px;min-width:280px}
 .ai-step{display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--muted);transition:color 0.3s}
 .ai-step.active{color:var(--text)}
 .ai-step.done{color:var(--success)}
 .ai-step-dot{width:8px;height:8px;border-radius:50%;background:var(--border-solid);flex-shrink:0;transition:all 0.3s}
-.ai-step.active .ai-step-dot{background:var(--accent);box-shadow:0 0 8px rgba(124,58,237,0.5);animation:brainPulse 1s ease-in-out infinite}
+.ai-step.active .ai-step-dot{background:var(--accent);box-shadow:0 0 8px rgba(8,145,178,0.5);animation:brainPulse 1s ease-in-out infinite}
 .ai-step.done .ai-step-dot{background:var(--success)}
 .ai-progress{width:280px;height:3px;background:var(--border-solid);border-radius:99px;overflow:hidden}
 .ai-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:width 0.5s cubic-bezier(0.4,0,0.2,1);width:0}
@@ -188,7 +188,7 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 /* ── STAT GRID ── */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
 .stat{background:var(--card2);border:1px solid var(--border-solid);border-radius:var(--rs);padding:14px;text-align:center;animation:popIn 0.3s ease both;transition:transform 0.2s,border-color 0.2s}
-.stat:hover{transform:translateY(-2px);border-color:rgba(124,58,237,0.3)}
+.stat:hover{transform:translateY(-2px);border-color:rgba(8,145,178,0.3)}
 .stat-v{font-size:1.1rem;font-weight:800;color:var(--text)}
 .stat-l{font-size:0.62rem;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:0.05em}
 .stat:nth-child(1){animation-delay:0s}
@@ -220,7 +220,7 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 .ext th{background:var(--card2);font-size:0.63rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);padding:6px 10px;text-align:left;border-bottom:1px solid var(--border-solid)}
 .ext td{padding:6px 10px;border-bottom:1px solid var(--border-solid);vertical-align:top}
 .ext tr:last-child td{border-bottom:none}
-.ext tr:hover td{background:rgba(124,58,237,0.05)}
+.ext tr:hover td{background:rgba(8,145,178,0.05)}
 
 /* ── PROGRESSION TABLE ── */
 .pt{width:100%;border-collapse:collapse;font-size:0.79rem}
@@ -270,11 +270,11 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 
 /* ── EXPORT ── */
 .btn{border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:10px 22px;font-size:0.81rem;cursor:pointer;background:var(--card2);color:var(--text);font-weight:600;transition:all 0.2s}
-.btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(124,58,237,0.2)}
+.btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(8,145,178,0.2)}
 .btn-p{background:var(--accent);color:#fff;border-color:var(--accent)}
 
 /* ── AI GENERATED BADGE ── */
-.ai-badge{display:none;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(167,139,250,0.15));border:1px solid rgba(124,58,237,0.25);border-radius:999px;padding:4px 14px;font-size:0.68rem;font-weight:700;color:var(--accent2);margin-top:8px;animation:fadeInUp 0.4s ease}
+.ai-badge{display:none;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(8,145,178,0.15),rgba(167,139,250,0.15));border:1px solid rgba(8,145,178,0.25);border-radius:999px;padding:4px 14px;font-size:0.68rem;font-weight:700;color:var(--accent2);margin-top:8px;animation:fadeInUp 0.4s ease}
 .ai-badge.show{display:inline-flex}
 .ai-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:brainPulse 1.5s ease-in-out infinite}
 
@@ -288,12 +288,12 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:#222;border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:#333}
-::selection{background:rgba(124,58,237,0.25);color:#fff}
+::selection{background:rgba(8,145,178,0.25);color:#fff}
 
 /* ── PREMIUM PRICING OVERLAY ── */
 .prem-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);z-index:500;justify-content:center;align-items:center;padding:1rem}
 .prem-overlay.on{display:flex}
-.prem-modal{background:var(--card);border:1px solid rgba(217,119,6,0.3);border-radius:18px;padding:2rem 1.75rem;max-width:420px;width:100%;text-align:center;animation:fadeInScale 0.35s ease;box-shadow:0 8px 48px rgba(217,119,6,0.08),0 0 80px rgba(124,58,237,0.05)}
+.prem-modal{background:var(--card);border:1px solid rgba(217,119,6,0.3);border-radius:18px;padding:2rem 1.75rem;max-width:420px;width:100%;text-align:center;animation:fadeInScale 0.35s ease;box-shadow:0 8px 48px rgba(217,119,6,0.08),0 0 80px rgba(8,145,178,0.05)}
 .prem-modal h2{font-size:1.2rem;font-weight:800;margin-bottom:0.3rem;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .prem-modal .pm-sub{font-size:0.78rem;color:var(--muted);margin-bottom:1.25rem}
 .prem-plan{background:var(--card2);border:1px solid var(--border-solid);border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:1rem;text-align:left}
@@ -338,6 +338,17 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
   .output{box-shadow:none;border:none;background:#fff}
   @page{margin:14mm;size:A4}
 }
+
+/* ── VALIDATION POPUP ── */
+.val-popup{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);z-index:600;justify-content:center;align-items:center;padding:1rem}
+.val-popup.on{display:flex}
+.val-popup-box{background:var(--card);border:1px solid var(--red);border-radius:18px;padding:2rem 1.75rem;max-width:420px;width:100%;text-align:center;animation:fadeInScale 0.3s ease;box-shadow:0 8px 48px rgba(220,38,38,0.12)}
+.val-popup-box h3{font-size:1.1rem;font-weight:800;color:var(--red);margin-bottom:0.5rem}
+.val-popup-box ul{text-align:left;list-style:none;padding:0;margin:0.75rem 0}
+.val-popup-box ul li{font-size:0.82rem;color:var(--text);padding:5px 0;display:flex;align-items:center;gap:8px}
+.val-popup-box ul li::before{content:"⚠️";font-size:0.75rem;flex-shrink:0}
+.val-popup-box .pm-btn{margin-top:0.75rem;padding:10px 28px;border-radius:var(--rs);border:none;font-size:0.82rem;font-weight:700;cursor:pointer;background:var(--red);color:#fff;transition:all 0.2s}
+.val-popup-box .pm-btn:hover{opacity:0.9;transform:translateY(-1px)}
 </style>
 </head>
 <body>
@@ -442,7 +453,29 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
   <div class="stitle">&#x1F464; Personal Details</div>
   <div class="row">
     <div class="fg"><label>Client Name <span class="req">*</span></label><input type="text" id="cName" placeholder="e.g. Rahul Sharma"/><span class="ferr" id="eName">Name is required</span></div>
-    <div class="fg"><label>Phone (+91) <span class="req">*</span></label><input type="tel" id="phone" placeholder="98765 43210" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'')"/><span class="ferr" id="ePhone">Enter valid 10-digit Indian number</span></div>
+    <div class="fg"><label>Phone <span class="req">*</span></label>
+      <div style="display:flex;gap:6px;align-items:center">
+        <select id="countryCode" style="border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:10px 8px;font-size:0.85rem;background:var(--card2);color:var(--text);outline:none;cursor:pointer;min-width:72px">
+          <option value="+91" selected>+91 🇮🇳</option>
+          <option value="+1">+1 🇺🇸</option>
+          <option value="+44">+44 🇬🇧</option>
+          <option value="+61">+61 🇦🇺</option>
+          <option value="+971">+971 🇦🇪</option>
+          <option value="+65">+65 🇸🇬</option>
+          <option value="+60">+60 🇲🇾</option>
+          <option value="+880">+880 🇧🇩</option>
+          <option value="+977">+977 🇳🇵</option>
+          <option value="+94">+94 🇱🇰</option>
+          <option value="+27">+27 🇿🇦</option>
+          <option value="+49">+49 🇩🇪</option>
+          <option value="+33">+33 🇫🇷</option>
+          <option value="+81">+81 🇯🇵</option>
+          <option value="+82">+82 🇰🇷</option>
+          <option value="+86">+86 🇨🇳</option>
+        </select>
+        <input type="tel" id="phone" placeholder="98765 43210" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'')"/>
+      </div>
+      <span class="ferr" id="ePhone">Enter valid phone number</span></div>
     <div class="fg"><label>Email <span class="req">*</span></label><input type="email" id="email" placeholder="rahul@email.com"/><span class="ferr" id="eEmail">Enter valid email address</span></div>
     <div class="fg"><label>Weight <span class="req">*</span></label>
       <div class="unit-row">
@@ -590,9 +623,36 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
   <div class="navy">
     <div class="navy-t">&#x1F4CF; Body Measurements — Navy Method Body Fat Calculator (Optional)</div>
     <div class="row" style="margin-bottom:0;gap:1rem">
-      <div class="fg"><label>Waist (cm)</label><input type="number" id="waist" placeholder="e.g. 85" style="width:100px"/></div>
-      <div class="fg"><label>Neck (cm)</label><input type="number" id="neck" placeholder="e.g. 38" style="width:100px"/></div>
-      <div class="fg" id="hipGrp" style="display:none"><label>Hip (cm) — females</label><input type="number" id="hip" placeholder="e.g. 95" style="width:100px"/></div>
+      <div class="fg">
+        <label>Waist</label>
+        <div class="unit-row">
+          <input type="number" id="waist" placeholder="e.g. 85" style="width:100px"/>
+          <div class="unit-toggle" id="waistUnit">
+            <div class="unit-btn active" data-val="cm" onclick="setUnit('waist',this)">cm</div>
+            <div class="unit-btn" data-val="in" onclick="setUnit('waist',this)">in</div>
+          </div>
+        </div>
+      </div>
+      <div class="fg">
+        <label>Neck</label>
+        <div class="unit-row">
+          <input type="number" id="neck" placeholder="e.g. 38" style="width:100px"/>
+          <div class="unit-toggle" id="neckUnit">
+            <div class="unit-btn active" data-val="cm" onclick="setUnit('neck',this)">cm</div>
+            <div class="unit-btn" data-val="in" onclick="setUnit('neck',this)">in</div>
+          </div>
+        </div>
+      </div>
+      <div class="fg" id="hipGrp" style="display:none">
+        <label>Hip — females</label>
+        <div class="unit-row">
+          <input type="number" id="hip" placeholder="e.g. 95" style="width:100px"/>
+          <div class="unit-toggle" id="hipUnit">
+            <div class="unit-btn active" data-val="cm" onclick="setUnit('hip',this)">cm</div>
+            <div class="unit-btn" data-val="in" onclick="setUnit('hip',this)">in</div>
+          </div>
+        </div>
+      </div>
       <div class="fg" style="justify-content:flex-end">
         <label style="visibility:hidden">x</label>
         <button onclick="calcBMI()"
@@ -630,6 +690,14 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 </div>
 
 <!-- OUTPUT SECTION -->
+<div class="val-popup" id="valPopup">
+  <div class="val-popup-box">
+    <h3>Please Fix the Following</h3>
+    <ul id="valErrors"></ul>
+    <button class="pm-btn" onclick="document.getElementById('valPopup').classList.remove('on')">Got It</button>
+  </div>
+</div>
+
 <div class="output" id="output">
   <div class="ph">
     <div>
@@ -1657,8 +1725,8 @@ function calcBMI() {
 
   var pct = Math.min(100, ((bmi - 10) / 30) * 100);
   document.getElementById('bmiFill').style.width = pct + '%';
-  var fillC = {Underweight:'#3b82f6', Normal:'#7c3aed', Overweight:'#f97316', Obese:'#ef4444'};
-  document.getElementById('bmiFill').style.background = fillC[bmiCat] || '#7c3aed';
+  var fillC = {Underweight:'#3b82f6', Normal:'#0891b2', Overweight:'#f97316', Obese:'#ef4444'};
+  document.getElementById('bmiFill').style.background = fillC[bmiCat] || '#0891b2';
   document.getElementById('bmiPanel').style.display = 'block';
 }
 
@@ -1769,31 +1837,34 @@ function getCardio(goal, pref) {
 // ============================================================
 function validate() {
   var ok=true;
-  function chk(id,eid,bad) {
+  var errors=[];
+  function chk(id,eid,bad,msg) {
     var el=document.getElementById(id), er=document.getElementById(eid);
     if(!el||!er) return;
-    if(bad){el.classList.add('err');er.classList.add('on');ok=false;}
+    if(bad){el.classList.add('err');er.classList.add('on');ok=false;if(msg)errors.push(msg);}
     else{el.classList.remove('err');er.classList.remove('on');}
   }
-  chk('cName','eName',!document.getElementById('cName').value.trim());
-
+  chk('cName','eName',!document.getElementById('cName').value.trim(),'Client Name is required');
   var phone=document.getElementById('phone').value.replace(/\s/g,'');
-  chk('phone','ePhone',!/^[6-9]\d{9}$/.test(phone));
-
+  chk('phone','ePhone',!/^[6-9]\d{9}$/.test(phone),'Enter a valid 10-digit Indian mobile number');
   var email=document.getElementById('email').value.trim();
-  chk('email','eEmail',!email||!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email));
-
+  chk('email','eEmail',!email||!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email),'Enter a valid email address');
   var wt=parseFloat(document.getElementById('wt').value);
   var wtU=document.querySelector('#weightUnit .unit-btn.active');
   var wtKg=(wtU&&wtU.dataset.val==='lbs')?wt/2.205:wt;
-  chk('wt','eWt',!wt||wtKg<20||wtKg>300);
-
+  chk('wt','eWt',!wt||wtKg<20||wtKg>300,'Enter realistic weight');
   var ht=parseFloat(document.getElementById('ht').value);
   var htU=document.querySelector('#heightUnit .unit-btn.active');
   var htCm=(htU&&htU.dataset.val==='in')?ht*2.54:ht;
-  chk('ht','eHt',!ht||htCm<100||htCm>260);
-
-  if(!ok){var firstErr=document.querySelector('.err');if(firstErr)firstErr.scrollIntoView({behavior:'smooth',block:'center'});}
+  chk('ht','eHt',!ht||htCm<100||htCm>260,'Enter realistic height');
+  if(!ok){
+    var errList=document.getElementById('valErrors');
+    errList.innerHTML='';
+    errors.forEach(function(e){var li=document.createElement('li');li.textContent=e;errList.appendChild(li);});
+    document.getElementById('valPopup').classList.add('on');
+    var firstErr=document.querySelector('.err');
+    if(firstErr)firstErr.scrollIntoView({behavior:'smooth',block:'center'});
+  }
   return ok;
 }
 
@@ -1877,58 +1948,11 @@ function sendTg(chatId, text, cb) {
 }
 function isAdmin() { return window.location.search.indexOf('admin=1') > -1; }
 function confirmPayment() {
-  var _n = document.getElementById('cName').value.trim() || 'Not provided';
-  var _p = document.getElementById('phone').value.trim() || 'Not provided';
-  var _e = document.getElementById('email').value.trim() || 'Not provided';
-  var _g = document.querySelector('[data-g="goal"].active');
-  var _goal = _g ? _g.textContent.trim() : 'Not selected';
-  var _tr = document.querySelector('[data-g="training"].active');
-  var _training = _tr ? _tr.textContent.trim() : 'Not selected';
-  var _lv = document.querySelector('[data-g="level"].active');
-  var _level = _lv ? _lv.textContent.trim() : 'Not selected';
-  var _header = '💰 PREMIUM WORKOUT PLAN — PAYMENT CONFIRMED\n━━━━━━━━━━━━━━━━━━\nName: ' + _n + '\nPhone: ' + _p + '\nEmail: ' + _e + '\nGoal: ' + _goal + '\nTraining: ' + _training + '\nLevel: ' + _level + '\nAmount: ₹99\n━━━━━━━━━━━━━━━━━━\n\nGenerating plan...\n';
+  var _n = document.getElementById('cName').value.trim() || 'there';
   document.getElementById('qrOverlay').classList.remove('on');
-  document.getElementById('loading').classList.add('on');
-  var steps=['aiStep1','aiStep2','aiStep3','aiStep4'];
-  var fill=document.getElementById('aiProgressFill');
-  var currentStep=0;
-  var stepInterval=setInterval(function(){
-    if(currentStep<steps.length){
-      var el=document.getElementById(steps[currentStep]);
-      if(currentStep>0){document.getElementById(steps[currentStep-1]).classList.remove('active');document.getElementById(steps[currentStep-1]).classList.add('done');}
-      if(el)el.classList.add('active');
-      fill.style.width=((currentStep+1)/steps.length*100)+'%';
-      currentStep++;
-    }else{
-      clearInterval(stepInterval);
-      setTimeout(function(){
-        document.getElementById('loading').classList.remove('on');
-        steps.forEach(function(s){document.getElementById(s).classList.remove('active','done');});
-        fill.style.width='0';
-        try { renderPlan('premium'); } catch(err) { console.error(err); }
-        if (!isAdmin()) {
-          document.getElementById('output').style.display = 'none';
-          document.getElementById('output').setAttribute('data-premium-generated','1');
-        }
-        setTimeout(function(){
-          var out = document.getElementById('output');
-          var planText = out ? out.innerText : '';
-          if (planText.length > 3800) planText = planText.substring(0, 3800) + '\n...[truncated]';
-          var fullMsg = _header + '\n' + planText;
-          if (fullMsg.length > 4000) {
-            sendTg('676917032', fullMsg.substring(0, 4000));
-            setTimeout(function(){ sendTg('676917032', fullMsg.substring(4000)); }, 1500);
-          } else {
-            sendTg('676917032', fullMsg);
-          }
-        }, 500);
-        var sb = document.getElementById('successBanner');
-        document.getElementById('successMsg').textContent = 'Payment confirmed, ' + _n + '! Your premium workout plan has been generated and sent to Akash. He will share it with you shortly.';
-        sb.classList.add('on');
-        setTimeout(function(){ sb.classList.remove('on'); }, 8000);
-      },400);
-    }
-  },500);
+  document.getElementById('successBanner').classList.add('on');
+  document.getElementById('successMsg').textContent = 'Your custom plan will be generated and shared with you in sometime. Thanks for choosing us!';
+  setTimeout(function(){ document.getElementById('successBanner').classList.remove('on'); }, 10000);
 }
 
 // RENDER PLAN
@@ -1949,7 +1973,7 @@ function renderPlan(mode) {
   var TL = {morning:'Morning', evening:'Evening', flexible:'Flexible'};
   var PL = {none:'No Preference', chest:'Chest', back:'Back', legs:'Legs', glutes:'Glutes', shoulders:'Shoulders', arms:'Arms', core:'Core'};
   var IL = {none:'None', knee:'Knee Issue', shoulder:'Shoulder Issue', back:'Lower Back', wrist:'Wrist Issue'};
-  var GBC = {fatloss:'background:#1a1208;color:#f97316', muscle:'background:#1a0808;color:#ef4444', recomp:'background:#0a1020;color:#3b82f6', strength:'background:#1a0a20;color:#a78bfa', endurance:'background:#1a1508;color:#fbbf24'};
+  var GBC = {fatloss:'background:#1a1208;color:#f97316', muscle:'background:#1a0808;color:#ef4444', recomp:'background:#0a1020;color:#3b82f6', strength:'background:#1a0a20;color:#67e8f9', endurance:'background:#1a1508;color:#fbbf24'};
 
   var splitList = SPLITS[dy] || SPLITS['4'];
   var selSplit = null;
@@ -1967,7 +1991,7 @@ function renderPlan(mode) {
   var priBadge = pri !== 'none' ? '<span class="badge" style="background:#0a1020;color:#3b82f6">🎯 ' + PL[pri] + '</span>' : '';
   document.getElementById('outBadges').innerHTML =
     '<span class="badge" style="' + GBC[g] + '">' + GL[g] + '</span>' +
-    '<span class="badge" style="background:' + (tr === 'gym' ? '#0a1020;color:#3b82f6' : '#0e0e1a;color:#a78bfa') + '">' + (tr === 'gym' ? 'Gym' : 'Home') + '</span>' +
+    '<span class="badge" style="background:' + (tr === 'gym' ? '#0a1020;color:#3b82f6' : '#0e0e1a;color:#67e8f9') + '">' + (tr === 'gym' ? 'Gym' : 'Home') + '</span>' +
     '<span class="badge" style="background:#0a1020;color:#3b82f6">' + selSplit.n + '</span>' +
     '<span class="badge" style="background:#1a1a24;color:#999">' + dy + ' Days/Week</span>' +
     '<span class="badge" style="background:#1a1a24;color:#999">' + DL[dur] + '/session</span>' +
