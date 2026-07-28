@@ -1,20 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>About — FitPlan</title>
+<script>!function(){var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme:light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t)}();</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 :root{
+  --green:#059669;--gl:#ecfdf5;--orange:#ea580c;--ol:#fff7ed;
+  --blue:#2563eb;--bl:#eff6ff;--red:#dc2626;--rl:#fef2f2;
+  --gold:#d97706;--goldl:#fffbeb;--bg:#f5f5f7;--card:#ffffff;
+  --card2:#f0f0f3;--card-hover:#eaeaef;
+  --text:#1a1a2e;--muted:#6b6b80;--border:rgba(0,0,0,0.08);
+  --border-solid:#e0e0e5;--r:14px;--rs:10px;
+  --accent:#0891b2;--accent2:#0e7490;--accent-dim:rgba(8,145,178,0.08);
+  --success:#059669;--purple:#0891b2;--cyan:#0891b2
+}
+[data-theme="dark"]{
   --green:#7eca5a;--gl:#1a2e12;--orange:#f97316;--ol:#2a1a08;
   --blue:#3b82f6;--bl:#0c1a2e;--red:#ef4444;--rl:#2a0c0c;
   --gold:#fbbf24;--goldl:#2a2008;--bg:#050508;--card:#0e0e14;
   --card2:#14141c;--card-hover:#1a1a28;
   --text:#f2f2f5;--muted:#7a7a8e;--border:rgba(255,255,255,0.06);
   --border-solid:#1a1a24;--r:14px;--rs:10px;
-  --accent:#0891b2;--accent2:#0e7490;--accent-dim:rgba(8,145,178,0.08);
+  --accent:#22d3ee;--accent2:#67e8f9;--accent-dim:rgba(34,211,238,0.12);
   --success:#34d399;--purple:#67e8f9;--cyan:#22d3ee
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
@@ -30,13 +41,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .mesh-orb:nth-child(2){width:500px;height:500px;background:#3b82f6;bottom:10%;right:10%;animation-delay:2s}
 .mesh-orb:nth-child(3){width:400px;height:400px;background:#22d3ee;top:40%;left:5%;animation-delay:4s}
 
-.nav{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 2rem;border-bottom:1px solid var(--border-solid);position:sticky;top:0;z-index:200;background:rgba(5,5,8,0.95);backdrop-filter:blur(10px)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 2rem;border-bottom:1px solid var(--border-solid);position:sticky;top:0;z-index:200;background:var(--card);backdrop-filter:blur(10px)}
 .nav-brand{font-size:1.2rem;font-weight:800;color:var(--accent);text-decoration:none}
 .nav-links{display:flex;gap:1.2rem}
 .nav-links a{color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:500;transition:color 0.2s}
 .nav-links a:hover,.nav-links a.active{color:var(--accent2)}
+.theme-toggle{background:none;border:1.5px solid var(--border);cursor:pointer;padding:5px;border-radius:50%;color:var(--muted);transition:all 0.3s;display:flex;align-items:center;justify-content:center;width:32px;height:32px}
+.theme-toggle:hover{background:var(--border);color:var(--accent);border-color:var(--accent);transform:rotate(30deg)}
+.theme-toggle svg{width:16px;height:16px}
+[data-theme="dark"] .sun-i{display:block}
+[data-theme="dark"] .moon-i{display:none}
+[data-theme="light"] .sun-i{display:none}
+[data-theme="light"] .moon-i{display:block}
 
-.content{max-width:750px;margin:0 auto;padding:3rem 1.5rem;position:relative;z-index:1}
+.content{max-width:900px;margin:0 auto;padding:3rem 1.5rem;position:relative;z-index:1}
 h1{font-size:2rem;font-weight:800;margin-bottom:0.5rem}
 h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .subtitle{color:var(--muted);font-size:0.95rem;margin-bottom:2.5rem}
@@ -83,6 +101,7 @@ p{color:#ccc;font-size:0.9rem;margin-bottom:1rem}
     <a href="about.html" class="active">About</a>
     <a href="contact.html">Contact</a>
   </div>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg class="sun-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="moon-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
 </nav>
 
 <div class="content">
@@ -159,5 +178,6 @@ p{color:#ccc;font-size:0.9rem;margin-bottom:1rem}
   Designed by <a href="https://instagram.com/akash.liftsup" target="_blank">Akash Singh</a> · © 2026 FitPlan · All plans are for educational purposes
 </div>
 
+<script>function toggleTheme(){var h=document.documentElement,c=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',c);localStorage.setItem('theme',c)}</script>
 </body>
 </html>

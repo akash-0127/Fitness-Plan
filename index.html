@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>FitPlan — Personalised Fitness Plans</title>
+<script>!function(){var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme:light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t)}();</script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -28,7 +29,7 @@
     --radius: 14px;
     --radius-sm: 10px;
   }
-  @media (prefers-color-scheme: dark) {
+  [data-theme="dark"] {
     :root {
       --bg: #050508;
       --card: #0e0e14;
@@ -103,6 +104,13 @@
   .portal-nav .nav-links{display:flex;gap:1.5rem}
   .portal-nav .nav-links a{color:var(--muted);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}
   .portal-nav .nav-links a:hover,.portal-nav .nav-links a.active{color:var(--accent)}
+  .theme-toggle{background:none;border:1.5px solid var(--border);cursor:pointer;padding:5px;border-radius:50%;color:var(--muted);transition:all 0.3s;display:flex;align-items:center;justify-content:center;width:32px;height:32px}
+  .theme-toggle:hover{background:var(--border);color:var(--accent);border-color:var(--accent);transform:rotate(30deg)}
+  .theme-toggle svg{width:16px;height:16px}
+  [data-theme="dark"] .sun-i{display:block}
+  [data-theme="dark"] .moon-i{display:none}
+  [data-theme="light"] .sun-i{display:none}
+  [data-theme="light"] .moon-i{display:block}
 
   /* ── HEADER ── */
   .header {
@@ -131,7 +139,7 @@
   /* ── PAGE WRAP ── */
   .page-wrap {
     position: relative; z-index: 1;
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 1.5rem;
   }
@@ -139,7 +147,7 @@
   /* ── HERO ── */
   .hero {
     text-align: center; padding: 3rem 1rem 2rem;
-    max-width: 700px; margin: 0 auto;
+    max-width: 900px; margin: 0 auto;
     animation: fadeInUp 0.7s ease-out 0.1s both;
   }
   .hero-pill {
@@ -203,7 +211,7 @@
   .trust {
     display: flex; justify-content: center; gap: 2rem;
     flex-wrap: wrap; padding: 0 1rem 1.5rem;
-    max-width: 700px; margin: 0 auto;
+    max-width: 900px; margin: 0 auto;
     animation: fadeInUp 0.6s ease-out 0.2s both;
   }
   .trust-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--muted); transition: color 0.2s; }
@@ -215,7 +223,7 @@
 
   /* ── TRANSFORMATION HOOK ── */
   .hook-box {
-    max-width: 700px; margin: 0 auto; padding: 0 0.5rem;
+    max-width: 900px; margin: 0 auto; padding: 0 0.5rem;
     animation: fadeInUp 0.6s ease-out 0.25s both;
   }
   .hook-inner {
@@ -238,7 +246,7 @@
      PROFESSIONAL PLAN CARDS SECTION
      ═══════════════════════════════════════════ */
   .plan-section {
-    max-width: 700px; margin: 0 auto; padding: 2rem 0.5rem 2rem;
+    max-width: 1200px; margin: 0 auto; padding: 2rem 0.5rem 2rem;
     animation: fadeInUp 0.6s ease-out 0.3s both;
   }
   .plan-section-title {
@@ -249,6 +257,7 @@
   .plan-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
   .plan-cards { display: flex; flex-direction: column; gap: 16px; }
+  @media (min-width: 900px) { .plan-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; } }
 
   /* ── BASE CARD ── */
   .plan-card {
@@ -519,6 +528,7 @@
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
   </div>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg class="sun-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="moon-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
 </nav>
 
 <div class="bg-glow"></div>
@@ -672,6 +682,7 @@ function revealPlans() {
   }, 100);
 }
 
+function toggleTheme(){var h=document.documentElement,c=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',c);localStorage.setItem('theme',c)}
 function goToPlan(url, el) {
   if (el.classList.contains('redirecting')) return;
   el.classList.add('selected', 'redirecting');
