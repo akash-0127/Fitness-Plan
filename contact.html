@@ -131,26 +131,33 @@ h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-
   </div>
   <p class="follow-line">Stay motivated with daily fitness tips, workouts &amp; nutrition content—follow us on <a href="https://instagram.com/akash.liftsup" target="_blank">Instagram</a>, <a href="https://www.facebook.com/akashliftsup" target="_blank">Facebook</a> &amp; <a href="https://youtube.com/@akash.liftsup" target="_blank">YouTube</a></p>
 
-  <div class="form-card">
-    <h2>Send Us a Message</h2>
-    <div class="fg">
-      <label>Your Name</label>
-      <input type="text" id="cName" placeholder="e.g. Rahul Sharma"/>
+  <form id="contactForm" action="https://formsubmit.co/sky270197@gmail.com" method="POST" target="hiddenFrame">
+    <input type="hidden" name="_captcha" value="false"/>
+    <input type="hidden" name="_subject" value="📩 New Contact Form Message"/>
+    <input type="hidden" name="_template" value="table"/>
+    <input type="hidden" name="_next" value=""/>
+    <div class="form-card">
+      <h2>Send Us a Message</h2>
+      <div class="fg">
+        <label>Your Name</label>
+        <input type="text" name="Name" id="cName" placeholder="e.g. Rahul Sharma"/>
+      </div>
+      <div class="fg">
+        <label>Phone Number</label>
+        <input type="tel" name="Phone" id="cPhone" placeholder="+91 98765 43210"/>
+      </div>
+      <div class="fg">
+        <label>Email Address</label>
+        <input type="email" name="Email" id="cEmail" placeholder="you@example.com"/>
+      </div>
+      <div class="fg">
+        <label>Message</label>
+        <textarea name="Message" id="cMsg" placeholder="How can we help you?"></textarea>
+      </div>
+      <button type="submit" class="submit-btn" onclick="sendMsg()">Send Message →</button>
     </div>
-    <div class="fg">
-      <label>Phone Number</label>
-      <input type="tel" id="cPhone" placeholder="+91 98765 43210"/>
-    </div>
-    <div class="fg">
-      <label>Email Address</label>
-      <input type="email" id="cEmail" placeholder="you@example.com"/>
-    </div>
-    <div class="fg">
-      <label>Message</label>
-      <textarea id="cMsg" placeholder="How can we help you?"></textarea>
-    </div>
-    <button class="submit-btn" onclick="sendMsg()">Send Message →</button>
-  </div>
+  </form>
+  <iframe name="hiddenFrame" style="display:none" onload="onFormSubmit()"></iframe>
 </div>
 
 <div class="footer">
@@ -167,30 +174,22 @@ function showToast(icon,title,msg,error){
   t.className='toast-popup'+(error?' error':'')+' show';
   setTimeout(function(){t.classList.remove('show');},3500);
 }
-function sendMsg() {
-  var n = document.getElementById('cName').value.trim();
-  var p = document.getElementById('cPhone').value.trim();
-  var e = document.getElementById('cEmail').value.trim();
-  var m = document.getElementById('cMsg').value.trim();
-  if (!n || !m) { showToast('⚠️','Please enter your name and message.','',true); return; }
-  var body = 'Name: ' + n + '\nPhone: ' + (p || 'Not provided') + '\nEmail: ' + (e || 'Not provided') + '\nMessage:\n' + m;
-  fetch('https://formsubmit.co/sky270197@gmail.com', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({name: n, phone: p || 'Not provided', email: e || 'Not provided', message: m, _subject: '📩 New Contact Form Message from ' + n})
-  }).then(function(r) {
-    if (r.ok) {
-      showToast('✅','Message sent!','We will get back to you soon.');
-      document.getElementById('cName').value = '';
-      document.getElementById('cPhone').value = '';
-      document.getElementById('cEmail').value = '';
-      document.getElementById('cMsg').value = '';
-    } else {
-      showToast('❌','Failed to send.','Please try again or message us on Telegram.',true);
-    }
-  }).catch(function() {
-    showToast('❌','Failed to send.','Please try again or message us on Telegram.',true);
-  });
+function onFormSubmit(){
+  var n=document.getElementById('cName').value.trim();
+  if(n){
+    showToast('✅','Message sent!','We will get back to you soon.');
+    document.getElementById('cName').value='';
+    document.getElementById('cPhone').value='';
+    document.getElementById('cEmail').value='';
+    document.getElementById('cMsg').value='';
+  }
+}
+function sendMsg(){
+  var n=document.getElementById('cName').value.trim();
+  var m=document.getElementById('cMsg').value.trim();
+  if(!n||!m){showToast('⚠️','Please enter your name and message.','',true);return false;}
+  document.getElementById('contactForm').submit();
+  return false;
 }
 </script>
 
