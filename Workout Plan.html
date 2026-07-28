@@ -1932,7 +1932,18 @@ function sendTg(chatId, text, cb) {
 function isAdmin() { return window.location.search.indexOf('admin=1') > -1; }
 function confirmPayment() {
   var _n = document.getElementById('cName').value.trim() || 'there';
+  var _p = document.getElementById('countryCode').value.trim() + document.getElementById('phone').value.trim();
+  var _e = document.getElementById('email').value.trim();
+  var _g = document.querySelector('[data-g="goal"].active');
+  var _goal = _g ? _g.textContent.trim() : 'N/A';
+  var _tr = document.querySelector('[data-g="training"].active');
+  var _training = _tr ? _tr.textContent.trim() : 'N/A';
+  var _lv = document.querySelector('[data-g="level"].active');
+  var _level = _lv ? _lv.textContent.trim() : 'N/A';
   document.getElementById('qrOverlay').classList.remove('on');
+  var _msg = '💰 PREMIUM WORKOUT PLAN — PAYMENT CONFIRMED\n━━━━━━━━━━━━━━━━━━\nName: ' + _n + '\nPhone: ' + _p + '\nEmail: ' + _e + '\nGoal: ' + _goal + '\nTraining: ' + _training + '\nLevel: ' + _level + '\nAmount: ₹99\n━━━━━━━━━━━━━━━━━━';
+  sendTg('676917032', _msg);
+  window.scrollTo({top:0,behavior:'smooth'});
   document.getElementById('successBanner').classList.add('on');
   document.getElementById('successMsg').textContent = 'Your custom plan will be generated and shared with you in sometime. Thanks for choosing us!';
   setTimeout(function(){ document.getElementById('successBanner').classList.remove('on'); }, 10000);
