@@ -173,19 +173,23 @@ function sendMsg() {
   var e = document.getElementById('cEmail').value.trim();
   var m = document.getElementById('cMsg').value.trim();
   if (!n || !m) { showToast('⚠️','Please enter your name and message.','',true); return; }
-  var text = '📩 NEW CONTACT FORM MESSAGE\n━━━━━━━━━━━━━━━━━━\nName: ' + n + '\nPhone: ' + (p || 'Not provided') + '\nEmail: ' + (e || 'Not provided') + '\nMessage: ' + m + '\n━━━━━━━━━━━━━━━━━━';
-  fetch('https://api.telegram.org/bot8323966181:AAHkRHr-JXaEK_yVv1kG-fRXbtta4BBgT_8/sendMessage', {
+  var body = 'Name: ' + n + '\nPhone: ' + (p || 'Not provided') + '\nEmail: ' + (e || 'Not provided') + '\nMessage:\n' + m;
+  fetch('https://formsubmit.co/sky270197@gmail.com', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({chat_id: '676917032', text: text})
-  }).then(function() {
-    showToast('✅','Message sent!','We will get back to you soon.');
-    document.getElementById('cName').value = '';
-    document.getElementById('cPhone').value = '';
-    document.getElementById('cEmail').value = '';
-    document.getElementById('cMsg').value = '';
+    body: JSON.stringify({name: n, phone: p || 'Not provided', email: e || 'Not provided', message: m, _subject: '📩 New Contact Form Message from ' + n})
+  }).then(function(r) {
+    if (r.ok) {
+      showToast('✅','Message sent!','We will get back to you soon.');
+      document.getElementById('cName').value = '';
+      document.getElementById('cPhone').value = '';
+      document.getElementById('cEmail').value = '';
+      document.getElementById('cMsg').value = '';
+    } else {
+      showToast('❌','Failed to send.','Please try again or message us on Telegram.',true);
+    }
   }).catch(function() {
-    showToast('❌','Failed to send.','Please try messaging us on Telegram or Instagram.',true);
+    showToast('❌','Failed to send.','Please try again or message us on Telegram.',true);
   });
 }
 </script>
