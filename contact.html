@@ -78,6 +78,12 @@ h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:#222;border-radius:3px}
 ::selection{background:rgba(8,145,178,0.25);color:#fff}
+.toast-popup{position:fixed;top:1.5rem;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--card);border:1px solid var(--success);border-radius:var(--r);padding:1rem 1.75rem;display:flex;align-items:center;gap:10px;box-shadow:0 12px 40px rgba(0,0,0,0.6),0 0 16px rgba(52,211,153,0.15);z-index:999;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s}
+.toast-popup.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+.toast-popup.error{border-color:var(--red)}
+.toast-icon{font-size:1.3rem}
+.toast-text{font-size:0.85rem;font-weight:600;color:var(--text)}
+.toast-text span{display:block;font-size:0.72rem;font-weight:400;color:var(--muted);margin-top:2px}
 </style>
 </head>
 <body>
@@ -152,28 +158,37 @@ h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-
 </div>
 
 <script>
+function showToast(icon,title,msg,error){
+  var t=document.getElementById('toastPopup');
+  var ti=document.getElementById('toastIcon');
+  var tt=document.getElementById('toastText');
+  ti.textContent=icon;
+  tt.innerHTML=title+(msg?'<span>'+msg+'</span>':'');
+  t.className='toast-popup'+(error?' error':'')+' show';
+  setTimeout(function(){t.classList.remove('show');},3500);
+}
 function sendMsg() {
   var n = document.getElementById('cName').value.trim();
   var p = document.getElementById('cPhone').value.trim();
   var e = document.getElementById('cEmail').value.trim();
   var m = document.getElementById('cMsg').value.trim();
-  if (!n || !m) { alert('Please enter your name and message.'); return; }
+  if (!n || !m) { showToast('⚠️','Please enter your name and message.','',true); return; }
   var text = '📩 NEW CONTACT FORM MESSAGE\n━━━━━━━━━━━━━━━━━━\nName: ' + n + '\nPhone: ' + (p || 'Not provided') + '\nEmail: ' + (e || 'Not provided') + '\nMessage: ' + m + '\n━━━━━━━━━━━━━━━━━━';
   fetch('https://api.telegram.org/bot8323966181:AAHkRHr-JXaEK_yVv1kG-fRXbtta4BBgT_8/sendMessage', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({chat_id: '676917032', text: text})
   }).then(function() {
-    alert('Message sent! We will get back to you soon.');
+    showToast('✅','Message sent!','We will get back to you soon.');
     document.getElementById('cName').value = '';
     document.getElementById('cPhone').value = '';
     document.getElementById('cEmail').value = '';
     document.getElementById('cMsg').value = '';
   }).catch(function() {
-    alert('Failed to send. Please try messaging us on Telegram or Instagram.');
+    showToast('❌','Failed to send.','Please try messaging us on Telegram or Instagram.',true);
   });
 }
 </script>
 
-</body>
+<div class="toast-popup" id="toastPopup"><div class="toast-icon" id="toastIcon"></div><div class="toast-text" id="toastText"></div></div>
 </html>
