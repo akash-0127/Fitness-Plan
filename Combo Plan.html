@@ -465,24 +465,7 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
   <div class="fg">
     <label>Phone <span class="req">*</span></label>
     <div style="display:flex;gap:6px;align-items:center">
-      <select id="countryCode" style="border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:10px 8px;font-size:0.85rem;background:var(--card2);color:var(--text);outline:none;cursor:pointer;min-width:72px">
-        <option value="+91" selected>+91 &#x1F1EE;&#x1F1F3;</option>
-        <option value="+1">+1 &#x1F1FA;&#x1F1F8;</option>
-        <option value="+44">+44 &#x1F1EC;&#x1F1E7;</option>
-        <option value="+61">+61 &#x1F1E6;&#x1F1FA;</option>
-        <option value="+971">+971 &#x1F1E6;&#x1F1EA;</option>
-        <option value="+65">+65 &#x1F1F8;&#x1F1EC;</option>
-        <option value="+60">+60 &#x1F1F2;&#x1F1FE;</option>
-        <option value="+880">+880 &#x1F1E7;&#x1F1E9;</option>
-        <option value="+977">+977 &#x1F1F3;&#x1F1F5;</option>
-        <option value="+94">+94 &#x1F1F1;&#x1F1F0;</option>
-        <option value="+27">+27 &#x1F1FF;&#x1F1E6;</option>
-        <option value="+49">+49 &#x1F1E9;&#x1F1EA;</option>
-        <option value="+33">+33 &#x1F1EB;&#x1F1F7;</option>
-        <option value="+81">+81 &#x1F1EF;&#x1F1F5;</option>
-        <option value="+82">+82 &#x1F1F0;&#x1F1F7;</option>
-        <option value="+86">+86 &#x1F1E8;&#x1F1F3;</option>
-      </select>
+      <input type="tel" id="countryCode" value="+91" style="border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:10px 8px;font-size:0.85rem;background:var(--card2);color:var(--text);outline:none;width:60px" oninput="this.value=this.value.replace(/[^0-9+]/g,'')"/>
       <input type="tel" id="phone" placeholder="98765 43210" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'')"/>
     </div>
     <span class="ferr" id="ePhone">Enter valid phone number</span>
