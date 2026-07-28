@@ -132,6 +132,10 @@ h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-
       <input type="text" id="cName" placeholder="e.g. Rahul Sharma"/>
     </div>
     <div class="fg">
+      <label>Phone Number</label>
+      <input type="tel" id="cPhone" placeholder="+91 98765 43210"/>
+    </div>
+    <div class="fg">
       <label>Email Address</label>
       <input type="email" id="cEmail" placeholder="you@example.com"/>
     </div>
@@ -150,10 +154,11 @@ h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-
 <script>
 function sendMsg() {
   var n = document.getElementById('cName').value.trim();
+  var p = document.getElementById('cPhone').value.trim();
   var e = document.getElementById('cEmail').value.trim();
   var m = document.getElementById('cMsg').value.trim();
   if (!n || !m) { alert('Please enter your name and message.'); return; }
-  var text = '📩 NEW CONTACT FORM MESSAGE\n━━━━━━━━━━━━━━━━━━\nName: ' + n + '\nEmail: ' + (e || 'Not provided') + '\nMessage: ' + m + '\n━━━━━━━━━━━━━━━━━━';
+  var text = '📩 NEW CONTACT FORM MESSAGE\n━━━━━━━━━━━━━━━━━━\nName: ' + n + '\nPhone: ' + (p || 'Not provided') + '\nEmail: ' + (e || 'Not provided') + '\nMessage: ' + m + '\n━━━━━━━━━━━━━━━━━━';
   fetch('https://api.telegram.org/bot8323966181:AAHkRHr-JXaEK_yVv1kG-fRXbtta4BBgT_8/sendMessage', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
@@ -161,6 +166,7 @@ function sendMsg() {
   }).then(function() {
     alert('Message sent! We will get back to you soon.');
     document.getElementById('cName').value = '';
+    document.getElementById('cPhone').value = '';
     document.getElementById('cEmail').value = '';
     document.getElementById('cMsg').value = '';
   }).catch(function() {
