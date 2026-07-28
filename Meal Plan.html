@@ -456,7 +456,7 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
       <div class="stat-card"><div class="sc-v">1000+</div><div class="sc-l">Plans Generated</div></div>
       <div class="stat-card"><div class="sc-v">15+</div><div class="sc-l">Diet Types</div></div>
       <div class="stat-card"><div class="sc-v">5</div><div class="sc-l">Goal Categories</div></div>
-      <div class="stat-card"><div class="sc-v">0</div><div class="sc-l">Internet Needed</div></div>
+      <div class="stat-card"><div class="sc-v">100%</div><div class="sc-l">Free Forever</div></div>
     </div>
     <div class="hbadge">🥗 Personalised Meal Plan Generator</div>
     <div class="ai-badge" id="aiGeneratedBadge"><div class="ai-badge-dot"></div>AI Generated Plan</div>
@@ -651,7 +651,7 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
       <div class="fg">
         <label>Waist</label>
         <div class="unit-row">
-          <input type="number" id="waist" placeholder="e.g. 85" style="width:100px"/>
+          <input type="number" id="waist" placeholder="e.g. 85" style="width:100px" min="15" max="200"/>
           <div class="unit-toggle" id="waistUnit">
             <div class="unit-btn active" data-val="cm" onclick="setUnit('waist',this)">cm</div>
             <div class="unit-btn" data-val="in" onclick="setUnit('waist',this)">in</div>
@@ -661,7 +661,7 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
       <div class="fg">
         <label>Neck</label>
         <div class="unit-row">
-          <input type="number" id="neck" placeholder="e.g. 38" style="width:100px"/>
+          <input type="number" id="neck" placeholder="e.g. 38" style="width:100px" min="15" max="100"/>
           <div class="unit-toggle" id="neckUnit">
             <div class="unit-btn active" data-val="cm" onclick="setUnit('neck',this)">cm</div>
             <div class="unit-btn" data-val="in" onclick="setUnit('neck',this)">in</div>
@@ -671,7 +671,7 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
       <div class="fg" id="hipGrp">
         <label>Hip <span style="font-weight:400;color:#aaa;font-size:0.62rem">females only</span></label>
         <div class="unit-row">
-          <input type="number" id="hip" placeholder="e.g. 95" style="width:100px"/>
+          <input type="number" id="hip" placeholder="e.g. 95" style="width:100px" min="15" max="200"/>
           <div class="unit-toggle" id="hipUnit">
             <div class="unit-btn active" data-val="cm" onclick="setUnit('hip',this)">cm</div>
             <div class="unit-btn" data-val="in" onclick="setUnit('hip',this)">in</div>
@@ -733,7 +733,7 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
   <div style="display:flex;gap:10px;margin-top:1.5rem;flex-wrap:wrap;align-items:center">
     <button class="gbtn" onclick="generate('normal')">🥗 Generate Meal Plan</button>
     <button class="pbtn" onclick="generate('premium')">⭐ Generate Premium Plan</button>
-    <span style="font-size:0.72rem;color:var(--muted)">Works offline · No internet needed</span>
+
   </div>
   <p style="font-size:0.68rem;color:var(--muted);margin-top:0.75rem;line-height:1.5">By generating your plan, you acknowledge that this information is intended for educational purposes and does not replace professional medical advice. <a href="disclaimer.html" style="color:var(--accent2);text-decoration:none">Read full disclaimer</a></p>
 
@@ -939,40 +939,65 @@ function calcBMI() {
   var waist=parseFloat(document.getElementById('waist').value)||0;
   var neck=parseFloat(document.getElementById('neck').value)||0;
   var hip=parseFloat(document.getElementById('hip').value)||0;
-  if (!wt||!ht) { document.getElementById('bmiPanel').style.display='none'; return; }
+  if(!wt||!ht) { document.getElementById('bmiPanel').style.display='none'; return; }
 
   var g=S.gender, htM=ht/100;
   var bmi=wt/(htM*htM);
-  var fat;
-  // Navy method requires inches — convert from cm if needed
-  var wU=document.querySelector('#waistUnit .unit-btn.active');
-  var nU=document.querySelector('#neckUnit .unit-btn.active');
-  var hU=document.querySelector('#hipUnit .unit-btn.active');
-  var waistIn=(wU&&wU.dataset.val==='cm')?waist/2.54:waist;
-  var neckIn=(nU&&nU.dataset.val==='cm')?neck/2.54:neck;
-  var hipIn=(hU&&hU.dataset.val==='cm')?hip/2.54:hip;
-  var htU2=document.querySelector('#heightUnit .unit-btn.active');
-  var htIn=(htU2&&htU2.dataset.val==='cm')?ht/2.54:ht;
-  if (g==='male'&&waistIn>0&&neckIn>0) {
-    fat=86.010*Math.log10(waistIn-neckIn)-70.041*Math.log10(htIn)+36.76;
-  } else if (g==='female'&&waistIn>0&&neckIn>0&&hipIn>0) {
-    fat=163.205*Math.log10(waistIn+hipIn-neckIn)-97.684*Math.log10(htIn)-78.387;
-  } else {
-    fat=(1.20*bmi)+(0.23*age)-(10.8*(g==='male'?1:0))-5.4;
+  var bf, lean, fatCat, fatCol, showFat=false;
+  var waistOk=waist>=30&&waist<=200;
+  var neckOk=neck>=20&&neck<=80;
+  var hipOk=hip>=50&&hip<=200;
+  if(g==='male'&&waistOk&&neckOk) {
+    bf=495/(1.0324-0.19077*Math.log10(waist-neck)+0.15456*Math.log10(ht))-450;
+    showFat=true;
+  } else if(g==='female'&&waistOk&&neckOk&&hipOk) {
+    bf=495/(1.29579-0.35004*Math.log10(waist+hip-neck)+0.22100*Math.log10(ht))-450;
+    showFat=true;
   }
-  fat=Math.max(3,Math.min(60,fat));
-  var lean=wt-(fat/100*wt);
-  var bmiCat=bmi<18.5?'Underweight':bmi<25?'Normal Weight':bmi<30?'Overweight':'Obese';
-  var bmiCol=bmi<18.5?'#185FA5':bmi<25?'#2d6a0f':bmi<30?'#b96b10':'#712B13';
-  var fatCat,fatCol;
-  if (g==='male') { fatCat=fat<14?'Athletic':fat<18?'Fitness':fat<25?'Average':'High'; fatCol=fat<18?'#2d6a0f':fat<25?'#b96b10':'#712B13'; }
-  else { fatCat=fat<21?'Athletic':fat<25?'Fitness':fat<32?'Average':'High'; fatCol=fat<25?'#2d6a0f':fat<32?'#b96b10':'#712B13'; }
+  if(showFat) {
+    bf=Math.max(2,Math.min(60,bf));
+    lean=wt-(bf/100*wt);
+    if(g==='male'){
+      if(bf<6){fatCat='Essential Fat';fatCol='#185FA5';}
+      else if(bf<14){fatCat='Athlete';fatCol='#2d6a0f';}
+      else if(bf<18){fatCat='Fitness';fatCol='#2d6a0f';}
+      else if(bf<25){fatCat='Average';fatCol='#b96b10';}
+      else{fatCat='Obese';fatCol='#712B13';}
+    } else {
+      if(bf<14){fatCat='Essential Fat';fatCol='#185FA5';}
+      else if(bf<21){fatCat='Athlete';fatCol='#2d6a0f';}
+      else if(bf<25){fatCat='Fitness';fatCol='#2d6a0f';}
+      else if(bf<32){fatCat='Average';fatCol='#b96b10';}
+      else{fatCat='Obese';fatCol='#712B13';}
+    }
+  } else {
+    bf=(1.20*bmi)+(0.23*age)-(10.8*(g==='male'?1:0))-5.4;
+    bf=Math.max(2,Math.min(60,bf));
+    lean=wt-(bf/100*wt);
+    fatCat='Enter body measurements';fatCol='var(--muted)';
+  }
+  var bmiCat,bmiCol;
+  if(bmi<16){bmiCat='Severe Thinness';bmiCol='#185FA5';}
+  else if(bmi<17){bmiCat='Moderate Thinness';bmiCol='#185FA5';}
+  else if(bmi<18.5){bmiCat='Mild Thinness';bmiCol='#185FA5';}
+  else if(bmi<25){bmiCat='Normal';bmiCol='#2d6a0f';}
+  else if(bmi<30){bmiCat='Overweight';bmiCol='#b96b10';}
+  else if(bmi<35){bmiCat='Obesity Class I';bmiCol='#712B13';}
+  else if(bmi<40){bmiCat='Obesity Class II';bmiCol='#712B13';}
+  else{bmiCat='Obesity Class III';bmiCol='#712B13';}
+  var htIn=ht/2.54;
+  var idealWt=g==='male'?50+2.3*(htIn-60):45.5+2.3*(htIn-60);
+  idealWt=Math.round(idealWt*10)/10;
+  var ffmi=lean/((ht/100)*(ht/100));
+  ffmi=Math.round(ffmi*10)/10;
+  var waterMl=Math.round(wt*35);
+  var waterL=(waterMl/1000).toFixed(1);
 
   document.getElementById('bmiPanel').style.display='block';
   document.getElementById('bmiV').textContent=bmi.toFixed(1);
   document.getElementById('bmiC').textContent=bmiCat;
   document.getElementById('bmiC').style.color=bmiCol;
-  document.getElementById('fatV').textContent=fat.toFixed(1)+'%';
+  document.getElementById('fatV').textContent=bf.toFixed(1)+'%';
   document.getElementById('fatC').textContent=fatCat;
   document.getElementById('fatC').style.color=fatCol;
   document.getElementById('leanV').textContent=lean.toFixed(1)+' kg';
@@ -995,19 +1020,24 @@ function updateCalCalc() {
   var multMap={sedentary:1.2,lightly:1.375,moderate:1.55,very:1.725,extreme:1.9};
   var mult=multMap[S.activity]||1.375;
   var tdee=Math.round(bmr*mult);
+  var minCal=g==='male'?1500:1200;
+  var fatLoss=Math.round(tdee*0.80);
+  var muscleGain=Math.round(tdee*1.15);
+  if(fatLoss<minCal) fatLoss=minCal;
   document.getElementById('calMaint').textContent=tdee+' kcal';
-  document.getElementById('calFatLoss').textContent=(tdee-400)+' kcal';
-  document.getElementById('calMuscle').textContent=(tdee+275)+' kcal';
+  document.getElementById('calFatLoss').textContent=fatLoss+' kcal';
+  document.getElementById('calMuscle').textContent=muscleGain+' kcal';
   document.getElementById('calCalc').classList.add('show');
 }
 function validate() {
   var ok=true;
   var errors=[];
   function chk(id,eid,bad,msg) {
-    var el=document.getElementById(id), er=document.getElementById(eid);
-    if(!el||!er) return;
-    if(bad){el.classList.add('err');er.classList.add('on');ok=false;if(msg)errors.push(msg);}
-    else{el.classList.remove('err');er.classList.remove('on');}
+    var el=document.getElementById(id);
+    if(!el) return;
+    var er=eid?document.getElementById(eid):null;
+    if(bad){el.classList.add('err');if(er)er.classList.add('on');ok=false;if(msg)errors.push(msg);}
+    else{el.classList.remove('err');if(er)er.classList.remove('on');}
   }
   chk('cName','eName',!document.getElementById('cName').value.trim(),'Client Name is required');
   var phone=document.getElementById('phone').value.replace(/\s/g,'');
@@ -1015,15 +1045,27 @@ function validate() {
   var email=document.getElementById('email').value.trim();
   chk('email','eEmail',!email||!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email),'Enter a valid email address');
   var age=parseFloat(document.getElementById('age').value);
-  chk('age','eAge',!age||age<15||age>80,'Enter valid age (15-80)');
+  chk('age','eAge',!age||age<15||age>80,'Enter valid age (15–80 years)');
   var wt=parseFloat(document.getElementById('wt').value);
   var wtU=document.querySelector('#weightUnit .unit-btn.active');
   var wtKg=(wtU&&wtU.dataset.val==='lbs')?wt/2.205:wt;
-  chk('wt','eWt',!wt||wtKg<20||wtKg>300,'Enter realistic weight');
+  chk('wt','eWt',!wt||wtKg<30||wtKg>300,'Enter realistic weight (30–300 kg)');
   var ht=parseFloat(document.getElementById('ht').value);
   var htU=document.querySelector('#heightUnit .unit-btn.active');
   var htCm=(htU&&htU.dataset.val==='in')?ht*2.54:ht;
-  chk('ht','eHt',!ht||htCm<100||htCm>260,'Enter realistic height');
+  chk('ht','eHt',!ht||htCm<120||htCm>250,'Enter realistic height (120–250 cm)');
+  var waist=parseFloat(document.getElementById('waist').value);
+  var waistU=document.querySelector('#waistUnit .unit-btn.active');
+  var waistCm=(waistU&&waistU.dataset.val==='in')?waist*2.54:waist;
+  if(waist) chk('waist','',waistCm<30||waistCm>200,'Enter realistic waist (30–200 cm)');
+  var neck=parseFloat(document.getElementById('neck').value);
+  var neckU=document.querySelector('#neckUnit .unit-btn.active');
+  var neckCm=(neckU&&neckU.dataset.val==='in')?neck*2.54:neck;
+  if(neck) chk('neck','',neckCm<20||neckCm>80,'Enter realistic neck (20–80 cm)');
+  var hip=parseFloat(document.getElementById('hip').value);
+  var hipU=document.querySelector('#hipUnit .unit-btn.active');
+  var hipCm=(hipU&&hipU.dataset.val==='in')?hip*2.54:hip;
+  if(hip) chk('hip','',hipCm<50||hipCm>200,'Enter realistic hip (50–200 cm)');
   var b=document.getElementById('vbanner');
   if(!ok){
     b.textContent='\u26A0\uFE0F Please fill all required fields correctly.';

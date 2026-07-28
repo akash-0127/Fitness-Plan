@@ -122,6 +122,14 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 .split-ex{font-size:0.72rem;color:var(--muted);margin-top:6px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:6px;line-height:1.5;min-height:30px}
 #splitBadge{font-size:0.63rem;background:var(--bl);color:var(--blue);padding:2px 8px;border-radius:999px;font-weight:700;margin-left:6px}
 
+/* ── DIET CHIPS ── */
+.dchips{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px}
+.dchip{border:1.5px solid var(--border-solid);border-radius:var(--rs);padding:9px 16px;font-size:0.78rem;cursor:pointer;background:var(--card2);color:var(--text);transition:all 0.2s;font-weight:500;user-select:none;line-height:1.3}
+.dchip:hover{border-color:var(--accent);color:var(--accent2);transform:translateY(-1px)}
+.dchip.on{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 12px rgba(8,145,178,0.3)}
+.dchip-sub{display:block;font-size:0.61rem;opacity:0.65;margin-top:2px;font-weight:400}
+.dchip.on .dchip-sub{opacity:0.8}
+
 /* ── UNIT TOGGLE ── */
 .unit-row{display:flex;gap:8px;align-items:center}
 .unit-toggle{display:flex;border:1.5px solid var(--border-solid);border-radius:var(--rs);overflow:hidden}
@@ -366,6 +374,11 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
   @page{margin:14mm;size:A4}
 }
 /* ── CALORIES CALCULATOR ── */
+.info-tip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:rgba(255,255,255,0.08);color:var(--muted);font-size:9px;font-weight:700;cursor:pointer;margin-left:4px;vertical-align:middle;transition:background 0.2s,color 0.2s;flex-shrink:0;line-height:1}
+.info-tip:hover,.info-tip:focus{background:var(--accent);color:#fff;outline:none}
+.info-tip .tip-box{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) scale(0.95);background:#1a1a28;border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 14px;font-size:0.72rem;font-weight:400;color:var(--text);line-height:1.5;width:240px;pointer-events:none;opacity:0;transition:opacity 0.25s ease,transform 0.25s ease;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,0.5);text-transform:none;letter-spacing:normal}
+.info-tip:hover .tip-box,.info-tip:focus .tip-box,.info-tip.active .tip-box{opacity:1;transform:translateX(-50%) scale(1);pointer-events:auto}
+.info-tip .tip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:rgba(255,255,255,0.12)}
 .calcalc{display:none;margin-top:1.25rem;background:var(--card);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:var(--rs);padding:1rem 1.25rem}
 .calcalc.show{display:block;animation:fadeInUp 0.3s ease}
 .calcalc-title{font-size:0.67rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:0.75rem;display:flex;align-items:center;gap:8px}
@@ -463,7 +476,7 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
       <div class="stat-card"><div class="sc-v">1000+</div><div class="sc-l">Plans Generated</div></div>
       <div class="stat-card"><div class="sc-v">15+</div><div class="sc-l">Diet Types</div></div>
       <div class="stat-card"><div class="sc-v">5</div><div class="sc-l">Goal Categories</div></div>
-      <div class="stat-card"><div class="sc-v">0</div><div class="sc-l">Internet Needed</div></div>
+      <div class="stat-card"><div class="sc-v">100%</div><div class="sc-l">Free Forever</div></div>
     </div>
     <div class="hbadge combo-badge">🍽️💪 Combo Plan Generator — Nutrition + Training</div>
     <div class="ai-badge" id="aiGeneratedBadge"><div class="ai-badge-dot"></div>AI Generated Plan</div>
@@ -706,7 +719,7 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
     <div class="fg">
       <label>Waist</label>
       <div class="unit-row">
-        <input type="number" id="waist" placeholder="e.g. 85" style="width:100px"/>
+        <input type="number" id="waist" placeholder="e.g. 85" style="width:100px" min="15" max="200"/>
         <div class="unit-toggle" id="waistUnit">
           <div class="unit-btn active" data-val="cm" onclick="setUnit('waist',this)">cm</div>
           <div class="unit-btn" data-val="in" onclick="setUnit('waist',this)">in</div>
@@ -716,7 +729,7 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
     <div class="fg">
       <label>Neck</label>
       <div class="unit-row">
-        <input type="number" id="neck" placeholder="e.g. 38" style="width:100px"/>
+        <input type="number" id="neck" placeholder="e.g. 38" style="width:100px" min="15" max="100"/>
         <div class="unit-toggle" id="neckUnit">
           <div class="unit-btn active" data-val="cm" onclick="setUnit('neck',this)">cm</div>
           <div class="unit-btn" data-val="in" onclick="setUnit('neck',this)">in</div>
@@ -726,7 +739,7 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
     <div class="fg" id="hipGrp" style="display:none">
       <label>Hip — females</label>
       <div class="unit-row">
-        <input type="number" id="hip" placeholder="e.g. 95" style="width:100px"/>
+        <input type="number" id="hip" placeholder="e.g. 95" style="width:100px" min="15" max="200"/>
         <div class="unit-toggle" id="hipUnit">
           <div class="unit-btn active" data-val="cm" onclick="setUnit('hip',this)">cm</div>
           <div class="unit-btn" data-val="in" onclick="setUnit('hip',this)">in</div>
@@ -746,7 +759,7 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 <div id="bmiPanel">
   <div style="font-size:0.67rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:0.75rem">&#x1F4CA; Body Composition Analysis</div>
   <div class="bmi-inner">
-    <div class="bmi-s"><div class="bmi-v" id="bmiV">-</div><div class="bmi-l">BMI</div><div class="bmi-c" id="bmiC">-</div></div>
+    <div class="bmi-s"><div class="bmi-v" id="bmiV">-</div><div class="bmi-l">BMI <span class="info-tip" tabindex="0">i<span class="tip-box">Body Mass Index (BMI) is a simple measurement that compares your height and weight to estimate whether you're underweight, at a healthy weight, overweight, or obese. It is a general screening tool and doesn't measure body fat or muscle mass.</span></span></div><div class="bmi-c" id="bmiC">-</div></div>
     <div class="bmi-div"></div>
     <div class="bmi-s"><div class="bmi-v" id="fatV">-</div><div class="bmi-l">Body Fat %</div><div class="bmi-c" id="fatC">-</div></div>
     <div class="bmi-div"></div>
@@ -760,26 +773,13 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 </div>
   <!-- CALORIES CALCULATOR -->
   <div class="calcalc" id="calCalc">
-    <div class="calcalc-title">🔥 Daily Calorie Targets</div>
-    <div class="calcalc-grid">
-      <div class="calcalc-item">
-        <div class="calcalc-val" id="calMaint">—</div>
-        <div class="calcalc-label">Maintenance (TDEE)</div>
-      </div>
-      <div class="calcalc-item highlight">
-        <div class="calcalc-val" id="calFatLoss">—</div>
-        <div class="calcalc-label">Fat Loss (−400 kcal)</div>
-      </div>
-      <div class="calcalc-item">
-        <div class="calcalc-val" id="calMuscle">—</div>
-        <div class="calcalc-label">Muscle Gain (+275 kcal)</div>
-      </div>
-    </div>
+    <div class="calcalc-title">🔥 Your Daily Calorie Targets</div>
+    <div class="calcalc-grid" id="calGrid"></div>
   </div>
 <div style="display:flex;gap:10px;margin-top:1.5rem;flex-wrap:wrap">
   <button class="gbtn" onclick="generate('normal')">🍽️💪 Generate Combo Plan</button>
   <button class="gbtn pbtn" onclick="generate('premium')">&#x2B50; Generate Premium Plan</button>
-  <span style="font-size:0.72rem;color:var(--muted)">Works offline · No internet needed</span>
+
 </div>
 <p style="font-size:0.68rem;color:var(--muted);margin-top:0.75rem;line-height:1.5">By generating your plan, you acknowledge that this information is intended for educational purposes and does not replace professional medical advice. <a href="disclaimer.html" style="color:var(--accent2);text-decoration:none">Read full disclaimer</a></p>
 </div><!-- /card -->
@@ -2794,54 +2794,75 @@ document.getElementById('hipGrp').style.display = 'none';
 
 // BMI CALCULATOR (enhanced)
 function calcBMI() {
-  var wt = parseFloat(document.getElementById('wt').value) || 70;
-  var ht = parseFloat(document.getElementById('ht').value) || 170;
-  var age = parseFloat(document.getElementById('age').value) || 25;
-  var waist = parseFloat(document.getElementById('waist').value) || 0;
-  var neck = parseFloat(document.getElementById('neck').value) || 0;
-  var hip = parseFloat(document.getElementById('hip').value) || 0;
-  var g = S.gender;
-  var htM = ht / 100;
-  var bmi = wt / (htM * htM);
-  var fat;
-    // Navy method requires inches — convert from cm if needed
-    var wU=document.querySelector('#waistUnit .unit-btn.active');
-    var nU=document.querySelector('#neckUnit .unit-btn.active');
-    var hU=document.querySelector('#hipUnit .unit-btn.active');
-    var waistIn=(wU&&wU.dataset.val==='cm')?waist/2.54:waist;
-    var neckIn=(nU&&nU.dataset.val==='cm')?neck/2.54:neck;
-    var hipIn=(hU&&hU.dataset.val==='cm')?hip/2.54:hip;
-    var htU2=document.querySelector('#heightUnit .unit-btn.active');
-    var htIn=(htU2&&htU2.dataset.val==='cm')?ht/2.54:ht;
-    if (g==='male'&&waistIn>0&&neckIn>0) {
-      fat=86.010*Math.log10(waistIn-neckIn)-70.041*Math.log10(htIn)+36.76;
-    } else if (g==='female'&&waistIn>0&&neckIn>0&&hipIn>0) {
-      fat=163.205*Math.log10(waistIn+hipIn-neckIn)-97.684*Math.log10(htIn)-78.387;
+  var wt=parseFloat(document.getElementById('wt').value)||0;
+  var ht=parseFloat(document.getElementById('ht').value)||0;
+  var age=parseFloat(document.getElementById('age').value)||0;
+  var waist=parseFloat(document.getElementById('waist').value)||0;
+  var neck=parseFloat(document.getElementById('neck').value)||0;
+  var hip=parseFloat(document.getElementById('hip').value)||0;
+  if(!wt||!ht) { document.getElementById('bmiPanel').style.display='none'; return; }
+  var g=S.gender, htM=ht/100;
+  var bmi=wt/(htM*htM);
+  var bf, lean, fatCat, fatCol, showFat=false;
+  var waistOk=waist>=30&&waist<=200;
+  var neckOk=neck>=20&&neck<=80;
+  var hipOk=hip>=50&&hip<=200;
+  if(g==='male'&&waistOk&&neckOk) {
+    bf=495/(1.0324-0.19077*Math.log10(waist-neck)+0.15456*Math.log10(ht))-450;
+    showFat=true;
+  } else if(g==='female'&&waistOk&&neckOk&&hipOk) {
+    bf=495/(1.29579-0.35004*Math.log10(waist+hip-neck)+0.22100*Math.log10(ht))-450;
+    showFat=true;
+  }
+  if(showFat) {
+    bf=Math.max(2,Math.min(60,bf));
+    lean=wt-(bf/100*wt);
+    if(g==='male'){
+      if(bf<6){fatCat='Essential Fat';fatCol='#185FA5';}
+      else if(bf<14){fatCat='Athlete';fatCol='#2d6a0f';}
+      else if(bf<18){fatCat='Fitness';fatCol='#2d6a0f';}
+      else if(bf<25){fatCat='Average';fatCol='#b96b10';}
+      else{fatCat='Obese';fatCol='#712B13';}
     } else {
-      fat=(1.20*bmi)+(0.23*age)-(10.8*(g==='male'?1:0))-5.4;
+      if(bf<14){fatCat='Essential Fat';fatCol='#185FA5';}
+      else if(bf<21){fatCat='Athlete';fatCol='#2d6a0f';}
+      else if(bf<25){fatCat='Fitness';fatCol='#2d6a0f';}
+      else if(bf<32){fatCat='Average';fatCol='#b96b10';}
+      else{fatCat='Obese';fatCol='#712B13';}
     }
-  fat = Math.max(3, Math.min(60, fat));
-  var lean = wt - (fat / 100 * wt);
-  var fm = (fat / 100 * wt);
-  var bmiCat = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
-  var bmiCol = bmi < 18.5 ? '#3b82f6' : bmi < 25 ? '#7eca5a' : bmi < 30 ? '#f97316' : '#ef4444';
-  var fatCat, fatCol;
-  if (g === 'male') { fatCat = fat < 14 ? 'Athletic' : fat < 18 ? 'Fitness' : fat < 25 ? 'Average' : 'High'; fatCol = fat < 18 ? '#7eca5a' : fat < 25 ? '#f97316' : '#ef4444'; }
-  else { fatCat = fat < 21 ? 'Athletic' : fat < 25 ? 'Fitness' : fat < 32 ? 'Average' : 'High'; fatCol = fat < 25 ? '#7eca5a' : fat < 32 ? '#f97316' : '#ef4444'; }
-  document.getElementById('bmiV').textContent = bmi.toFixed(1);
-  document.getElementById('bmiC').textContent = bmiCat;
-  document.getElementById('bmiC').style.color = bmiCol;
-  document.getElementById('fatV').textContent = fat.toFixed(1) + '%';
-  document.getElementById('fatC').textContent = fatCat;
-  document.getElementById('fatC').style.color = fatCol;
-  document.getElementById('leanV').textContent = lean.toFixed(1) + ' kg';
-  document.getElementById('fmV').textContent = 'Fat: ' + fm.toFixed(1) + ' kg';
-  document.getElementById('bmiNote').textContent = 'BMI ' + bmi.toFixed(1) + ' — ' + bmiCat;
-  var pct = Math.min(100, ((bmi - 10) / 30) * 100);
-  document.getElementById('bmiFill').style.width = pct + '%';
-  var fillC = {Underweight:'#3b82f6', Normal:'#0891b2', Overweight:'#f97316', Obese:'#ef4444'};
-  document.getElementById('bmiFill').style.background = fillC[bmiCat] || '#0891b2';
-  document.getElementById('bmiPanel').style.display = 'block';
+  } else {
+    bf=(1.20*bmi)+(0.23*age)-(10.8*(g==='male'?1:0))-5.4;
+    bf=Math.max(2,Math.min(60,bf));
+    lean=wt-(bf/100*wt);
+    fatCat='Enter body measurements';fatCol='var(--muted)';
+  }
+  var bmiCat,bmiCol;
+  if(bmi<16){bmiCat='Severe Thinness';bmiCol='#185FA5';}
+  else if(bmi<17){bmiCat='Moderate Thinness';bmiCol='#185FA5';}
+  else if(bmi<18.5){bmiCat='Mild Thinness';bmiCol='#185FA5';}
+  else if(bmi<25){bmiCat='Normal';bmiCol='#2d6a0f';}
+  else if(bmi<30){bmiCat='Overweight';bmiCol='#b96b10';}
+  else if(bmi<35){bmiCat='Obesity Class I';bmiCol='#712B13';}
+  else if(bmi<40){bmiCat='Obesity Class II';bmiCol='#712B13';}
+  else{bmiCat='Obesity Class III';bmiCol='#712B13';}
+  var htIn=ht/2.54;
+  var idealWt=g==='male'?50+2.3*(htIn-60):45.5+2.3*(htIn-60);
+  idealWt=Math.round(idealWt*10)/10;
+  var ffmi=lean/((ht/100)*(ht/100));
+  ffmi=Math.round(ffmi*10)/10;
+  var waterMl=Math.round(wt*35);
+  var waterL=(waterMl/1000).toFixed(1);
+  document.getElementById('bmiPanel').style.display='block';
+  document.getElementById('bmiV').textContent=bmi.toFixed(1);
+  document.getElementById('bmiC').textContent=bmiCat;
+  document.getElementById('bmiC').style.color=bmiCol;
+  document.getElementById('fatV').textContent=bf.toFixed(1)+'%';
+  document.getElementById('fatC').textContent=fatCat;
+  document.getElementById('fatC').style.color=fatCol;
+  document.getElementById('leanV').textContent=lean.toFixed(1)+' kg';
+  document.getElementById('leanC').textContent='Fat: '+(wt-lean).toFixed(1)+' kg';
+  var fillPct=Math.min(100,Math.max(0,((bmi-14)/22)*100));
+  document.getElementById('bmiFill').style.width=fillPct+'%';
   updateCalCalc();
 }
 
@@ -2855,9 +2876,25 @@ function updateCalCalc() {
   var multMap={sedentary:1.2,lightly:1.375,moderate:1.55,very:1.725,extreme:1.9};
   var mult=multMap[S.activity]||1.375;
   var tdee=Math.round(bmr*mult);
-  document.getElementById('calMaint').textContent=tdee+' kcal';
-  document.getElementById('calFatLoss').textContent=(tdee-400)+' kcal';
-  document.getElementById('calMuscle').textContent=(tdee+275)+' kcal';
+  var minCal=g==='male'?1500:1200;
+  var goalInfo={
+    fatloss:{label:'Fat Loss',adj:'−20%',mult:0.80,emoji:'📉'},
+    musclegain:{label:'Muscle Gain',adj:'+15%',mult:1.15,emoji:'💪'},
+    recomp:{label:'Recomp',adj:'−5%',mult:0.95,emoji:'🔄'},
+    strength:{label:'Strength',adj:'+10%',mult:1.10,emoji:'🏋️'},
+    endurance:{label:'Endurance',adj:'+10%',mult:1.10,emoji:'🏃'},
+    maintenance:{label:'Maintenance',adj:'±0%',mult:1.0,emoji:'⚖️'}
+  };
+  var gi=goalInfo[S.goal]||goalInfo.maintenance;
+  var tgt=Math.max(minCal,Math.round(tdee*gi.mult));
+  var tdeeLabel='<span class="info-tip" tabindex="0">i<span class="tip-box">Total Daily Energy Expenditure (TDEE) is the total number of calories you burn in a day, including daily activities and exercise. It\'s used to estimate how many calories you should eat to maintain, lose, or gain weight.</span></span>';
+  var html='<div class="calcalc-item"><div class="calcalc-val">'+tdee+' kcal</div><div class="calcalc-label">Maintenance (TDEE)'+tdeeLabel+'</div></div>';
+  if(S.goal!=='maintenance'){
+    html+='<div class="calcalc-item highlight"><div class="calcalc-val">'+tgt+' kcal</div><div class="calcalc-label">'+gi.emoji+' '+gi.label+' ('+gi.adj+')</div></div>';
+  } else {
+    html+='<div class="calcalc-item highlight"><div class="calcalc-val">'+tgt+' kcal</div><div class="calcalc-label">⚖️ Target (Maintenance)</div></div>';
+  }
+  document.getElementById('calGrid').innerHTML=html;
   document.getElementById('calCalc').classList.add('show');
 }
 
@@ -2875,67 +2912,50 @@ function calcMetrics() {
   var neck=parseFloat(document.getElementById('neck').value)||0;
   var hip=parseFloat(document.getElementById('hip').value)||0;
   var g=S.gender;
-
-  // BMR Mifflin-St Jeor
-  var bmr = g==='male' ? (10*wt)+(6.25*ht)-(5*age)+5 : (10*wt)+(6.25*ht)-(5*age)-161;
+  var bmr=g==='male'?(10*wt)+(6.25*ht)-(5*age)+5:(10*wt)+(6.25*ht)-(5*age)-161;
   bmr=Math.round(bmr);
-
-  // TDEE
   var multMap={sedentary:1.2,lightly:1.375,moderate:1.55,very:1.725,extreme:1.9};
   var mult=multMap[S.activity]||1.375;
   var tdee=Math.round(bmr*mult);
-
-  // Target calories
   var tgt;
-  if(S.goal==='fatloss') tgt=tdee-400;
-  else if(S.goal==='musclegain') tgt=tdee+275;
-  else if(S.goal==='recomp') tgt=tdee-150;
-  else if(S.goal==='strength') tgt=tdee+225;
-  else if(S.goal==='endurance') tgt=tdee+300;
+  if(S.goal==='fatloss') tgt=Math.round(tdee*0.80);
+  else if(S.goal==='musclegain') tgt=Math.round(tdee*1.15);
+  else if(S.goal==='recomp') tgt=Math.round(tdee*0.95);
+  else if(S.goal==='strength') tgt=Math.round(tdee*1.10);
+  else if(S.goal==='endurance') tgt=Math.round(tdee*1.10);
   else tgt=tdee;
-  tgt=Math.max(1200,Math.round(tgt));
-
-  // Navy method requires inches
-  var wU=document.querySelector('#waistUnit .unit-btn.active');
-  var nU=document.querySelector('#neckUnit .unit-btn.active');
-  var hU=document.querySelector('#hipUnit .unit-btn.active');
-  var waistIn2=(wU&&wU.dataset.val==='cm')?waist/2.54:waist;
-  var neckIn2=(nU&&nU.dataset.val==='cm')?neck/2.54:neck;
-  var hipIn2=(hU&&hU.dataset.val==='cm')?hip/2.54:hip;
-  var htU3=document.querySelector('#heightUnit .unit-btn.active');
-  var htIn2=(htU3&&htU3.dataset.val==='cm')?ht/2.54:ht;
+  var minCal=g==='male'?1500:1200;
+  tgt=Math.max(minCal,Math.round(tgt));
   var bf;
-  if(g==='male'&&waistIn2>0&&neckIn2>0) bf=86.010*Math.log10(waistIn2-neckIn2)-70.041*Math.log10(htIn2)+36.76;
-  else if(g==='female'&&waistIn2>0&&neckIn2>0&&hipIn2>0) bf=163.205*Math.log10(waistIn2+hipIn2-neckIn2)-97.684*Math.log10(htIn2)-78.387;
-  else { var bmi2=wt/((ht/100)**2); bf=(1.20*bmi2)+(0.23*age)-(10.8*(g==='male'?1:0))-5.4; }
-  bf=Math.max(3,Math.min(60,bf));
-  var lbm=wt*(1-bf/100); // lean body mass in kg
-
-  // Macros based on LBM
-  var pp,cp,fp;
-  if(S.goal==='fatloss'){pp=2.2;cp=0.35;fp=0.27;}
-  else if(S.goal==='musclegain'){pp=2.0;cp=0.45;fp=0.25;}
-  else if(S.goal==='recomp'){pp=2.4;cp=0.40;fp=0.27;}
-  else if(S.goal==='strength'){pp=2.0;cp=0.45;fp=0.25;}
-  else if(S.goal==='endurance'){pp=1.6;cp=0.55;fp=0.22;}
-  else{pp=1.8;cp=0.45;fp=0.28;}
-
-  var protG=Math.round(pp*lbm);
-  var fatG=Math.round((tgt*fp)/9);
+  if(g==='male'&&waist>0&&neck>0) {
+    bf=495/(1.0324-0.19077*Math.log10(waist-neck)+0.15456*Math.log10(ht))-450;
+  } else if(g==='female'&&waist>0&&neck>0&&hip>0) {
+    bf=495/(1.29579-0.35004*Math.log10(waist+hip-neck)+0.22100*Math.log10(ht))-450;
+  } else {
+    var bmi2=wt/((ht/100)**2); bf=(1.20*bmi2)+(0.23*age)-(10.8*(g==='male'?1:0))-5.4;
+  }
+  bf=Math.max(2,Math.min(60,bf));
+  var lbm=wt*(1-bf/100);
+  var protPerKg;
+  if(S.goal==='fatloss') protPerKg=2.2;
+  else if(S.goal==='musclegain') protPerKg=2.2;
+  else if(S.goal==='recomp') protPerKg=2.4;
+  else if(S.goal==='strength') protPerKg=2.0;
+  else if(S.goal==='endurance') protPerKg=1.8;
+  else protPerKg=1.6;
+  var protG=Math.round(protPerKg*wt);
+  var fatG=Math.round(0.8*wt);
   var carbG=Math.max(20,Math.round((tgt-(protG*4)-(fatG*9))/4));
   var bmi=Math.round((wt/((ht/100)**2))*10)/10;
   var leanKg=Math.round(lbm*10)/10;
   var fatKg=Math.round((wt-lbm)*10)/10;
-
-  // Rest day: reduce carbs 22%, same protein, fat fills
-  var carbGRest=S.goal==='keto'?carbG:Math.max(20,Math.round(carbG*0.78));
+  var carbGRest=Math.max(20,Math.round(carbG*0.78));
   var fatGRest=Math.round((tgt-50-(protG*4)-(carbGRest*4))/9);
   var tgtRest=Math.round(protG*4+carbGRest*4+fatGRest*9);
-
   return {wt,ht,age,g,bmr,tdee,tgt,tgtRest,mult,
           protG,carbG,fatG,carbGRest,fatGRest,
           bf:Math.round(bf*10)/10,lbm:Math.round(lbm*10)/10,
-          leanKg,fatKg,bmi,pp,cp,fp};
+          leanKg,fatKg,bmi,pp:protPerKg,cp:0,fp:0.8};
 }
 
 // ============================================================
@@ -2943,11 +2963,12 @@ function calcMetrics() {
 function validate() {
   var ok = true;
   var errors = [];
-  function chk(id, eid, bad, msg) {
-    var el = document.getElementById(id), er = document.getElementById(eid);
-    if (!el || !er) return;
-    if (bad) { el.classList.add('err'); er.classList.add('on'); ok = false; if(msg) errors.push(msg); }
-    else { el.classList.remove('err'); er.classList.remove('on'); }
+  function chk(id,eid,bad,msg) {
+    var el=document.getElementById(id);
+    if(!el) return;
+    var er=eid?document.getElementById(eid):null;
+    if(bad){el.classList.add('err');if(er)er.classList.add('on');ok=false;if(msg)errors.push(msg);}
+    else{el.classList.remove('err');if(er)er.classList.remove('on');}
   }
   chk('cName', 'eName', !document.getElementById('cName').value.trim(), 'Client Name is required');
   var phone = document.getElementById('phone').value.replace(/\s/g, '');
@@ -2959,11 +2980,23 @@ function validate() {
   var wt = parseFloat(document.getElementById('wt').value);
   var wtU = document.querySelector('#weightUnit .unit-btn.active');
   var wtKg = (wtU && wtU.dataset.val === 'lbs') ? wt / 2.205 : wt;
-  chk('wt', 'eWt', !wt || wtKg < 20 || wtKg > 300, 'Enter realistic weight');
+  chk('wt', 'eWt', !wt || wtKg < 30 || wtKg > 300, 'Enter realistic weight (30–300 kg)');
   var ht = parseFloat(document.getElementById('ht').value);
   var htU = document.querySelector('#heightUnit .unit-btn.active');
   var htCm = (htU && htU.dataset.val === 'in') ? ht * 2.54 : ht;
-  chk('ht', 'eHt', !ht || htCm < 100 || htCm > 260, 'Enter realistic height');
+  chk('ht', 'eHt', !ht || htCm < 120 || htCm > 250, 'Enter realistic height (120–250 cm)');
+  var waist=parseFloat(document.getElementById('waist').value);
+  var waistU=document.querySelector('#waistUnit .unit-btn.active');
+  var waistCm=(waistU&&waistU.dataset.val==='in')?waist*2.54:waist;
+  if(waist) chk('waist','',waistCm<30||waistCm>200,'Enter realistic waist measurement (30-200 cm)');
+  var neck=parseFloat(document.getElementById('neck').value);
+  var neckU=document.querySelector('#neckUnit .unit-btn.active');
+  var neckCm=(neckU&&neckU.dataset.val==='in')?neck*2.54:neck;
+  if(neck) chk('neck','',neckCm<20||neckCm>80,'Enter realistic neck measurement (20-80 cm)');
+  var hip=parseFloat(document.getElementById('hip').value);
+  var hipU=document.querySelector('#hipUnit .unit-btn.active');
+  var hipCm=(hipU&&hipU.dataset.val==='in')?hip*2.54:hip;
+  if(hip) chk('hip','',hipCm<50||hipCm>200,'Enter realistic hip measurement (50-200 cm)');
   var b = document.getElementById('vbanner');
   if (!ok) {
     b.textContent = '\u26A0\uFE0F Please fill all required fields correctly.';
@@ -3476,8 +3509,8 @@ function renderMealPlan(mode) {
     '<span class="badge '+goalBadge+'">'+gl+'</span>'+
     '<span class="badge b-blue">'+dl+'</span>'+
     (isPrem?'<span class="badge b-gold">⭐ Premium</span>':'')+
-    '<span class="badge b-green">BMR: '+m.bmr+' kcal</span>'+
-    '<span class="badge b-orange">TDEE: '+m.tdee+' kcal</span>'+
+    '<span class="badge b-green">BMR: '+m.bmr+' kcal <span class="info-tip" tabindex="0" style="margin-left:2px">i<span class="tip-box">Basal Metabolic Rate (BMR) is the number of calories your body burns each day to perform essential functions like breathing, circulation, and maintaining body temperature—even if you rest all day.</span></span></span>'+
+    '<span class="badge b-orange">TDEE: '+m.tdee+' kcal <span class="info-tip" tabindex="0" style="margin-left:2px">i<span class="tip-box">Total Daily Energy Expenditure (TDEE) is the total number of calories you burn in a day, including daily activities and exercise.</span></span></span>'+
     '<span class="badge b-blue">BMI: '+m.bmi+'</span>';
 
   // ── MACRO STATS ──
