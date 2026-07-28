@@ -40,7 +40,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 h1{font-size:2rem;font-weight:800;margin-bottom:0.5rem}
 h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .subtitle{color:var(--muted);font-size:0.95rem;margin-bottom:2.5rem}
-.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem}
+@media(max-width:550px){.contact-grid{grid-template-columns:1fr}}
+.follow-line{text-align:center;font-size:0.82rem;color:var(--muted);margin-bottom:2rem;animation:fadeIn 0.6s ease}
+.follow-line a{color:var(--accent2);text-decoration:none;font-weight:600}
+.follow-line a:hover{text-decoration:underline}
 .contact-card{background:rgba(14,14,20,0.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:18px;padding:1.5rem;text-align:center;text-decoration:none;color:var(--text);transition:transform 0.2s,border-color 0.3s,box-shadow 0.3s}
 .contact-card:hover{transform:translateY(-3px);border-color:rgba(8,145,178,0.3);box-shadow:0 8px 32px rgba(0,0,0,0.4),0 0 16px rgba(8,145,178,0.1)}
 .contact-icon{font-size:2rem;margin-bottom:0.5rem}
@@ -98,7 +102,13 @@ h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-
       <div class="contact-title">Instagram</div>
       <div class="contact-desc">Follow @akash.liftsup for fitness tips and updates</div>
     </a>
+    <a href="https://www.facebook.com/akashliftsup" target="_blank" class="contact-card">
+      <div class="contact-icon">👍</div>
+      <div class="contact-title">Facebook</div>
+      <div class="contact-desc">Like our page for workout plans and nutrition guides</div>
+    </a>
   </div>
+  <p class="follow-line">Kindly do follow us on <a href="https://instagram.com/akash.liftsup" target="_blank">Insta</a>, <a href="https://www.facebook.com/akashliftsup" target="_blank">Facebook</a> and <a href="https://youtube.com/@akash.liftsup" target="_blank">YouTube</a> (@akash.liftsup)</p>
 
   <div class="form-card">
     <h2>Send Us a Message</h2>
@@ -119,7 +129,7 @@ h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-
 </div>
 
 <div class="footer">
-  FitPlan · Designed by Akash Singh · <a href="https://instagram.com/akash.liftsup" target="_blank">@akash.liftsup</a> · All plans are for educational purposes
+  FitPlan · Designed by Akash Singh · <a href="https://instagram.com/akash.liftsup" target="_blank">@akash.liftsup</a> · <a href="https://facebook.com/akashliftsup" target="_blank">Facebook</a> · <a href="https://youtube.com/@akash.liftsup" target="_blank">YouTube</a> · All plans are for educational purposes
 </div>
 
 <script>
