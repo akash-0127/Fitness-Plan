@@ -11,88 +11,152 @@ html{scroll-behavior:smooth}
 :root{
   --green:#059669;--gl:#ecfdf5;--orange:#ea580c;--ol:#fff7ed;
   --blue:#2563eb;--bl:#eff6ff;--red:#dc2626;--rl:#fef2f2;
-  --gold:#d97706;--goldl:#fffbeb;--bg:#ffffff;--card:#ffffff;
-  --card2:#f8fafc;--card-hover:#f1f5f9;
-  --text:#0f172a;--muted:#64748b;--border:rgba(0,0,0,0.05);
-  --border-solid:#e2e8f0;--r:14px;--rs:10px;
+  --gold:#d97706;--goldl:#fffbeb;--bg:#f8fafc;--card:#ffffff;
+  --card2:#f8fafc;--card-hover:#f6f8fb;
+  --text:#0f172a;--muted:#64748b;--border:rgba(15,23,42,0.08);
+  --border-solid:#e2e8f0;--r:20px;--rs:14px;
   --accent:#0891b2;--accent2:#0e7490;--accent-dim:rgba(8,145,178,0.06);
-  --success:#059669;--purple:#0891b2;--cyan:#0891b2
+  --success:#059669;--purple:#0891b2;--cyan:#0891b2;
+  --shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.03);
+  --shadow-hover:0 8px 30px rgba(0,0,0,0.07),0 2px 8px rgba(0,0,0,0.04);
+  --radius-btn:14px
 }
 [data-theme="dark"]{
   --green:#7eca5a;--gl:#1a2e12;--orange:#f97316;--ol:#2a1a08;
   --blue:#3b82f6;--bl:#0c1a2e;--red:#ef4444;--rl:#2a0c0c;
-  --gold:#fbbf24;--goldl:#2a2008;--bg:#050508;--card:#0e0e14;
-  --card2:#14141c;--card-hover:#1a1a28;
-  --text:#f2f2f5;--muted:#7a7a8e;--border:rgba(255,255,255,0.06);
-  --border-solid:#1a1a24;--r:14px;--rs:10px;
+  --gold:#fbbf24;--goldl:#2a2008;--bg:#0f172a;--card:#1e293b;
+  --card2:#1e293b;--card-hover:#253348;
+  --text:#f2f2f5;--muted:#94a3b8;--border:rgba(255,255,255,0.08);
+  --border-solid:#1e293b;--r:20px;--rs:14px;
   --accent:#22d3ee;--accent2:#67e8f9;--accent-dim:rgba(34,211,238,0.12);
-  --success:#34d399;--purple:#67e8f9;--cyan:#22d3ee
+  --success:#34d399;--purple:#67e8f9;--cyan:#22d3ee;
+  --shadow:0 1px 3px rgba(0,0,0,0.2),0 4px 12px rgba(0,0,0,0.15);
+  --shadow-hover:0 8px 32px rgba(0,0,0,0.3),0 2px 8px rgba(0,0,0,0.2);
+  --radius-btn:14px
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background 0.3s,color 0.3s}
 
 @keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
-@keyframes cardGlass{from{opacity:0;transform:translateY(16px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes fadeInScale{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
 
-.mesh-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
-.mesh-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.04;animation:breathe 8s ease-in-out infinite}
-.mesh-orb:nth-child(1){width:600px;height:600px;background:#0891b2;top:-10%;left:30%}
-.mesh-orb:nth-child(2){width:500px;height:500px;background:#3b82f6;bottom:10%;right:10%;animation-delay:2s}
-.mesh-orb:nth-child(3){width:400px;height:400px;background:#22d3ee;top:40%;left:5%;animation-delay:4s}
+/* ── HEADER ── */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0.9rem 2.5rem;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;background:var(--card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.nav-brand{font-size:1.15rem;font-weight:800;color:var(--accent);text-decoration:none}
+.nav-links{display:flex;gap:1.5rem;align-items:center}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--accent)}
+.theme-btn{background:none;border:1px solid var(--border);cursor:pointer;padding:5px;border-radius:50%;color:var(--muted);transition:all 0.3s;display:flex;align-items:center;justify-content:center;width:32px;height:32px;position:relative;overflow:hidden}
+.theme-btn::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:0;transform:scale(0);transition:all 0.4s cubic-bezier(0.4,0,0.2,1)}
+.theme-btn:active{transform:rotate(180deg) scale(0.85)}
+.theme-btn:active::after{opacity:0.15;transform:scale(2.5)}
+.theme-btn:hover{background:var(--border);color:var(--accent);border-color:var(--accent);transform:rotate(30deg)}
+.theme-btn svg{width:16px;height:16px;transition:transform 0.4s cubic-bezier(0.4,0,0.2,1)}
+.theme-btn:active svg{transform:rotate(-180deg) scale(0.6)}
+[data-theme="dark"] .sun-i{display:block}
+[data-theme="dark"] .moon-i{display:none}
+[data-theme="light"] .sun-i{display:none}
+[data-theme="light"] .moon-i{display:block}
 
-.nav{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 2rem;border-bottom:1px solid var(--border-solid);position:sticky;top:0;z-index:200;background:var(--card);backdrop-filter:blur(10px)}
-.nav-brand{font-size:1.2rem;font-weight:800;color:var(--accent);text-decoration:none}
-.nav-links{display:flex;gap:1.2rem}
-.nav-links a{color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:500;transition:color 0.2s}
-.nav-links a:hover,.nav-links a.active{color:var(--accent2)}
+/* ── PAGE WRAP ── */
+.page-wrap{max-width:960px;margin:0 auto;padding:0 2rem;position:relative;z-index:1}
 
+/* ── HERO ── */
+.hero{padding:4.5rem 0 3rem;text-align:center}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(8,145,178,0.15);padding:6px 18px;border-radius:9999px;margin-bottom:1.5rem;animation:fadeInUp 0.5s ease both}
+.hero h1{font-size:clamp(2.4rem,5vw,3.25rem);font-weight:800;line-height:1.12;letter-spacing:-0.03em;margin-bottom:1rem;animation:fadeInUp 0.5s ease 0.1s both}
+.hero h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(0.95rem,2vw,1.1rem);color:var(--muted);line-height:1.65;max-width:560px;margin:0 auto;animation:fadeInUp 0.5s ease 0.15s both}
 
-.content{max-width:900px;margin:0 auto;padding:3rem 1.5rem;position:relative;z-index:1}
-h1{font-size:2rem;font-weight:800;margin-bottom:0.5rem}
-h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.subtitle{color:var(--muted);font-size:0.95rem;margin-bottom:2.5rem}
-.contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem}
-@media(max-width:700px){.contact-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:420px){.contact-grid{grid-template-columns:1fr}}
-.follow-line{text-align:center;font-size:0.82rem;color:var(--muted);margin-bottom:2rem;animation:fadeIn 0.6s ease 0.5s both}
-.follow-line a{color:var(--accent2);text-decoration:none;font-weight:600;transition:color 0.2s}
-.follow-line a:hover{text-decoration:underline;color:var(--accent)}
-.contact-card{position:relative;background:rgba(14,14,20,0.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:18px;padding:1.5rem 1rem;text-align:center;text-decoration:none;color:var(--text);transition:transform 0.3s ease,border-color 0.3s,box-shadow 0.3s;overflow:hidden;opacity:0;animation:cardPop 0.5s ease forwards}
-.contact-card:nth-child(1){animation-delay:0.1s}
-.contact-card:nth-child(2){animation-delay:0.2s}
-.contact-card:nth-child(3){animation-delay:0.3s}
-@keyframes cardPop{from{opacity:0;transform:translateY(20px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
-.contact-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity 0.3s}
-.contact-card:hover{transform:translateY(-6px) scale(1.02);border-color:rgba(8,145,178,0.4);box-shadow:0 12px 40px rgba(0,0,0,0.5),0 0 20px rgba(8,145,178,0.15)}
-.contact-card:hover::before{opacity:1}
-.contact-card:hover .contact-icon{transform:scale(1.15);filter:drop-shadow(0 0 8px var(--accent))}
-.contact-icon{width:44px;height:44px;margin:0 auto 0.75rem;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--accent-dim);transition:transform 0.3s ease,filter 0.3s}
-.contact-icon svg{width:22px;height:22px;fill:var(--accent)}
-.contact-title{font-size:0.92rem;font-weight:700;margin-bottom:0.3rem}
-.contact-desc{font-size:0.72rem;color:var(--muted);line-height:1.4}
-.form-card{position:relative;background:rgba(14,14,20,0.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:18px;padding:1.75rem;box-shadow:0 4px 24px rgba(0,0,0,0.3);transition:border-color 0.3s;opacity:0;animation:cardPop 0.5s ease 0.6s forwards}
-.form-card:hover{border-color:rgba(8,145,178,0.2)}
-.form-card h2{font-size:1.1rem;font-weight:700;margin-bottom:1rem;color:var(--accent2)}
-.submit-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),#0e7490);color:#fff;border:none;border-radius:var(--rs);font-size:0.9rem;font-weight:700;cursor:pointer;transition:transform 0.2s,box-shadow 0.3s;box-shadow:0 4px 16px rgba(8,145,178,0.25)}
-.submit-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(8,145,178,0.4)}
-.footer{text-align:center;padding:2rem;color:var(--muted);font-size:0.75rem;border-top:1px solid var(--border-solid);margin-top:2rem}
-.footer a{color:var(--accent2);text-decoration:none}
-.content{animation:cardGlass 0.6s ease}
+/* ── SOCIAL CARDS ── */
+.social-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1.75rem}
+.social-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:2.25rem 1.75rem;text-align:center;text-decoration:none;color:var(--text);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:0.6rem;position:relative;animation:fadeInUp 0.5s ease both}
+.social-card:nth-child(1){animation-delay:0.1s}
+.social-card:nth-child(2){animation-delay:0.18s}
+.social-card:nth-child(3){animation-delay:0.26s}
+.social-card .s-icon{width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:14px;transition:transform 0.3s}
+.social-card .s-icon svg{width:24px;height:24px}
+.social-card .s-name{font-size:1.05rem;font-weight:700;color:var(--text)}
+.social-card .s-desc{font-size:0.78rem;color:var(--muted);line-height:1.45}
+.social-card:hover{transform:translateY(-6px);border-color:rgba(8,145,178,0.15);box-shadow:var(--shadow-hover)}
+.social-card:hover .s-icon{transform:scale(1.08)}
+.social-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ── INFO ROW ── */
+.info-row{display:flex;align-items:flex-start;gap:0.85rem;padding:1.5rem 0 2.5rem;margin-bottom:1rem;animation:fadeInUp 0.5s ease 0.3s both}
+.info-row .info-icon{flex-shrink:0;width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--accent);margin-top:2px;transition:border-color 0.3s,color 0.3s}
+.info-row .info-icon svg{width:16px;height:16px;fill:var(--accent)}
+.info-row .info-text{font-size:0.82rem;color:var(--muted);line-height:1.7}
+.info-row .info-text strong{color:var(--text);font-weight:600}
+.info-row .info-text a{color:var(--accent2);text-decoration:none;font-weight:600}
+.info-row .info-text a:hover{text-decoration:underline}
+
+/* ── TELEGRAM CTA ── */
+.telegram-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:2.5rem;box-shadow:var(--shadow);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);display:grid;grid-template-columns:1fr auto;gap:2.5rem;align-items:start;animation:fadeInUp 0.6s ease 0.2s both}
+.telegram-card:hover{border-color:rgba(8,145,178,0.1);box-shadow:var(--shadow-hover)}
+.telegram-left{display:flex;flex-direction:column;gap:1rem;min-width:0}
+.telegram-left h2{font-size:1.6rem;font-weight:800;line-height:1.25;letter-spacing:-0.02em;color:var(--text)}
+.telegram-left p{font-size:0.9rem;color:var(--muted);line-height:1.65}
+.telegram-right{display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.telegram-art{position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center}
+.telegram-art .paper-plane{width:56px;height:56px;color:var(--accent);z-index:1;filter:drop-shadow(0 4px 12px rgba(8,145,178,0.2))}
+.telegram-art .bubble{position:absolute;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;background:var(--card);color:var(--muted);animation:breathe 3s ease-in-out infinite}
+.telegram-art .bubble:nth-child(1){top:-6px;right:-6px;animation-delay:0s}
+.telegram-art .bubble:nth-child(2){bottom:4px;left:-8px;animation-delay:0.8s}
+.telegram-art .bubble:nth-child(3){bottom:16px;right:-14px;animation-delay:1.6s}
+.telegram-art .bubble svg{width:14px;height:14px}
+@keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.telegram-btn{grid-column:1/-1;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:0 2rem;height:56px;background:linear-gradient(135deg,#06b6d4,#0284c7);color:#fff;border:none;border-radius:var(--radius-btn);font-size:0.95rem;font-weight:700;text-decoration:none;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);box-shadow:0 4px 16px rgba(6,182,212,0.25)}
+.telegram-btn:hover{transform:translateY(-2px) scale(1.01);box-shadow:0 8px 28px rgba(6,182,212,0.35)}
+.telegram-btn:active{transform:translateY(0) scale(0.98)}
+.telegram-btn svg{width:18px;height:18px;fill:#fff;flex-shrink:0}
+
+/* ── FOOTER ── */
+.footer{text-align:center;padding:3rem 2rem 2.5rem;margin-top:4rem;border-top:1px solid var(--border);animation:fadeInUp 0.5s ease 0.35s both}
+.footer-nav{display:flex;justify-content:center;flex-wrap:wrap;gap:0.4rem 1.25rem;margin-bottom:1.75rem}
+.footer-nav a{color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:500;transition:color 0.2s}
+.footer-nav a:hover{color:var(--accent)}
+.footer-social{display:flex;justify-content:center;gap:0.75rem;margin-bottom:1.75rem}
+.footer-social a{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);text-decoration:none;transition:all 0.3s}
+.footer-social a:hover{color:var(--accent);border-color:var(--accent);transform:translateY(-2px)}
+.footer-social a svg{width:16px;height:16px;fill:currentColor}
+.footer-copy{font-size:0.75rem;color:var(--muted);line-height:1.6}
+.footer-copy a{color:var(--accent2);text-decoration:none;font-weight:500}
+.footer-copy a:hover{text-decoration:underline}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .nav{padding:0.75rem 1.25rem}
+  .page-wrap{padding:0 1.25rem}
+  .hero{padding:3rem 0 2rem}
+  .hero h1{font-size:2rem}
+  .social-grid{grid-template-columns:repeat(2,1fr);gap:1rem}
+  .telegram-card{grid-template-columns:1fr;gap:1.5rem}
+  .telegram-right{justify-content:center}
+  .telegram-art{width:100px;height:100px}
+  .telegram-art .paper-plane{width:44px;height:44px}
+  .telegram-left h2{font-size:1.35rem}
+}
+@media(max-width:500px){
+  .nav-links{gap:0.8rem}
+  .nav-links a{font-size:0.78rem}
+  .hero h1{font-size:1.6rem}
+  .hero-sub{font-size:0.88rem}
+  .social-grid{grid-template-columns:1fr;gap:0.9rem}
+  .social-card{padding:1.75rem 1.25rem}
+  .telegram-card{padding:1.75rem}
+  .telegram-left h2{font-size:1.2rem}
+  .footer{padding:2rem 1.25rem;margin-top:2.5rem}
+  .footer-nav{gap:0.3rem 0.8rem}
+}
 
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:#222;border-radius:3px}
+::-webkit-scrollbar-thumb{background:var(--border-solid);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted)}
 ::selection{background:rgba(8,145,178,0.25);color:#fff}
 </style>
 </head>
 <body>
-
-<div class="mesh-bg">
-  <div class="mesh-orb"></div>
-  <div class="mesh-orb"></div>
-  <div class="mesh-orb"></div>
-</div>
 
 <nav class="nav">
   <a href="index.html" class="nav-brand">FitPlan</a>
@@ -100,55 +164,107 @@ h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
     <a href="contact.html" class="active">Contact</a>
+    <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+      <svg class="sun-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="moon-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
   </div>
-
 </nav>
 
-<div class="content">
-  <h1>Get in <span>Touch</span></h1>
-  <p class="subtitle">Questions, feedback, or just want to say hi? We would love to hear from you.</p>
+<div class="page-wrap">
 
-  <div class="contact-grid">
-    <a href="https://instagram.com/akash.liftsup" target="_blank" class="contact-card">
-      <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 1 0 0-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 1 1-2.882 0 1.441 1.441 0 0 1 2.882 0z"/></svg></div>
-      <div class="contact-title">Instagram</div>
-      <div class="contact-desc">Follow @akash.liftsup for fitness tips</div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="badge">WE'D LOVE TO HEAR FROM YOU</div>
+    <h1>Let's <span>Connect</span></h1>
+    <p class="hero-sub">Have questions, feedback, or just want to say hi? We're here for you.</p>
+  </section>
+
+  <!-- SOCIAL CARDS -->
+  <div class="social-grid">
+    <a href="https://instagram.com/akash.liftsup" target="_blank" class="social-card">
+      <div class="s-icon" style="background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af)">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 1 0 0-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 1 1-2.882 0 1.441 1.441 0 0 1 2.882 0z"/></svg>
+      </div>
+      <div class="s-name">Instagram</div>
+      <div class="s-desc">Follow @akash.liftsup for fitness tips</div>
     </a>
-    <a href="https://www.facebook.com/akashliftsup" target="_blank" class="contact-card">
-      <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></div>
-      <div class="contact-title">Facebook</div>
-      <div class="contact-desc">Like our page for workout plans</div>
+    <a href="https://www.facebook.com/akashliftsup" target="_blank" class="social-card">
+      <div class="s-icon" style="background:#1877f2">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      </div>
+      <div class="s-name">Facebook</div>
+      <div class="s-desc">Like our page for workout plans</div>
     </a>
-    <a href="https://youtube.com/@akash.liftsup" target="_blank" class="contact-card">
-      <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></div>
-      <div class="contact-title">YouTube</div>
-      <div class="contact-desc">Subscribe for workout and diet videos</div>
+    <a href="https://youtube.com/@akash.liftsup" target="_blank" class="social-card">
+      <div class="s-icon" style="background:#ff0000">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      </div>
+      <div class="s-name">YouTube</div>
+      <div class="s-desc">Subscribe for workout and diet videos</div>
     </a>
   </div>
-  <p class="follow-line">Stay motivated with daily fitness tips, workouts &amp; nutrition content—follow us on <a href="https://instagram.com/akash.liftsup" target="_blank">Instagram</a>, <a href="https://www.facebook.com/akashliftsup" target="_blank">Facebook</a> &amp; <a href="https://youtube.com/@akash.liftsup" target="_blank">YouTube</a>. Need help? <a href="https://t.me/AkashLiftsupBot" target="_blank">Message us on Telegram</a></p>
 
-  <div class="form-card">
-    <h2>Send Us a Message</h2>
-    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5">Tap below to open Telegram and send us a message directly — we typically reply within a few hours.</p>
-    <a href="https://t.me/AkashLiftsupBot" target="_blank" class="submit-btn" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:0.9rem">
-      <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#fff"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+  <!-- INFO ROW -->
+  <div class="info-row">
+    <div class="info-icon">
+      <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+    </div>
+    <div class="info-text">
+      Stay motivated with daily fitness tips, workouts &amp; nutrition content—follow us on <a href="https://instagram.com/akash.liftsup" target="_blank">Instagram</a>, <a href="https://www.facebook.com/akashliftsup" target="_blank">Facebook</a> &amp; <a href="https://youtube.com/@akash.liftsup" target="_blank">YouTube</a>.
+      <br/>
+      <strong>Need help?</strong> <a href="https://t.me/AkashLiftsupBot" target="_blank">Message us on Telegram</a>
+    </div>
+  </div>
+
+  <!-- TELEGRAM CTA -->
+  <div class="telegram-card">
+    <div class="telegram-left">
+      <h2>Send Us a Message</h2>
+      <p>Tap below to open Telegram and send us a message directly. We typically reply within a few hours.</p>
+    </div>
+    <div class="telegram-right">
+      <div class="telegram-art">
+        <svg class="paper-plane" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        <div class="bubble" style="animation-delay:0s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="bubble" style="animation-delay:0.8s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <div class="bubble" style="animation-delay:1.6s">💪</div>
+      </div>
+    </div>
+    <a href="https://t.me/AkashLiftsupBot" target="_blank" class="telegram-btn">
+      <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
       Message us on Telegram →
     </a>
   </div>
+
 </div>
 
-<div class="footer">
-  <div style="margin-bottom:0.5rem">
-    <a href="about.html">About</a> · <a href="contact.html">Contact</a> · <a href="disclaimer.html">Medical Disclaimer</a> · <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms &amp; Conditions</a>
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-nav">
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="disclaimer.html">Medical Disclaimer</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms &amp; Conditions</a>
   </div>
-  <div style="margin-bottom:0.5rem">
-    <a href="https://instagram.com/akash.liftsup" target="_blank">Instagram</a> · <a href="https://facebook.com/akashliftsup" target="_blank">Facebook</a> · <a href="https://youtube.com/@akash.liftsup" target="_blank">YouTube</a>
+  <div class="footer-social">
+    <a href="https://instagram.com/akash.liftsup" target="_blank" aria-label="Instagram">
+      <svg viewBox="0 0 24 24"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 1 0 0-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 1 1-2.882 0 1.441 1.441 0 0 1 2.882 0z"/></svg>
+    </a>
+    <a href="https://www.facebook.com/akashliftsup" target="_blank" aria-label="Facebook">
+      <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+    </a>
+    <a href="https://youtube.com/@akash.liftsup" target="_blank" aria-label="YouTube">
+      <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+    </a>
   </div>
-  Designed by <a href="https://instagram.com/akash.liftsup" target="_blank">Akash Singh</a> · © 2026 FitPlan · All plans are for educational purposes
-</div>
+  <div class="footer-copy">
+    Designed by <a href="https://instagram.com/akash.liftsup" target="_blank">Akash Singh</a> · © 2026 FitPlan · All plans are for educational purposes
+  </div>
+</footer>
 
-
-
+<script>function toggleTheme(){var h=document.documentElement,c=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',c);localStorage.setItem('theme',c);document.body.style.transition='background 0.4s,color 0.4s';setTimeout(function(){document.body.style.transition=''},500)}</script>
 
 </body>
 </html>
