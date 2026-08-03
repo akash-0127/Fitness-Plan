@@ -33,7 +33,7 @@ html{scroll-behavior:smooth}
   --accent:#22d3ee;--accent2:#67e8f9;--accent-dim:rgba(34,211,238,0.12);
   --success:#34d399;--purple:#67e8f9;--cyan:#22d3ee
 }}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background 0.3s,color 0.3s}
 
 /* ── ANIMATIONS ── */
 @keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -395,6 +395,25 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 .calcalc-label{font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-top:3px}
 .calcalc-item.highlight .calcalc-val{color:var(--accent2)}
 @media(max-width:500px){.calcalc-grid{grid-template-columns:1fr}}
+
+/* ── DASHBOARD UI ── */
+.dash-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;font-size:0.72rem;color:var(--muted)}
+.dash-dot{opacity:0.5}
+.dash-status{background:var(--gl);color:var(--green);border:1px solid rgba(5,150,105,0.35);border-radius:999px;padding:2px 10px;font-size:0.62rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase}
+.dash-status.premium{background:var(--goldl);color:var(--gold);border-color:rgba(217,119,6,0.4)}
+.stat{position:relative;overflow:hidden;padding:16px 14px;box-shadow:var(--shadow)}
+.stat::before{content:"";position:absolute;top:0;left:0;right:0;height:3px}
+.stat:nth-child(1)::before{background:var(--orange)}
+.stat:nth-child(2)::before{background:var(--green)}
+.stat:nth-child(3)::before{background:var(--blue)}
+.stat:nth-child(4)::before{background:var(--purple)}
+.stat-i{font-size:1.05rem;margin-bottom:5px;line-height:1}
+.stat:hover{box-shadow:var(--shadow-hover)}
+.wd{background:var(--card);border:1px solid var(--border);border-radius:12px;margin:10px 12px;box-shadow:var(--shadow);border-bottom:none}
+.wd:last-child{border-bottom:none}
+@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
+@media print{.dash-meta,.stat-i{display:none!important}}
+
 </style>
 <link rel="stylesheet" href="ui-enhancements.css"/>
 <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
@@ -712,8 +731,9 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
       <div class="pbrand">Akash Singh &middot; Personalised Workout Plan</div>
       <div class="ptitle" id="outTitle">-</div>
       <div class="psub" id="outSub">-</div>
+      <div class="badges" id="outBadges"></div>
+      <div class="dash-meta" id="dashMeta"></div>
     </div>
-    <div class="badges" id="outBadges"></div>
   </div>
 
   <div class="stats" id="outStats"></div>
@@ -2054,12 +2074,15 @@ function renderPlan(mode) {
     priBadge + injBadge +
     '<span class="badge" style="background:' + (mode === 'premium' ? '#1a1508;color:#fbbf24;border:1px solid #fbbf24' : '#1a1a24;color:#999') + '">' + (mode === 'premium' ? '⭐ Premium Plan' : 'Normal Plan') + '</span>';
 
+  var dm=document.getElementById('dashMeta');
+  if(dm) dm.innerHTML='<span>📅 '+new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})+'</span><span class="dash-dot">•</span><span class="dash-status'+(mode==='premium'?' premium':'')+'">'+(mode==='premium'?'⭐ Premium Plan':'Active Plan')+'</span>';
+
   // Stats
   document.getElementById('outStats').innerHTML =
-    '<div class="stat"><div class="stat-v">' + dy + '</div><div class="stat-l">Days/Week</div></div>' +
-    '<div class="stat"><div class="stat-v" style="font-size:0.85rem">' + rr.intensity + '</div><div class="stat-l">Intensity</div></div>' +
-    '<div class="stat"><div class="stat-v" style="font-size:0.85rem">' + rr.rest + '</div><div class="stat-l">Rest Between Sets</div></div>' +
-    '<div class="stat"><div class="stat-v" style="font-size:0.85rem">' + rr.s + '</div><div class="stat-l">Rep Range</div></div>';
+    '<div class="stat"><div class="stat-i">📅</div><div class="stat-v">' + dy + '</div><div class="stat-l">Days/Week</div></div>' +
+    '<div class="stat"><div class="stat-i">🔥</div><div class="stat-v" style="font-size:0.85rem">' + rr.intensity + '</div><div class="stat-l">Intensity</div></div>' +
+    '<div class="stat"><div class="stat-i">⏱</div><div class="stat-v" style="font-size:0.85rem">' + rr.rest + '</div><div class="stat-l">Rest Between Sets</div></div>' +
+    '<div class="stat"><div class="stat-i">🔁</div><div class="stat-v" style="font-size:0.85rem">' + rr.s + '</div><div class="stat-l">Rep Range</div></div>';
 
   // Body comp (if BMI was calculated)
   var bp = document.getElementById('bmiPanel');
