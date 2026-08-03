@@ -1,0 +1,65 @@
+{
+  "PROTEINS": {
+    "nonveg": [
+      { "n": "Chicken breast (grilled)", "p": 31, "c": 0, "f": 3.6, "k": 165 },
+      { "n": "Eggs (whole)", "p": 13, "c": 1, "f": 11, "k": 155 },
+      { "n": "Egg whites", "p": 11, "c": 0.7, "f": 0.2, "k": 52 },
+      { "n": "Fish (rohu/tilapia)", "p": 17, "c": 0, "f": 2, "k": 97 },
+      { "n": "Tuna (canned in water)", "p": 26, "c": 0, "f": 1, "k": 116 },
+      { "n": "Paneer", "p": 18, "c": 3, "f": 21, "k": 265 },
+      { "n": "Curd/Yogurt", "p": 4, "c": 5, "f": 4, "k": 60 }
+    ],
+    "veg": [
+      { "n": "Paneer", "p": 18, "c": 3, "f": 21, "k": 265 },
+      { "n": "Curd/Yogurt", "p": 4, "c": 5, "f": 4, "k": 60 },
+      { "n": "Tofu (firm)", "p": 8, "c": 2, "f": 5, "k": 76 },
+      { "n": "Toor/Masoor dal (cooked)", "p": 9, "c": 20, "f": 0.4, "k": 116 },
+      { "n": "Rajma (cooked)", "p": 9, "c": 22, "f": 0.5, "k": 127 },
+      { "n": "Chana/Chickpea (cooked)", "p": 9, "c": 27, "f": 3, "k": 164 },
+      { "n": "Moong dal (cooked)", "p": 7, "c": 20, "f": 0.4, "k": 105 },
+      { "n": "Greek yogurt", "p": 10, "c": 4, "f": 0.7, "k": 59 }
+    ],
+    "vegan": [
+      { "n": "Tofu (firm)", "p": 8, "c": 2, "f": 5, "k": 76 },
+      { "n": "Toor/Masoor dal (cooked)", "p": 9, "c": 20, "f": 0.4, "k": 116 },
+      { "n": "Chana/Chickpea (cooked)", "p": 9, "c": 27, "f": 3, "k": 164 },
+      { "n": "Rajma (cooked)", "p": 9, "c": 22, "f": 0.5, "k": 127 },
+      { "n": "Tempeh", "p": 19, "c": 9, "f": 11, "k": 193 },
+      { "n": "Moong dal (cooked)", "p": 7, "c": 20, "f": 0.4, "k": 105 },
+      { "n": "Edamame", "p": 11, "c": 9, "f": 5, "k": 122 }
+    ]
+  },
+  "CARBS": [
+    { "n": "Brown rice (cooked 150g)", "c": 35, "p": 3, "f": 1, "k": 165 },
+    { "n": "White rice (cooked 150g)", "c": 42, "p": 3, "f": 0.4, "k": 195 },
+    { "n": "Roti (2 medium, ~70g)", "c": 36, "p": 5, "f": 2, "k": 190 },
+    { "n": "Oats (dry 50g)", "c": 33, "p": 6, "f": 3, "k": 194 },
+    { "n": "Sweet potato (150g, boiled)", "c": 30, "p": 2, "f": 0.1, "k": 129 },
+    { "n": "Banana (1 medium, 120g)", "c": 27, "p": 1, "f": 0.4, "k": 107 },
+    { "n": "Whole wheat bread (2 slices)", "c": 26, "p": 6, "f": 2, "k": 138 },
+    { "n": "Poha (cooked 150g)", "c": 33, "p": 3, "f": 2, "k": 164 },
+    { "n": "Upma (cooked 150g)", "c": 28, "p": 4, "f": 4, "k": 162 },
+    { "n": "Makhana (30g)", "c": 20, "p": 4, "f": 0.5, "k": 105 },
+    { "n": "Roasted chana (30g)", "c": 17, "p": 6, "f": 2.5, "k": 113 },
+    { "n": "Quinoa (cooked 150g)", "c": 30, "p": 6, "f": 2, "k": 165 }
+  ],
+  "FATS": [
+    { "n": "Almonds (20g)", "f": 10, "p": 4, "c": 3, "k": 116 },
+    { "n": "Walnuts (20g)", "f": 13, "p": 3, "c": 2, "k": 131 },
+    { "n": "Peanut butter (15g)", "f": 8, "p": 4, "c": 2, "k": 94 },
+    { "n": "Ghee (1 tsp, 5g)", "f": 5, "p": 0, "c": 0, "k": 45 },
+    { "n": "Olive oil (1 tsp, 5g)", "f": 5, "p": 0, "c": 0, "k": 44 },
+    { "n": "Coconut oil (1 tsp, 5g)", "f": 5, "p": 0, "c": 0, "k": 45 },
+    { "n": "Avocado (50g)", "f": 7.5, "p": 1, "c": 3, "k": 80 }
+  ],
+  "VEGS": [
+    "1 cup mixed salad (cucumber, tomato, onion)",
+    "100g spinach (sauteed)",
+    "100g broccoli (steamed)",
+    "1 cup sabzi (any seasonal vegetable)",
+    "½ cup dal as side",
+    "1 cup green beans",
+    "100g capsicum + onion stir-fry"
+  ],
+  "last_verified": "2026-08-03"
+}

@@ -1,0 +1,65 @@
+/* FitPlan progressive UI enhancements — keeps the existing visual language intact. */
+:root { --focus-ring: 0 0 0 4px rgba(8,145,178,.22); }
+
+html { scroll-padding-top: 5.5rem; }
+body { text-rendering: optimizeLegibility; }
+
+/* A calmer, more consistent interaction language across existing pages. */
+a, button, input, [role="button"], .chip, .dchip, .sc, .plan-card {
+  -webkit-tap-highlight-color: transparent;
+}
+a:focus-visible, button:focus-visible, input:focus-visible, [role="button"]:focus-visible,
+.chip:focus-visible, .dchip:focus-visible, .sc:focus-visible, .plan-card:focus-visible {
+  outline: none !important;
+  box-shadow: var(--focus-ring) !important;
+}
+
+.portal-nav, .topnav { isolation: isolate; }
+.portal-nav::after, .topnav::after {
+  content: ""; position: absolute; inset: auto 0 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: .42; pointer-events: none;
+}
+
+.header, .hero, .wrap, .page-wrap { position: relative; }
+.card, .plan-card, .hook-inner, .feature-card, .contact-card, .content-card {
+  box-shadow: var(--shadow, 0 4px 20px rgba(15,23,42,.06));
+}
+.plan-icon-wrap svg { width: 1.45rem; height: 1.45rem; stroke: currentColor; }
+.card-meal .plan-icon-wrap { color: var(--success, #059669); }
+.card-workout .plan-icon-wrap { color: var(--purple, #0891b2); }
+.card-combo .plan-icon-wrap { color: var(--accent); }
+
+/* GSAP adds this class only after it has prepared elements, preventing a flash. */
+.js-reveal { will-change: transform, opacity; }
+.js-reveal.is-visible { will-change: auto; }
+
+/* Accessible screen-reader-only utility used by the injected skip link. */
+.skip-link {
+  position: fixed; z-index: 9999; left: 1rem; top: .75rem; padding: .65rem 1rem;
+  border-radius: .65rem; background: var(--accent); color: #fff; font-weight: 800;
+  text-decoration: none; transform: translateY(-180%); transition: transform .2s ease;
+}
+.skip-link:focus { transform: translateY(0); outline: none; box-shadow: var(--focus-ring); }
+
+@media (max-width: 700px) {
+  .portal-nav, .topnav, .nav { padding: .7rem 1rem !important; gap: .7rem; flex-wrap: wrap; }
+  .portal-nav .nav-links, .topnav .nav-links, .nav .nav-links { gap: .8rem !important; flex-wrap: wrap; justify-content: flex-end; }
+  .portal-nav .nav-links a, .topnav .nav-links a, .nav .nav-links a { font-size: .76rem !important; }
+  .header { padding: 1.1rem 1.15rem !important; }
+  .page-wrap, .wrap { padding-left: 1rem !important; padding-right: 1rem !important; }
+  .hero { padding: 2.35rem .2rem 1.35rem !important; }
+  .hero h1 { letter-spacing: -.045em !important; }
+  .card, .output { padding: 1.15rem !important; border-radius: 16px !important; }
+  .plan-card { padding: 1.2rem !important; }
+  .footer { padding-left: 1rem !important; padding-right: 1rem !important; }
+}
+
+@media (hover: hover) {
+  .card, .feature-card, .contact-card, .content-card { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+  .card:hover, .feature-card:hover, .contact-card:hover, .content-card:hover { transform: translateY(-3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
