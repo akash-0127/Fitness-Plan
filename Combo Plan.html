@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Create a combined FitPlan meal and workout plan tailored to your goals, preferences, and routine."/>
 <title>Akash Singh — Combo Plan Generator v1.0</title>
 <script>!function(){var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme:light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t)}();</script>
 <style>
@@ -72,6 +73,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .topnav .nav-links{display:flex;gap:1.2rem;align-items:center}
 .topnav .nav-links a{color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:500;transition:color 0.2s}
 .topnav .nav-links a:hover{color:var(--accent2)}
+.topnav .nav-links a.active{color:var(--accent2);font-weight:700}
 .theme-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s;font-size:1rem;padding:0;position:relative;overflow:hidden}
 .theme-btn:hover{color:var(--accent);border-color:var(--accent);transform:rotate(180deg)}
 .theme-btn:active{transform:rotate(180deg) scale(0.92)}
@@ -325,6 +327,8 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 .footer{text-align:center;margin-top:2.5rem;padding:1.5rem 1.25rem;border-top:1px solid var(--border-solid);font-size:0.75rem;color:var(--muted)}
 .footer a{color:var(--accent2);font-weight:600;text-decoration:none;transition:color 0.2s}
 .footer a:hover{color:var(--accent)}
+.footer.footer-app{padding:1rem 1.25rem;margin-top:2rem}
+.footer.footer-app .footer-nav{margin-bottom:0.4rem;gap:0.25rem 1.25rem}
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:6px}
@@ -412,6 +416,11 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 .calcalc-item.highlight .calcalc-val{color:var(--accent2)}
 @media(max-width:500px){.calcalc-grid{grid-template-columns:1fr}}
 </style>
+<link rel="stylesheet" href="ui-enhancements.css"/>
+<script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
+<script defer src="ui-enhancements.js"></script>
 </head>
 <body>
 
@@ -419,6 +428,9 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
   <a href="index.html" class="back-link">← Back to FitPlan</a>
   <div class="nav-links">
     <a href="index.html">Home</a>
+    <a href="Workout Plan.html">Workout Plans</a>
+    <a href="Meal Plan.html">Diet Plans</a>
+    <a href="fitness-tools.html">Fitness Tools</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
     <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
@@ -732,49 +744,6 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
     </div>
   </div>
 </div>
-<div class="navy">
-  <div class="navy-t">&#x1F4CF; Body Measurements — Navy Method Body Fat Calculator (Optional)</div>
-  <div class="row" style="margin-bottom:0;gap:1rem">
-    <div class="fg">
-      <label>Waist</label>
-      <div class="unit-row">
-        <input type="number" id="waist" placeholder="e.g. 85" style="width:100px" min="15" max="200"/>
-        <div class="unit-toggle" id="waistUnit">
-          <div class="unit-btn active" data-val="cm" onclick="setUnit('waist',this)">cm</div>
-          <div class="unit-btn" data-val="in" onclick="setUnit('waist',this)">in</div>
-        </div>
-      </div>
-    </div>
-    <div class="fg">
-      <label>Neck</label>
-      <div class="unit-row">
-        <input type="number" id="neck" placeholder="e.g. 38" style="width:100px" min="15" max="100"/>
-        <div class="unit-toggle" id="neckUnit">
-          <div class="unit-btn active" data-val="cm" onclick="setUnit('neck',this)">cm</div>
-          <div class="unit-btn" data-val="in" onclick="setUnit('neck',this)">in</div>
-        </div>
-      </div>
-    </div>
-    <div class="fg" id="hipGrp" style="display:none">
-      <label>Hip — females</label>
-      <div class="unit-row">
-        <input type="number" id="hip" placeholder="e.g. 95" style="width:100px" min="15" max="200"/>
-        <div class="unit-toggle" id="hipUnit">
-          <div class="unit-btn active" data-val="cm" onclick="setUnit('hip',this)">cm</div>
-          <div class="unit-btn" data-val="in" onclick="setUnit('hip',this)">in</div>
-        </div>
-      </div>
-    </div>
-    <div class="fg" style="justify-content:flex-end">
-      <label style="visibility:hidden">x</label>
-      <button onclick="calcBMI()"
-        style="border:1.5px solid var(--border);background:var(--gl);color:var(--green);border-radius:var(--rs);padding:9px 16px;font-size:0.79rem;font-weight:700;cursor:pointer;white-space:nowrap">
-        &#x1F4CA; Calculate BMI &amp; Body Fat %
-      </button>
-    </div>
-  </div>
-  <div class="navy-h">&#x1F4A1; Optional — measurements give accurate body fat %. Otherwise BMI estimate is used automatically.</div>
-</div>
 <div id="bmiPanel">
   <div style="font-size:0.67rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:0.75rem">&#x1F4CA; Body Composition Analysis</div>
   <div class="bmi-inner">
@@ -900,28 +869,15 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
   <button class="btn" onclick="window.print()">&#x1F5A8; Print / Save PDF</button>
 </div>
 </div><!-- /output -->
-<footer class="footer">
+<footer class="footer footer-app">
   <div class="footer-nav">
     <a href="about.html">About</a>
+    <a href="fitness-tools.html">Fitness Tools</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
     <a href="contact.html">Contact</a>
-    <a href="disclaimer.html">Medical Disclaimer</a>
-    <a href="privacy.html">Privacy Policy</a>
-    <a href="terms.html">Terms &amp; Conditions</a>
   </div>
-  <div class="footer-social">
-    <a href="https://instagram.com/akash.liftsup" target="_blank" aria-label="Instagram">
-      <svg viewBox="0 0 24 24"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 1 0 0-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 1 1-2.882 0 1.441 1.441 0 0 1 2.882 0z"/></svg>
-    </a>
-    <a href="https://www.facebook.com/akashliftsup" target="_blank" aria-label="Facebook">
-      <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-    </a>
-    <a href="https://youtube.com/@akash.liftsup" target="_blank" aria-label="YouTube">
-      <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-    </a>
-  </div>
-  <div class="footer-copy">
-    Designed by <a href="https://instagram.com/akash.liftsup" target="_blank">Akash Singh</a> · © 2026 FitPlan · All plans are for educational purposes
-  </div>
+  <div class="footer-copy">© 2026 FitPlan</div>
 </footer>
 </div><!-- /wrap -->
 <script>
@@ -2772,7 +2728,6 @@ for (var ci = 0; ci < chips.length; ci++) {
       S[g] = v;
       if (g === 'days') buildSplits(v);
       if (g === 'training') document.getElementById('homeEquip').style.display = v === 'home' ? 'block' : 'none';
-      if (g === 'gender') document.getElementById('hipGrp').style.display = v === 'female' ? '' : 'none';
       if(g==='gender'||g==='activity') updateCalCalc();
       calcBMI();
     };
@@ -2819,8 +2774,7 @@ for (var di = 0; di < dchips.length; di++) {
 }
 // INIT
 buildSplits('4');
-document.getElementById('hipGrp').style.display = 'none';
-['wt','ht','age','waist','neck','hip'].forEach(function(id){
+['wt','ht','age'].forEach(function(id){
   var el = document.getElementById(id);
   if(el) el.addEventListener('input', calcBMI);
 });
@@ -2830,44 +2784,25 @@ function calcBMI() {
   var wt=parseFloat(document.getElementById('wt').value)||0;
   var ht=parseFloat(document.getElementById('ht').value)||0;
   var age=parseFloat(document.getElementById('age').value)||0;
-  var waist=parseFloat(document.getElementById('waist').value)||0;
-  var neck=parseFloat(document.getElementById('neck').value)||0;
-  var hip=parseFloat(document.getElementById('hip').value)||0;
   if(!wt||!ht) { document.getElementById('bmiPanel').style.display='none'; return; }
   var g=S.gender, htM=ht/100;
   var bmi=wt/(htM*htM);
-  var bf, lean, fatCat, fatCol, showFat=false;
-  var waistOk=waist>=30&&waist<=200;
-  var neckOk=neck>=20&&neck<=80;
-  var hipOk=hip>=50&&hip<=200;
-  if(g==='male'&&waistOk&&neckOk) {
-    bf=495/(1.0324-0.19077*Math.log10(waist-neck)+0.15456*Math.log10(ht))-450;
-    showFat=true;
-  } else if(g==='female'&&waistOk&&neckOk&&hipOk) {
-    bf=495/(1.29579-0.35004*Math.log10(waist+hip-neck)+0.22100*Math.log10(ht))-450;
-    showFat=true;
-  }
-  if(showFat) {
-    bf=Math.max(2,Math.min(60,bf));
-    lean=wt-(bf/100*wt);
-    if(g==='male'){
-      if(bf<6){fatCat='Essential Fat';fatCol='#185FA5';}
-      else if(bf<14){fatCat='Athlete';fatCol='#2d6a0f';}
-      else if(bf<18){fatCat='Fitness';fatCol='#2d6a0f';}
-      else if(bf<25){fatCat='Average';fatCol='#b96b10';}
-      else{fatCat='Obese';fatCol='#712B13';}
-    } else {
-      if(bf<14){fatCat='Essential Fat';fatCol='#185FA5';}
-      else if(bf<21){fatCat='Athlete';fatCol='#2d6a0f';}
-      else if(bf<25){fatCat='Fitness';fatCol='#2d6a0f';}
-      else if(bf<32){fatCat='Average';fatCol='#b96b10';}
-      else{fatCat='Obese';fatCol='#712B13';}
-    }
+  var bf=(1.20*bmi)+(0.23*age)-(10.8*(g==='male'?1:0))-5.4;
+  bf=Math.max(2,Math.min(60,bf));
+  var lean=wt-(bf/100*wt);
+  var fatCat, fatCol;
+  if(g==='male'){
+    if(bf<6){fatCat='Essential Fat';fatCol='#185FA5';}
+    else if(bf<14){fatCat='Athlete';fatCol='#2d6a0f';}
+    else if(bf<18){fatCat='Fitness';fatCol='#2d6a0f';}
+    else if(bf<25){fatCat='Average';fatCol='#b96b10';}
+    else{fatCat='Obese';fatCol='#712B13';}
   } else {
-    bf=(1.20*bmi)+(0.23*age)-(10.8*(g==='male'?1:0))-5.4;
-    bf=Math.max(2,Math.min(60,bf));
-    lean=wt-(bf/100*wt);
-    fatCat='Enter body measurements';fatCol='var(--muted)';
+    if(bf<14){fatCat='Essential Fat';fatCol='#185FA5';}
+    else if(bf<21){fatCat='Athlete';fatCol='#2d6a0f';}
+    else if(bf<25){fatCat='Fitness';fatCol='#2d6a0f';}
+    else if(bf<32){fatCat='Average';fatCol='#b96b10';}
+    else{fatCat='Obese';fatCol='#712B13';}
   }
   var bmiCat,bmiCol;
   if(bmi<16){bmiCat='Severe Thinness';bmiCol='#185FA5';}
@@ -2941,9 +2876,6 @@ function calcMetrics() {
   var wt=parseFloat(document.getElementById('wt').value)||70;
   var ht=parseFloat(document.getElementById('ht').value)||170;
   var age=parseFloat(document.getElementById('age').value)||25;
-  var waist=parseFloat(document.getElementById('waist').value)||0;
-  var neck=parseFloat(document.getElementById('neck').value)||0;
-  var hip=parseFloat(document.getElementById('hip').value)||0;
   var g=S.gender;
   var bmr=g==='male'?(10*wt)+(6.25*ht)-(5*age)+5:(10*wt)+(6.25*ht)-(5*age)-161;
   bmr=Math.round(bmr);
@@ -2959,14 +2891,8 @@ function calcMetrics() {
   else tgt=tdee;
   var minCal=g==='male'?1500:1200;
   tgt=Math.max(minCal,Math.round(tgt));
-  var bf;
-  if(g==='male'&&waist>0&&neck>0) {
-    bf=495/(1.0324-0.19077*Math.log10(waist-neck)+0.15456*Math.log10(ht))-450;
-  } else if(g==='female'&&waist>0&&neck>0&&hip>0) {
-    bf=495/(1.29579-0.35004*Math.log10(waist+hip-neck)+0.22100*Math.log10(ht))-450;
-  } else {
-    var bmi2=wt/((ht/100)**2); bf=(1.20*bmi2)+(0.23*age)-(10.8*(g==='male'?1:0))-5.4;
-  }
+  var bmi2=wt/((ht/100)**2);
+  var bf=(1.20*bmi2)+(0.23*age)-(10.8*(g==='male'?1:0))-5.4;
   bf=Math.max(2,Math.min(60,bf));
   var lbm=wt*(1-bf/100);
   var protPerKg;
@@ -3018,18 +2944,6 @@ function validate() {
   var htU = document.querySelector('#heightUnit .unit-btn.active');
   var htCm = (htU && htU.dataset.val === 'in') ? ht * 2.54 : ht;
   chk('ht', 'eHt', !ht || htCm < 120 || htCm > 250, 'Enter realistic height (120–250 cm)');
-  var waist=parseFloat(document.getElementById('waist').value);
-  var waistU=document.querySelector('#waistUnit .unit-btn.active');
-  var waistCm=(waistU&&waistU.dataset.val==='in')?waist*2.54:waist;
-  if(waist) chk('waist','',waistCm<30||waistCm>200,'Enter realistic waist measurement (30-200 cm)');
-  var neck=parseFloat(document.getElementById('neck').value);
-  var neckU=document.querySelector('#neckUnit .unit-btn.active');
-  var neckCm=(neckU&&neckU.dataset.val==='in')?neck*2.54:neck;
-  if(neck) chk('neck','',neckCm<20||neckCm>80,'Enter realistic neck measurement (20-80 cm)');
-  var hip=parseFloat(document.getElementById('hip').value);
-  var hipU=document.querySelector('#hipUnit .unit-btn.active');
-  var hipCm=(hipU&&hipU.dataset.val==='in')?hip*2.54:hip;
-  if(hip) chk('hip','',hipCm<50||hipCm>200,'Enter realistic hip measurement (50-200 cm)');
   var b = document.getElementById('vbanner');
   if (!ok) {
     b.textContent = '\u26A0\uFE0F Please fill all required fields correctly.';
@@ -3508,10 +3422,7 @@ function confirmPayment() {
   function _gc(g){var el=document.querySelector('[data-g="'+g+'"].on');return el?el.textContent.trim():'N/A';}
   function _dc(){var el=document.querySelector('.dchip.on');return el?el.getAttribute('data-diet'):'N/A';}
   var _health=S.health&&S.health.length?S.health.join(', '):'None';
-  var _w=document.getElementById('waist').value||'-';
-  var _n2=document.getElementById('neck').value||'-';
-  var _h=document.getElementById('hip').value||'-';
-  var _msg='💰 PREMIUM COMBO PLAN — PAYMENT CONFIRMED\n━━━━━━━━━━━━━━━━━━\n👤 CLIENT DETAILS\nName: '+_n+'\nPhone: '+_p+'\nEmail: '+_e+'\nAge: '+_age+'\nWeight: '+_wtDisp+'\nHeight: '+_htDisp+'\nGender: '+_gc('gender')+'\n\n🎯 GOAL & ACTIVITY\nGoal: '+_gc('goal')+'\nActivity: '+_gc('activity')+'\nTraining Days: '+_gc('tdays')+'\n\n🥗 DIET & LIFESTYLE\nDiet: '+_dc()+'\nMeals/Day: '+_gc('meals')+'\nBudget: '+_gc('budget')+'\nCooking Time: '+_gc('cooktime')+'\nHealth: '+_health+'\n\n🏋️ TRAINING SETUP\nLocation: '+_gc('training')+'\nLevel: '+_gc('level')+'\nDuration: '+_gc('duration')+' min\nDays/Week: '+_gc('days')+'\nTiming: '+_gc('timing')+'\nSplit: '+(S.split||'N/A')+'\nEquipment: '+_gc('equipment')+'\n\n🎯 CUSTOMISATION\nPriority: '+_gc('priority')+'\nInjury: '+_gc('injury')+'\nCardio: '+_gc('cardio')+'\n\n📏 BODY MEASUREMENTS\nWaist: '+_w+' | Neck: '+_n2+' | Hip: '+_h+'\n━━━━━━━━━━━━━━━━━━\nAmount: ₹149';
+  var _msg='💰 PREMIUM COMBO PLAN — PAYMENT CONFIRMED\n━━━━━━━━━━━━━━━━━━\n👤 CLIENT DETAILS\nName: '+_n+'\nPhone: '+_p+'\nEmail: '+_e+'\nAge: '+_age+'\nWeight: '+_wtDisp+'\nHeight: '+_htDisp+'\nGender: '+_gc('gender')+'\n\n🎯 GOAL & ACTIVITY\nGoal: '+_gc('goal')+'\nActivity: '+_gc('activity')+'\nTraining Days: '+_gc('tdays')+'\n\n🥗 DIET & LIFESTYLE\nDiet: '+_dc()+'\nMeals/Day: '+_gc('meals')+'\nBudget: '+_gc('budget')+'\nCooking Time: '+_gc('cooktime')+'\nHealth: '+_health+'\n\n🏋️ TRAINING SETUP\nLocation: '+_gc('training')+'\nLevel: '+_gc('level')+'\nDuration: '+_gc('duration')+' min\nDays/Week: '+_gc('days')+'\nTiming: '+_gc('timing')+'\nSplit: '+(S.split||'N/A')+'\nEquipment: '+_gc('equipment')+'\n\n🎯 CUSTOMISATION\nPriority: '+_gc('priority')+'\nInjury: '+_gc('injury')+'\nCardio: '+_gc('cardio')+'\n━━━━━━━━━━━━━━━━━━\nAmount: ₹149';
   document.getElementById('qrOverlay').classList.remove('on');
   sendTg('676917032',_msg);
   window.scrollTo({top:0,behavior:'smooth'});
