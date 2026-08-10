@@ -20,26 +20,47 @@
 
   // Normalize display-unit inputs to metric. Returns { weightKg, heightCm } or null.
   F.metric = function (input, units) {
-    var weightKg = null;
-    var heightCm = null;
-
-    if (units === 'imperial') {
-      var wt = parseFloat(input.weightLb);
-      if (isFinite(wt) && wt > 0) weightKg = F.lbToKg(wt);
-      var ft = parseFloat(input.heightFt);
-      var inch = parseFloat(input.heightIn);
-      if (isFinite(ft) && isFinite(inch) && ft >= 0 && inch >= 0) {
-        heightCm = F.inToCm(ft * 12 + inch);
-      }
-    } else {
-      var w = parseFloat(input.weightKg);
-      if (isFinite(w) && w > 0) weightKg = w;
-      var h = parseFloat(input.heightCm);
-      if (isFinite(h) && h > 0) heightCm = h;
-    }
-
+    var weightKg = F.weightFrom(input, units);
+    var heightCm = F.heightFrom(input, units);
     if (!weightKg || !heightCm || heightCm < 50 || heightCm > 260 || weightKg < 20 || weightKg > 350) return null;
     return { weightKg: weightKg, heightCm: heightCm };
+  };
+
+  // Extract only the weight (kg) from inputs, or null when missing.
+  // Per-field unit: value in `input.weight` with unit flag in `input.weightUnit` (lb or kg).
+  // Legacy fallback: `input.weightKg` / `input.weightLb` (used by older callers).
+  F.weightFrom = function (input, units) {
+    if (input && input.weight !== undefined && input.weight !== '') {
+      var w = parseFloat(input.weight);
+      if (isFinite(w) && w > 0) return (input.weightUnit === 'lb') ? F.lbToKg(w) : w;
+      return null;
+    }
+    if (input) {
+      var kg = parseFloat(input.weightKg);
+      if (isFinite(kg) && kg > 0) return kg;
+      var lb = parseFloat(input.weightLb);
+      if (isFinite(lb) && lb > 0) return F.lbToKg(lb);
+    }
+    return null;
+  };
+
+  // Extract only the height (cm) from inputs, or null when missing.
+  // Per-field unit: value in `input.height` with unit flag in `input.heightUnit` (in or cm).
+  // Legacy fallback: `input.heightCm` / `input.heightFt` + `input.heightIn`.
+  F.heightFrom = function (input, units) {
+    if (input && input.height !== undefined && input.height !== '') {
+      var h = parseFloat(input.height);
+      if (isFinite(h) && h > 0) return (input.heightUnit === 'in') ? F.inToCm(h) : h;
+      return null;
+    }
+    if (input) {
+      var cm = parseFloat(input.heightCm);
+      if (isFinite(cm) && cm > 0) return cm;
+      var ft = parseFloat(input.heightFt);
+      var inch = parseFloat(input.heightIn);
+      if (isFinite(ft) && ft >= 0 && isFinite(inch) && inch >= 0) return F.inToCm(ft * 12 + inch);
+    }
+    return null;
   };
 
   /* ---------------- BMI (WHO standard) ---------------- */

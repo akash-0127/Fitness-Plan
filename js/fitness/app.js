@@ -35,9 +35,7 @@
     activity: {
       key: 'activity', label: 'Activity level', type: 'select',
       options: Object.keys(F.ACTIVITY).map(function (k) { return { v: k, label: F.ACTIVITY[k].label }; })
-    },
-    weightKg: { key: 'weightKg', label: 'Weight', type: 'number', min: 20, max: 350, unit: 'kg' },
-    heightCm: { key: 'heightCm', label: 'Height', type: 'number', min: 100, max: 260, unit: 'cm' }
+    }
   };
 
   var SEX = I.sex.options;
@@ -48,10 +46,25 @@
     { v: 'recomp', label: 'Body Recomposition' }
   ];
 
-  function fmtKgLb(kg, units) {
-    return units === 'imperial' ? F.kgToLb(kg) : kg;
+  // Display helpers — results follow the unit the user chose for each field.
+  function wUnit(v) {
+    if (v && v.weightUnit === 'lb') return 'lb';
+    if (v && v.heightUnit === 'in') return 'lb';
+    return 'kg';
   }
-  function kgUnit(units) { return units === 'imperial' ? 'lb' : 'kg'; }
+  function hUnit(v) {
+    if (v && v.heightUnit === 'in') return 'in';
+    if (v && v.weightUnit === 'lb') return 'in';
+    return 'cm';
+  }
+  function fmtW(v, kg, d) {
+    d = d === undefined ? 1 : d;
+    return wUnit(v) === 'lb' ? F.fmt(F.kgToLb(kg), d) : F.fmt(kg, d);
+  }
+  function fmtH(v, cm, d) {
+    d = d === undefined ? 1 : d;
+    return hUnit(v) === 'in' ? F.fmt(cm / 2.54, d) : F.fmt(cm, d);
+  }
 
   /* ================= tool registry ================= */
 
@@ -72,13 +85,13 @@
       var bmi = F.bmi(m.weightKg, m.heightCm);
       var cat = F.bmiCategory(bmi);
       var rng = F.healthyWeightRange(m.heightCm);
-      var lo = F.round(fmtKgLb(rng[0], units), 0), hi = F.round(fmtKgLb(rng[1], units), 0);
+      var lo = fmtW(v, rng[0], 0), hi = fmtW(v, rng[1], 0);
       return {
         main: { value: F.fmt(bmi, 1), label: cat.label, tone: cat.tone },
         stats: [
-          { label: 'Healthy weight range', value: lo + ' – ' + hi + ' ' + kgUnit(units) },
+          { label: 'Healthy weight range', value: lo + ' – ' + hi + ' ' + wUnit(v) },
           { label: 'Weight status', value: cat.label, tone: cat.tone },
-          { label: 'Height', value: F.metric_ ? '—' : (units === 'imperial' ? F.fmt(m.heightCm / 2.54, 1) + ' in' : F.fmt(m.heightCm, 0) + ' cm') }
+          { label: 'Height', value: fmtH(v, m.heightCm, 0) + ' ' + hUnit(v) }
         ],
         gauge: {
           min: 15, max: 40, value: bmi, unit: 'BMI',
@@ -91,7 +104,7 @@
         explanation: 'BMI is a simple height-to-weight ratio used by the WHO to screen for weight categories. It does not directly measure body fat, so athletes with high muscle mass may read "overweight" while remaining lean.',
         tips: [
           'Use waist-to-height and body fat tools alongside BMI for a fuller picture.',
-          'A healthy range for your height is ' + lo + '–' + hi + ' ' + kgUnit(units) + '.',
+          'A healthy range for your height is ' + lo + '–' + hi + ' ' + wUnit(v) + '.',
           'Aim to lose or gain weight gradually with an adjustable diet plan.'
         ],
         recommend: recommendFor('body')
@@ -113,7 +126,7 @@
         main: { value: F.fmt(bmr, 0) + ' kcal', label: 'resting calories per day' },
         stats: [
           { label: 'Per kg bodyweight', value: F.fmt(bmr / m.weightKg, 1) + ' kcal' },
-          { label: 'Body weight', value: F.fmt(fmtKgLb(m.weightKg, units), 1) + ' ' + kgUnit(units) }
+          { label: 'Body weight', value: fmtW(v, m.weightKg, 1) + ' ' + wUnit(v) }
         ],
         formula: 'BMR = 10×' + F.fmt(m.weightKg, 0) + ' + 6.25×' + F.fmt(m.heightCm, 0) + ' − 5×' + age + (sex === 'female' ? ' − 161' : ' + 5'),
         explanation: 'BMR is the energy your body needs at complete rest to keep organs functioning. It is the baseline your daily calorie target is built from — you should rarely eat below your BMR.',
@@ -169,7 +182,7 @@
     ],
     calc: function (v, units) {
       var m = F.metric(v, units);
-      var inPerUnit = units === 'imperial' ? 1 : 1 / 2.54;
+      var inPerUnit = v.measureUnit === 'in' ? 1 : 1 / 2.54;
       var waist = parseFloat(v.waist) * inPerUnit;
       var neck = parseFloat(v.neck) * inPerUnit;
       var heightIn = m.heightCm / 2.54;
@@ -185,8 +198,8 @@
         main: { value: F.fmt(bf, 1) + '%', label: 'estimated body fat', tone: cat.tone },
         stats: [
           { label: 'Category', value: cat.label, tone: cat.tone },
-          { label: 'Fat mass', value: F.fmt(fmtKgLb(fatMass, units), 1) + ' ' + kgUnit(units) },
-          { label: 'Lean mass', value: F.fmt(fmtKgLb(lbm, units), 1) + ' ' + kgUnit(units) }
+          { label: 'Fat mass', value: fmtW(v, fatMass, 1) + ' ' + wUnit(v) },
+          { label: 'Lean mass', value: fmtW(v, lbm, 1) + ' ' + wUnit(v) }
         ],
         gauge: {
           min: 3, max: 45, value: bf, unit: '%',
@@ -213,23 +226,23 @@
     formula: 'LBM = weight × (1 − body fat %)',
     inputs: [I.weight, { key: 'bodyFat', label: 'Body fat', type: 'number', min: 2, max: 60, unit: '%' }],
     calc: function (v, units) {
-      var m = F.metric(v, units);
+      var w = F.weightFrom(v, units);
       var bf = parseFloat(v.bodyFat);
-      if (!m || !isFinite(bf)) return { error: 'Enter a valid weight and body fat.' };
-      var lbm = F.lbm(m.weightKg, bf);
-      var fatMass = m.weightKg - lbm;
+      if (!w || !isFinite(bf)) return { error: 'Enter a valid weight and body fat.' };
+      var lbm = F.lbm(w, bf);
+      var fatMass = w - lbm;
       return {
-        main: { value: F.fmt(fmtKgLb(lbm, units), 1) + ' ' + kgUnit(units), label: 'lean body mass' },
+        main: { value: fmtW(v, lbm, 1) + ' ' + wUnit(v), label: 'lean body mass' },
         stats: [
-          { label: 'Fat mass', value: F.fmt(fmtKgLb(fatMass, units), 1) + ' ' + kgUnit(units) },
+          { label: 'Fat mass', value: fmtW(v, fatMass, 1) + ' ' + wUnit(v) },
           { label: 'Body fat', value: F.fmt(bf, 1) + '%' },
-          { label: 'Total weight', value: F.fmt(fmtKgLb(m.weightKg, units), 1) + ' ' + kgUnit(units) }
+          { label: 'Total weight', value: fmtW(v, w, 1) + ' ' + wUnit(v) }
         ],
         bars: [
-          { label: 'Lean mass', pct: Math.round((lbm / m.weightKg) * 100), color: 'var(--accent)' },
-          { label: 'Fat mass', pct: Math.round((fatMass / m.weightKg) * 100), color: 'var(--orange)' }
+          { label: 'Lean mass', pct: Math.round((lbm / w) * 100), color: 'var(--accent)' },
+          { label: 'Fat mass', pct: Math.round((fatMass / w) * 100), color: 'var(--orange)' }
         ],
-        formula: 'LBM = ' + F.fmt(m.weightKg, 0) + ' × (1 − ' + F.fmt(bf, 0) + '%) = ' + F.fmt(fmtKgLb(lbm, units), 1) + ' ' + kgUnit(units),
+        formula: 'LBM = ' + F.fmt(w, 0) + ' × (1 − ' + F.fmt(bf, 0) + '%) = ' + fmtW(v, lbm, 1) + ' ' + wUnit(v),
         explanation: 'Lean body mass is everything except fat: muscle, bones, organs and water. Preserving LBM while losing weight is the key to a healthy recomposition.',
         tips: [
           'High protein (1.6–2.2 g/kg) protects LBM during a deficit.',
@@ -258,7 +271,7 @@
         main: { value: F.fmt(ffmi, 2), label: note, tone: adj >= 23 ? 'gold' : adj >= 20 ? 'green' : 'blue' },
         stats: [
           { label: 'Adjusted FFMI (1.8 m)', value: F.fmt(adj, 2) },
-          { label: 'Lean body mass', value: F.fmt(fmtKgLb(lbm, units), 1) + ' ' + kgUnit(units) },
+          { label: 'Lean body mass', value: fmtW(v, lbm, 1) + ' ' + wUnit(v) },
           { label: 'Body fat', value: F.fmt(bf, 1) + '%' }
         ],
         formula: 'FFMI = ' + F.fmt(lbm, 1) + ' ÷ ' + F.fmt(m.heightCm / 100, 2) + '² = ' + F.fmt(ffmi, 2),
@@ -279,22 +292,22 @@
     formula: 'Devine: 50 + 2.3·(in − 60) male · 45.5 + 2.3·(in − 60) female',
     inputs: [I.height, I.sex],
     calc: function (v, units) {
-      var m = F.metric(v, units);
-      if (!m) return { error: 'Enter a valid height.' };
-      var inches = m.heightCm / 2.54;
+      var h = F.heightFrom(v, units);
+      if (!h) return { error: 'Enter a valid height.' };
+      var inches = h / 2.54;
       var idealKg = F.devineIdeal(v.sex, inches);
-      var rng = F.healthyWeightRange(m.heightCm);
+      var rng = F.healthyWeightRange(h);
       return {
-        main: { value: F.fmt(fmtKgLb(idealKg, units), 0) + ' ' + kgUnit(units), label: 'Devine ideal weight' },
+        main: { value: fmtW(v, idealKg, 0) + ' ' + wUnit(v), label: 'Devine ideal weight' },
         stats: [
-          { label: 'Healthy BMI range', value: F.fmt(fmtKgLb(rng[0], units), 0) + ' – ' + F.fmt(fmtKgLb(rng[1], units), 0) + ' ' + kgUnit(units) },
+          { label: 'Healthy BMI range', value: fmtW(v, rng[0], 0) + ' – ' + fmtW(v, rng[1], 0) + ' ' + wUnit(v) },
           { label: 'Sex formula', value: v.sex === 'female' ? 'Female base 45.5 kg' : 'Male base 50 kg' }
         ],
         gauge: {
           min: 0, max: 1, value: 0, unit: '', zones: [],
-          range: { lo: fmtKgLb(rng[0], units), hi: fmtKgLb(rng[1], units) }
+          range: { lo: fmtW(v, rng[0], 0), hi: fmtW(v, rng[1], 0) }
         },
-        formula: 'Devine = ' + (v.sex === 'female' ? '45.5' : '50') + ' + 2.3 × (' + F.fmt(inches, 0) + ' − 60) = ' + F.fmt(fmtKgLb(idealKg, units), 0),
+        formula: 'Devine = ' + (v.sex === 'female' ? '45.5' : '50') + ' + 2.3 × (' + F.fmt(inches, 0) + ' − 60) = ' + fmtW(v, idealKg, 0),
         explanation: 'The Devine formula gives a single "ideal" weight while the healthy BMI range (18.5–24.9) is a broader, healthier target. Most people are better served by a target within the range than a single number.',
         tips: [
           'Pick a target inside the healthy range based on your build.',
@@ -312,15 +325,15 @@
     formula: 'BMI 18.5–24.9 × height (m)² — WHO',
     inputs: [I.height],
     calc: function (v, units) {
-      var m = F.metric(v, units);
-      if (!m) return { error: 'Enter a valid height.' };
-      var rng = F.healthyWeightRange(m.heightCm);
+      var h = F.heightFrom(v, units);
+      if (!h) return { error: 'Enter a valid height.' };
+      var rng = F.healthyWeightRange(h);
       return {
-        main: { value: F.fmt(fmtKgLb(rng[0], units), 0) + ' – ' + F.fmt(fmtKgLb(rng[1], units), 0) + ' ' + kgUnit(units), label: 'healthy weight range' },
+        main: { value: fmtW(v, rng[0], 0) + ' – ' + fmtW(v, rng[1], 0) + ' ' + wUnit(v), label: 'healthy weight range' },
         stats: [
-          { label: 'Lower bound (BMI 18.5)', value: F.fmt(fmtKgLb(rng[0], units), 0) + ' ' + kgUnit(units) },
-          { label: 'Upper bound (BMI 24.9)', value: F.fmt(fmtKgLb(rng[1], units), 0) + ' ' + kgUnit(units) },
-          { label: 'Height', value: units === 'imperial' ? F.fmt(m.heightCm / 2.54, 1) + ' in' : F.fmt(m.heightCm, 0) + ' cm' }
+          { label: 'Lower bound (BMI 18.5)', value: fmtW(v, rng[0], 0) + ' ' + wUnit(v) },
+          { label: 'Upper bound (BMI 24.9)', value: fmtW(v, rng[1], 0) + ' ' + wUnit(v) },
+          { label: 'Height', value: fmtH(v, h, 0) + ' ' + hUnit(v) }
         ],
         formula: 'Range = 18.5 × h² to 24.9 × h²',
         explanation: 'A healthy weight for your height keeps BMI in the 18.5–24.9 band associated with the lowest disease risk. Staying in range, wherever you sit within it, is what matters most.',
@@ -349,7 +362,8 @@
         var m = F.metric(v, units);
         var age = parseFloat(v.age);
         if (!m || !isFinite(age)) return { error: 'Enter valid inputs.' };
-        var tW = parseFloat(v.targetWeight) * (units === 'imperial' ? F.KG_PER_LB : 1);
+        var tW = parseFloat(v.targetWeight);
+        if (v.weightUnit === 'lb') tW = F.lbToKg(tW);
         var weeks = parseFloat(v.weeks);
         if (!isFinite(tW) || !isFinite(weeks)) return { error: 'Enter a target weight and target time.' };
         if (direction === 'loss' && tW >= m.weightKg) return { error: 'For weight loss, the target weight must be below your current weight.' };
@@ -449,8 +463,9 @@
       { key: 'daily', label: 'Daily deficit / surplus', type: 'number', min: 50, max: 2500, unit: 'kcal' }
     ],
     calc: function (v, units) {
-      var cur = parseFloat(v.weightKg) * (units === 'imperial' ? F.KG_PER_LB : 1);
-      var tgt = parseFloat(v.targetWeight) * (units === 'imperial' ? F.KG_PER_LB : 1);
+      var cur = parseFloat(v.weightKg);
+      var tgt = parseFloat(v.targetWeight);
+      if (v.weightUnit === 'lb') { cur = F.lbToKg(cur); tgt = F.lbToKg(tgt); }
       var per = parseFloat(v.daily);
       if (!isFinite(cur) || !isFinite(tgt) || !isFinite(per) || cur === tgt) return { error: 'Enter a valid current weight, target weight and daily kcal.' };
       if (Math.abs(tgt - cur) * 7700 < per) return { error: 'That target is reached almost immediately — check your inputs.' };
@@ -515,20 +530,16 @@
     id: 'protein', cat: 'nutrition', icon: 'egg', featured: false,
     name: 'Protein Calculator', desc: 'Daily protein for your goal, per kg bodyweight.',
     formula: '1.2–2.2 g/kg depending on goal (accepted sports-nutrition range)',
-    inputs: [I.weight, { key: 'goal', label: 'Goal', type: 'select', options: GOAL_OPTIONS }, { key: 'calories', label: 'Daily calories (optional)', type: 'number', min: 800, max: 6000, unit: 'kcal', optional: true }],
+    inputs: [I.weight, { key: 'goal', label: 'Goal', type: 'select', options: GOAL_OPTIONS }],
     calc: function (v, units) {
-      var m = F.metric(v, units);
-      if (!m) return { error: 'Enter a valid weight.' };
-      var r = F.proteinRange(m.weightKg, v.goal || 'maintenance');
+      var w = F.weightFrom(v, units);
+      if (!w) return { error: 'Enter a valid weight.' };
+      var r = F.proteinRange(w, v.goal || 'maintenance');
       var lo = F.fmt(r[0], 0), hi = F.fmt(r[1], 0);
       var stats = [
         { label: 'Range', value: lo + ' – ' + hi + ' g' },
         { label: 'Per kg bodyweight', value: (F.PROTEIN_PER_KG[v.goal] || F.PROTEIN_PER_KG.maintenance).join('–') + ' g/kg' }
       ];
-      if (isFinite(parseFloat(v.calories))) {
-        var c = parseFloat(v.calories);
-        stats.push({ label: 'Calories from protein', value: F.fmt(r[0] * 4 / c * 100, 0) + '–' + F.fmt(r[1] * 4 / c * 100, 0) + '% of ' + F.fmt(c, 0) + ' kcal' });
-      }
       return {
         main: { value: lo + ' – ' + hi + ' g', label: 'protein per day' },
         stats: stats,
@@ -611,10 +622,10 @@
     formula: 'Protein by goal · Fat 20–35% · Carbs = remainder',
     inputs: [I.weight, { key: 'calories', label: 'Daily calories', type: 'number', min: 800, max: 6000, unit: 'kcal' }, { key: 'goal', label: 'Goal', type: 'select', options: GOAL_OPTIONS }],
     calc: function (v, units) {
-      var m = F.metric(v, units);
+      var w = F.weightFrom(v, units);
       var c = parseFloat(v.calories);
-      if (!m || !isFinite(c)) return { error: 'Enter a valid weight and calorie target.' };
-      var s = F.macroSplit({ calories: c, weightKg: m.weightKg, goal: v.goal || 'maintenance' });
+      if (!w || !isFinite(c)) return { error: 'Enter a valid weight and calorie target.' };
+      var s = F.macroSplit({ calories: c, weightKg: w, goal: v.goal || 'maintenance' });
       var goalNames = { maintenance: 'Maintenance', 'fat-loss': 'Fat Loss', 'muscle-gain': 'Muscle Gain', recomp: 'Recomposition' };
       return {
         main: { value: F.fmt(c, 0) + ' kcal', label: goalNames[v.goal] + ' split' },
@@ -648,16 +659,16 @@
     formula: '30–35 ml per kg bodyweight + 350 ml per 30 min exercise',
     inputs: [I.weight, { key: 'exercise', label: 'Exercise per day', type: 'number', min: 0, max: 480, unit: 'minutes', optional: true }],
     calc: function (v, units) {
-      var m = F.metric(v, units);
-      if (!m) return { error: 'Enter a valid weight.' };
-      var w = F.waterIntake(m.weightKg, isFinite(parseFloat(v.exercise)) ? parseFloat(v.exercise) : 0);
+      var wkg = F.weightFrom(v, units);
+      if (!wkg) return { error: 'Enter a valid weight.' };
+      var w = F.waterIntake(wkg, isFinite(parseFloat(v.exercise)) ? parseFloat(v.exercise) : 0);
       var stats = [{ label: 'Base target', value: w.low + ' – ' + w.high + ' ml' }];
       if (w.extra > 0) stats.push({ label: 'With ' + v.exercise + ' min exercise', value: F.fmt(w.high + w.extra, 0) + ' ml' });
       stats.push({ label: 'Per kg bodyweight', value: '30–35 ml' });
       return {
         main: { value: F.fmt(w.low, 0) + ' – ' + F.fmt(w.high + w.extra, 0) + ' ml', label: 'water per day' },
         stats: stats,
-        formula: 'Base = ' + F.fmt(m.weightKg, 0) + ' kg × 30–35 ml' + (w.extra ? ' + ' + w.extra + ' ml (exercise)' : ''),
+        formula: 'Base = ' + F.fmt(wkg, 0) + ' kg × 30–35 ml' + (w.extra ? ' + ' + w.extra + ' ml (exercise)' : ''),
         explanation: 'Water supports digestion, performance and recovery. The 30–35 ml/kg guideline covers most adults; add ~350 ml per 30 minutes of exercise.',
         tips: [
           'Keep a bottle visible and sip through the day rather than chugging.',
@@ -708,11 +719,11 @@
       { key: 'minutes', label: 'Duration', type: 'number', min: 1, max: 1440, unit: 'minutes' }
     ],
     calc: function (v, units) {
-      var m = F.metric(v, units);
+      var w = F.weightFrom(v, units);
       var min = parseFloat(v.minutes);
       var meta = activityMeta(v.activity);
-      if (!m || !isFinite(min) || !meta) return { error: 'Enter a valid weight, activity and duration.' };
-      var kcal = F.metCalories(meta.met, m.weightKg, min);
+      if (!w || !isFinite(min) || !meta) return { error: 'Enter a valid weight, activity and duration.' };
+      var kcal = F.metCalories(meta.met, w, min);
       return {
         main: { value: F.fmt(kcal, 0) + ' kcal', label: 'estimated burn' },
         stats: [
@@ -720,7 +731,7 @@
           { label: 'Estimated intensity', value: F.activityIntensity(meta.met) },
           { label: 'Duration', value: min + ' min' }
         ],
-        formula: 'kcal = ' + meta.met + ' × ' + F.fmt(m.weightKg, 0) + ' kg × ' + F.fmt(min / 60, 2) + ' h = ' + F.fmt(kcal, 0),
+        formula: 'kcal = ' + meta.met + ' × ' + F.fmt(w, 0) + ' kg × ' + F.fmt(min / 60, 2) + ' h = ' + F.fmt(kcal, 0),
         explanation: 'METs are standardised effort units. Your burn depends on bodyweight and effort — the harder the effort and the heavier you are, the more you burn.',
         tips: [
           'Interval work raises total calories via recovery burn too.',
@@ -743,11 +754,11 @@
         { key: 'minutes', label: 'Duration', type: 'number', min: 1, max: 1440, unit: 'minutes' }
       ],
       calc: function (v, units) {
-        var m = F.metric(v, units);
+        var w = F.weightFrom(v, units);
         var min = parseFloat(v.minutes);
         var met = metMap[v.intensity];
-        if (!m || !isFinite(min) || !met) return { error: 'Enter a valid weight, intensity and duration.' };
-        var kcal = F.metCalories(met, m.weightKg, min);
+        if (!w || !isFinite(min) || !met) return { error: 'Enter a valid weight, intensity and duration.' };
+        var kcal = F.metCalories(met, w, min);
         var level = { light: 'Light effort', moderate: 'Moderate effort', vigorous: 'Vigorous effort' };
         return {
           main: { value: F.fmt(kcal, 0) + ' kcal', label: 'estimated burn' },
@@ -756,7 +767,7 @@
             { label: 'Intensity', value: level[v.intensity] },
             { label: 'Duration', value: min + ' min' }
           ],
-          formula: 'kcal = ' + met + ' × ' + F.fmt(m.weightKg, 0) + ' kg × ' + F.fmt(min / 60, 2) + ' h = ' + F.fmt(kcal, 0),
+          formula: 'kcal = ' + met + ' × ' + F.fmt(w, 0) + ' kg × ' + F.fmt(min / 60, 2) + ' h = ' + F.fmt(kcal, 0),
           explanation: 'Calories burned ' + label + ' scale with effort (MET) and bodyweight. Moderate-to-vigorous sessions earn the most meaningful burn per minute.',
           tips: [
             'Shoes and form matter more than pace for joints.',
@@ -822,11 +833,11 @@
       { key: 'weightLifted', label: 'Weight lifted', type: 'number', min: 1, max: 500, unit: 'auto', goal: true },
       { key: 'reps', label: 'Reps completed', type: 'number', min: 1, max: 12, unit: 'reps' }
     ],
-    calc: function (v, units) {
-      var w = parseFloat(v.weightLifted) * (units === 'imperial' ? 1 : 1);
+    calc: function (v) {
+      var w = parseFloat(v.weightLifted);
       var reps = parseFloat(v.reps);
       if (!isFinite(w) || !isFinite(reps)) return { error: 'Enter a valid weight and reps.' };
-      var unit = v.weightLiftedUnit === 'lb' ? 'lb' : (units === 'imperial' ? 'lb' : 'kg');
+      var unit = wUnit(v);
       var one = F.epley1rm(w, reps);
       var stats = [];
       [3, 5, 8, 10].forEach(function (r) {
@@ -880,9 +891,11 @@
     id: 'bmi-guide', cat: 'health', icon: 'book-open', featured: false,
     name: 'Healthy BMI Guide', desc: 'WHO BMI categories and what they mean.',
     formula: 'WHO classification (kg/m²)',
-    inputs: [I.weightKg, I.heightCm],
+    inputs: [I.weight, I.height],
     calc: function (v) {
-      var w = parseFloat(v.weightKg), h = parseFloat(v.heightCm);
+      var m = F.metric(v);
+      var w = m ? m.weightKg : NaN;
+      var h = m ? m.heightCm : NaN;
       var table = {
         cols: ['Category', 'BMI', 'Risk'],
         rows: [
@@ -902,7 +915,7 @@
         main: main,
         stats: [
           { label: 'Healthy range', value: '18.5 – 24.9' },
-          { label: 'Your inputs', value: (isFinite(w) ? w + ' kg · ' : '') + (isFinite(h) ? h + ' cm' : 'not provided') }
+          { label: 'Your inputs', value: (isFinite(w) ? fmtW(v, w, 1) + ' ' + wUnit(v) + ' · ' : '') + (isFinite(h) ? fmtH(v, h, 1) + ' ' + hUnit(v) : 'not provided') }
         ],
         table: table,
         formula: 'BMI = weight (kg) ÷ height (m)²',
@@ -961,7 +974,6 @@
     cat: 'all',
     query: '',
     activeTool: null,
-    units: 'metric',
     foods: [],
     foodLoaded: false,
     meal: []
@@ -1011,7 +1023,7 @@
     var list = visibleTools();
     if (list.length === 0) {
       grid.innerHTML = '<div class="empty-state"><i data-lucide="search-x"></i><p>No tools match "' + esc(state.query) + '". Try "calorie", "protein" or "bmi".</p></div>';
-      lucide && lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
       return;
     }
     grid.innerHTML = list.map(function (t) {
@@ -1055,35 +1067,17 @@
 
   /* ================= workspace ================= */
 
-  function hasBodyInputs(tool) {
-    return tool.inputs.some(function (i) { return i.kind === 'weight' || i.kind === 'height'; });
-  }
-
-  function inputForMetric(i) {
-    if (i.kind === 'weight') return { key: 'weightKg', label: 'Weight', min: 20, max: 350, unit: 'kg' };
-    if (i.kind === 'height') return { key: 'heightCm', label: 'Height', min: 100, max: 260, unit: 'cm' };
-    return null;
-  }
-  function inputForImperial(i) {
-    if (i.kind === 'weight') return { key: 'weightLb', label: 'Weight', min: 44, max: 770, unit: 'lb' };
-    if (i.kind === 'height') return { key: 'heightFt', label: 'Height', min: 3, max: 8, unit: 'ft' };
-    return null;
-  }
-
   function expandInputs(tool) {
     var out = [];
     tool.inputs.forEach(function (i) {
-      if (i.kind === 'weight' || i.kind === 'height') {
-        var met = inputForMetric(i);
-        var imp = inputForImperial(i);
-        if (i.kind === 'weight') {
-          out.push({ key: 'weightKg', label: met.label, type: 'number', min: met.min, max: met.max, unit: 'kg', units: 'metric' });
-          out.push({ key: 'weightLb', label: imp.label, type: 'number', min: imp.min, max: imp.max, unit: 'lb', units: 'imperial' });
-        } else {
-          out.push({ key: 'heightCm', label: met.label, type: 'number', min: met.min, max: met.max, unit: 'cm', units: 'metric' });
-          out.push({ key: 'heightFt', label: 'Height (feet)', type: 'number', min: 3, max: 8, unit: 'ft', units: 'imperial' });
-          out.push({ key: 'heightIn', label: 'Height (inches)', type: 'number', min: 0, max: 11, unit: 'in', units: 'imperial' });
-        }
+      if (i.kind === 'weight') {
+        out.push({ key: 'weight', label: 'Weight', type: 'number', min: 20, max: 350, unitKey: 'weightUnit' });
+      } else if (i.kind === 'height') {
+        out.push({ key: 'height', label: 'Height', type: 'number', min: 100, max: 260, unitKey: 'heightUnit' });
+      } else if (i.unit === 'auto' && i.goal) {
+        out.push({ key: i.key, label: i.label, type: 'number', min: i.min, max: i.max, unitKey: 'weightUnit' });
+      } else if (i.unit === 'auto' && i.measure) {
+        out.push({ key: i.key, label: i.label, type: 'number', min: i.min, max: i.max, unitKey: 'measureUnit', showIf: i.showIf });
       } else {
         out.push(i);
       }
@@ -1096,10 +1090,36 @@
     return true;
   }
 
+  // Per-field min/max that follow the unit currently chosen next to the value.
+  function unitMinMax(i, v) {
+    if (i.unitKey === 'weightUnit') return wUnit(v) === 'lb' ? { min: 44, max: 770 } : { min: 20, max: 350 };
+    if (i.unitKey === 'heightUnit') return hUnit(v) === 'in' ? { min: 39, max: 102 } : { min: 100, max: 260 };
+    if (i.unitKey === 'measureUnit') return (v && v.measureUnit === 'in') ? { min: 4, max: 118 } : { min: 10, max: 300 };
+    return { min: i.min, max: i.max };
+  }
+
+  function unitSelect(i, prev) {
+    var isW = i.unitKey === 'weightUnit';
+    var opts = isW ? [['kg', 'kg'], ['lb', 'lb']] : [['cm', 'cm'], ['in', 'in']];
+    var cur = prev[i.unitKey] || (isW ? 'kg' : 'cm');
+    return '<select class="in-unit in-unit-sel" data-key="' + esc(i.unitKey) + '" aria-label="Unit">' +
+      opts.map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === cur ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') +
+      '</select>';
+  }
+
   function renderWorkspace(tool) {
     var ws = el('workspace');
     var expand = expandInputs(tool);
-    var hasUnits = hasBodyInputs(tool);
+
+    // Preserve current values across re-renders (unit select, sex change).
+    var prev = {};
+    var prevForm = ws.querySelector('.ws-form');
+    if (prevForm) {
+      prevForm.querySelectorAll('[data-key]').forEach(function (n) {
+        prev[n.getAttribute('data-key')] = n.value;
+      });
+    }
+    var val = function (key) { return prev[key] !== undefined ? prev[key] : ''; };
 
     var html = '<div class="workspace-inner">';
     html += '<div class="workspace-head">';
@@ -1108,28 +1128,21 @@
     html += '<span class="tool-icon big"><i data-lucide="' + esc(tool.icon) + '"></i></span>';
     html += '<div><h2 class="ws-title">' + esc(tool.name) + '</h2><p class="ws-formula">' + esc(tool.formula) + '</p></div>';
     html += '</div>';
-    if (hasUnits) {
-      html += '<div class="unit-toggle" role="group" aria-label="Units">' +
-        '<button type="button" class="unit-btn' + (state.units === 'metric' ? ' active' : '') + '" data-unit="metric">Metric</button>' +
-        '<button type="button" class="unit-btn' + (state.units === 'imperial' ? ' active' : '') + '" data-unit="imperial">Imperial</button>' +
-        '</div>';
-    }
     html += '</div>';
 
     html += '<form class="ws-form" novalidate>';
     expand.forEach(function (i) {
-      if (i.units && i.units !== state.units) return;
-      if (i.optional === false || i.optional) { /* still render */ }
       html += '<div class="fg" data-fg="' + esc(i.key) + '">';
       html += '<label for="in_' + esc(i.key) + '">' + esc(i.label) + (i.optional ? ' <span class="opt">(optional)</span>' : '') + '</label>';
       if (i.type === 'select') {
         html += '<select id="in_' + esc(i.key) + '" data-key="' + esc(i.key) + '" class="ws-select">' +
-          i.options.map(function (o) { return '<option value="' + esc(o.v) + '">' + esc(o.label) + '</option>'; }).join('') +
+          i.options.map(function (o) { return '<option value="' + esc(o.v) + '"' + (String(o.v) === String(val(i.key)) ? ' selected' : '') + '>' + esc(o.label) + '</option>'; }).join('') +
           '</select>';
       } else {
+        var mm = i.unitKey ? unitMinMax(i, prev) : { min: i.min, max: i.max };
         html += '<div class="in-row">' +
-          '<input id="in_' + esc(i.key) + '" type="number" inputmode="decimal" data-key="' + esc(i.key) + '" min="' + (i.min !== undefined ? i.min : '') + '" max="' + (i.max !== undefined ? i.max : '') + '" placeholder="0" />' +
-          (i.unit ? '<span class="in-unit">' + esc(i.unit) + '</span>' : '') +
+          '<input id="in_' + esc(i.key) + '" type="number" inputmode="decimal" data-key="' + esc(i.key) + '" min="' + (mm.min !== undefined ? mm.min : '') + '" max="' + (mm.max !== undefined ? mm.max : '') + '" placeholder="0" value="' + esc(val(i.key)) + '" />' +
+          (i.unitKey ? unitSelect(i, prev) : (i.unit ? '<span class="in-unit">' + esc(i.unit) + '</span>' : '')) +
           '</div>';
       }
       html += '<span class="ferr"></span>';
@@ -1143,19 +1156,23 @@
     html += '<div class="result-dashboard" id="resultDash" hidden></div>';
     html += '</div>';
     ws.innerHTML = html;
+
+    // Hide fields that depend on the current sex selection (e.g. hip).
+    var sexSel = ws.querySelector('[data-key="sex"]');
+    var sexVal = sexSel ? sexSel.value : val('sex');
+    expand.forEach(function (i) {
+      if (!i.showIf) return;
+      var fg = ws.querySelector('[data-fg="' + i.key + '"]');
+      if (fg) fg.hidden = !showIf(i, sexVal);
+    });
+
     if (window.lucide) lucide.createIcons();
 
     ws.querySelectorAll('[data-action="close"]').forEach(function (b) {
       b.addEventListener('click', function () { closeWorkspace(); });
     });
     ws.querySelectorAll('[data-action="reset"]').forEach(function (b) {
-      b.addEventListener('click', function () { el('resultDash').hidden = true; renderWorkspace(tool); });
-    });
-    ws.querySelectorAll('.unit-btn').forEach(function (b) {
-      b.addEventListener('click', function () {
-        state.units = b.getAttribute('data-unit');
-        renderWorkspace(tool);
-      });
+      b.addEventListener('click', function () { ws.innerHTML = ''; renderWorkspace(tool); });
     });
     ws.querySelector('.ws-form').addEventListener('submit', function (e) {
       e.preventDefault();
@@ -1197,21 +1214,18 @@
     // expand inputs again for validation metadata
     var expand = expandInputs(tool);
     expand.forEach(function (i) {
-      if (i.units && i.units !== state.units) return;
+      if (!showIf(i, values.sex)) return;
       if (i.type === 'number' && !i.optional) {
         var raw = values[i.key];
         var num = parseFloat(raw);
+        var mm = unitMinMax(i, values);
         if (raw === '' || raw === undefined) errors[i.key] = i.label + ' is required';
         else if (!isFinite(num)) errors[i.key] = 'Enter a valid number';
-        else if (i.min !== undefined && num < i.min) errors[i.key] = 'Minimum is ' + i.min;
-        else if (i.max !== undefined && num > i.max) errors[i.key] = 'Maximum is ' + i.max;
+        else if (mm.min !== undefined && num < mm.min) errors[i.key] = 'Minimum is ' + mm.min;
+        else if (mm.max !== undefined && num > mm.max) errors[i.key] = 'Maximum is ' + mm.max;
       }
       if (i.type === 'select' && !values[i.key]) errors[i.key] = 'Select ' + i.label.toLowerCase();
     });
-
-    // required weight/height checks
-    if (!values.weightKg && !values.weightLb) errors.weightKg = 'Weight is required';
-    if (!values.heightCm && !(values.heightFt && values.heightIn)) errors.heightCm = 'Height is required';
 
     form.querySelectorAll('[data-key]').forEach(function (n) {
       var k = n.getAttribute('data-key');
@@ -1234,7 +1248,7 @@
 
     var result;
     try {
-      result = tool.calc(values, state.units);
+      result = tool.calc(values);
     } catch (err) {
       result = { error: 'Something went wrong computing this result. Please check your inputs.' };
     }
@@ -1255,11 +1269,11 @@
     dash.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
-  function gaugeHTML(g) {
+  function gaugeHTML(g, v) {
     if (!g) return '';
     if (g.range) {
       // static healthy range card for ideal weight
-      return '<div class="gauge-static"><span class="t-green">Healthy range:</span> ' + F.fmt(g.range.lo, 0) + ' – ' + F.fmt(g.range.hi, 0) + ' ' + kgUnit(state.units) + '</div>';
+      return '<div class="gauge-static"><span class="t-green">Healthy range:</span> ' + F.fmt(g.range.lo, 0) + ' – ' + F.fmt(g.range.hi, 0) + ' ' + (v ? wUnit(v) : 'kg') + '</div>';
     }
     var total = g.max - g.min;
     var zones = (g.zones || []).map(function (z) {
@@ -1339,7 +1353,7 @@
         '</div>';
     }
 
-    html += gaugeHTML(result.gauge);
+    html += gaugeHTML(result.gauge, values);
     html += macrosHTML(result.macros);
     html += barsHTML(result.bars);
     html += statsHTML(result.stats);
@@ -1458,6 +1472,7 @@
 
   function renderFoodDB() {
     var wrap = el('foodTable');
+    if (!wrap) return; // section not present on this page (separate food database page)
     var empty = el('foodEmpty');
     var q = (el('foodSearch').value || '').trim().toLowerCase();
     var filtered = state.foods.filter(function (f) {
@@ -1693,7 +1708,7 @@
       b.addEventListener('click', function () {
         var id = b.getAttribute('data-open-tool');
         if (id === 'meal-builder') { el('meal-builder').scrollIntoView({ behavior: 'smooth' }); }
-        else if (id === 'food-db') { el('food-db').scrollIntoView({ behavior: 'smooth' }); }
+        else if (id === 'food-db') { location.href = 'food-database.html'; }
         else openTool(id);
       });
     });

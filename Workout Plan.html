@@ -416,10 +416,15 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 
 </style>
 <link rel="stylesheet" href="ui-enhancements.css"/>
+<link rel="stylesheet" href="design-system.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
 <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
 <script defer src="ui-enhancements.js"></script>
+<script defer src="design-system.js"></script>
 </head>
 <body>
 
@@ -517,9 +522,9 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
   </div>
 </div>
 
-<div class="wrap">
-<div class="card">
+<div class="wrap" data-ds="stepper">
 
+  <section class="card step on" data-ds-step data-title="Personal Details">
   <!-- PERSONAL -->
   <div class="stitle">&#x1F464; Personal Details</div>
   <div class="row">
@@ -559,7 +564,9 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
       </div>
     </div>
   </div>
+  </section>
 
+  <section class="card step" data-ds-step data-title="Goal &amp; Experience">
   <!-- GOAL + LEVEL -->
   <div class="stitle">&#x1F3AF; Goal &amp; Experience</div>
   <div class="row">
@@ -636,7 +643,9 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
       </div>
     </div>
   </div>
+  </section>
 
+  <section class="card step" data-ds-step data-title="Customisation">
   <!-- CUSTOMISATION -->
   <div class="stitle">&#x1F3AF; Customisation</div>
   <div class="row">
@@ -672,7 +681,9 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
       </div>
     </div>
   </div>
+  </section>
 
+  <section class="card step" data-ds-step data-title="Review &amp; Generate">
   <!-- BMI RESULT -->
   <div id="bmiPanel">
     <div style="font-size:0.67rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:0.75rem">&#x1F4CA; Body Composition Analysis</div>
@@ -714,6 +725,8 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
     <button class="gbtn pbtn" onclick="generate('premium')">&#x2B50; Generate Premium Plan &#x2192;</button>
   </div>
   <p style="font-size:0.68rem;color:var(--muted);margin-top:0.75rem;line-height:1.5">By generating your plan, you acknowledge that this information is intended for educational purposes and does not replace professional medical advice. <a href="disclaimer.html" style="color:var(--accent2);text-decoration:none">Read full disclaimer</a></p>
+  </section>
+
 </div>
 
 <!-- OUTPUT SECTION -->

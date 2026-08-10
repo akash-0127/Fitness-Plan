@@ -535,10 +535,15 @@
   @keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
 </style>
 <link rel="stylesheet" href="ui-enhancements.css"/>
+<link rel="stylesheet" href="design-system.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
 <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
 <script defer src="ui-enhancements.js"></script>
+<script defer src="design-system.js"></script>
 </head>
 <body>
 
@@ -559,42 +564,103 @@
 
 <div class="page-wrap">
 
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-pill">Personalised Fitness Plans</div>
-    <h1>Get Your Custom <em>Nutrition & Workout</em> Plan</h1>
-    <p class="hero-sub">Built for YOUR body, schedule &amp; diet</p>
-    <p class="hero-nogimmick">No generic plans. No guesswork.</p>
-    <button class="hero-cta" id="heroCta" onclick="revealPlans()">Get My Plan &#8594;</button>
-  </div>
+  <!-- GOAL-FIRST HERO -->
+  <section class="goal-hero">
+    <div class="goal-pill">Goal-first fitness planning</div>
+    <h1>What are we working on <em>today?</em></h1>
+    <p class="goal-sub">Pick a goal and get a plan built around your body, schedule and lifestyle — no generic templates, no guesswork.</p>
 
-  <!-- TRUST -->
-  <div class="trust">
-    <div class="trust-item"><div class="trust-dot"></div> 100% personalised</div>
-    <div class="trust-item"><div class="trust-dot"></div> Responds within 24 hrs</div>
-    <div class="trust-item"><div class="trust-dot"></div> Reviewed personally</div>
-  </div>
-
-  <!-- TRANSFORMATION HOOK -->
-  <div class="hook-box">
-    <div class="hook-inner">
-      <p>Most people fail because they follow random YouTube workouts.</p>
-      <p style="margin-bottom:0.5rem;">This plan is built based on:</p>
-      <div class="hook-checks">
-        <div class="hook-check"><span class="tick">&#10003;</span> Your body stats</div>
-        <div class="hook-check"><span class="tick">&#10003;</span> Your lifestyle</div>
-        <div class="hook-check"><span class="tick">&#10003;</span> Your diet preference</div>
-      </div>
-      <div class="hook-result">So you actually see results.</div>
+    <div class="goal-grid">
+      <a class="goal-card" data-goal="lose-fat" href="Meal Plan.html?goal=fatloss">
+        <div class="goal-icon">&#x1F525;</div>
+        <div class="goal-name">Lose Fat</div>
+        <div class="goal-desc">Calorie-smart meal plan plus training to drop body fat.</div>
+        <div class="goal-go">Build plan</div>
+      </a>
+      <a class="goal-card" data-goal="build-muscle" href="Workout Plan.html?goal=muscle">
+        <div class="goal-icon">&#x1F4AA;</div>
+        <div class="goal-name">Build Muscle</div>
+        <div class="goal-desc">Progressive training with protein-focused nutrition.</div>
+        <div class="goal-go">Build plan</div>
+      </a>
+      <a class="goal-card" data-goal="get-stronger" href="Workout Plan.html?goal=strength">
+        <div class="goal-icon">&#x1F3CB;&#xFE0F;</div>
+        <div class="goal-name">Get Stronger</div>
+        <div class="goal-desc">Strength-first program built around your lifts.</div>
+        <div class="goal-go">Build plan</div>
+      </a>
+      <a class="goal-card" data-goal="improve-fitness" href="Combo Plan.html?goal=endurance">
+        <div class="goal-icon">&#x26A1;</div>
+        <div class="goal-name">Improve Fitness</div>
+        <div class="goal-desc">Combined diet and training for all-round health.</div>
+        <div class="goal-go">Build plan</div>
+      </a>
     </div>
+
+    <div class="goal-ask">
+      <div class="ask-label">Or tell us in your own words</div>
+      <div class="ask-row">
+        <input id="goalAskInput" type="text" placeholder="e.g. I want to lose fat and build muscle" aria-label="Describe your goal"/>
+        <button class="ask-btn" type="button" aria-label="Start building your plan">Start &#8594;</button>
+      </div>
+      <div class="ask-hints">
+        <button class="ask-hint" type="button">I want to lose weight</button>
+        <button class="ask-hint" type="button">I want to build muscle</button>
+        <button class="ask-hint" type="button">I want to get stronger</button>
+        <button class="ask-hint" type="button">I want to get fitter</button>
+      </div>
+      <span class="ferr">Hmm, tell us your goal — e.g. &quot;lose fat&quot; or &quot;build muscle&quot;.</span>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <div class="stat-strip">
+    <div class="ss-item"><b class="count-up" data-target="1000" data-suffix="+">0</b>&nbsp;plans generated</div>
+    <div class="ss-item"><b class="count-up" data-target="15" data-suffix="+">0</b>&nbsp;diet types</div>
+    <div class="ss-item"><b>5</b>&nbsp;goal categories</div>
+    <div class="ss-item"><b class="count-up" data-target="100" data-suffix="%">0</b>&nbsp;free forever</div>
   </div>
 
 </div><!-- /page-wrap -->
 
-<!-- REVEAL: Plan Cards -->
-<div class="reveal-wrap" id="revealWrap">
+<!-- POPULAR TOOLS -->
+<section class="popular">
+  <div class="section-head">
+    <div class="section-title">Popular tools</div>
+    <p class="section-sub">Instant calculators — no signup, results right in your browser.</p>
+  </div>
+  <div class="popular-grid">
+    <a class="popular-card" href="fitness-tools.html?tool=bmi">
+      <div class="pop-icon">&#x2696;&#xFE0F;</div>
+      <div class="pop-name">BMI Calculator</div>
+      <div class="pop-desc">See where your weight sits — BMI plus a body-fat estimate.</div>
+      <div class="pop-cta">Calculate BMI</div>
+    </a>
+    <a class="popular-card" href="fitness-tools.html?tool=tdee">
+      <div class="pop-icon">&#x1F525;</div>
+      <div class="pop-name">Calorie Target (TDEE)</div>
+      <div class="pop-desc">Your maintenance, fat-loss and muscle-gain calories.</div>
+      <div class="pop-cta">Calculate calories</div>
+    </a>
+    <a class="popular-card" href="fitness-tools.html?tool=macro-split">
+      <div class="pop-icon">&#x1F969;</div>
+      <div class="pop-name">Macro Split</div>
+      <div class="pop-desc">Protein, carbs and fat grams for your daily target.</div>
+      <div class="pop-cta">Split macros</div>
+    </a>
+    <a class="popular-card" href="fitness-tools.html?tool=one-rep-max">
+      <div class="pop-icon">&#x1F3CB;&#xFE0F;</div>
+      <div class="pop-name">1RM Estimator</div>
+      <div class="pop-desc">Estimate your one-rep max from any set you've hit.</div>
+      <div class="pop-cta">Find my 1RM</div>
+    </a>
+  </div>
+</section>
+
+<!-- FULL PLAN GENERATORS -->
+<div class="reveal-wrap show" id="revealWrap">
   <div class="plan-section" id="planSection">
-    <div class="plan-section-title">Choose your plan</div>
+    <div class="plan-section-title">Or build your full plan</div>
     <div class="plan-cards">
 
       <!-- MEAL PLAN -->
@@ -711,16 +777,6 @@
 </footer>
 
 <script>
-function revealPlans() {
-  const wrap = document.getElementById('revealWrap');
-  const cta = document.getElementById('heroCta');
-  cta.style.display = 'none';
-  wrap.classList.add('show');
-  setTimeout(() => {
-    wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
-}
-
 function toggleTheme(){var h=document.documentElement,c=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',c);localStorage.setItem('theme',c);document.body.style.transition='background 0.4s,color 0.4s';setTimeout(function(){document.body.style.transition=''},500)}
 function goToPlan(url, el) {
   if (el.classList.contains('redirecting')) return;

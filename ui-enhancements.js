@@ -35,6 +35,7 @@
     var elements = Array.prototype.slice.call(document.querySelectorAll(selectors));
     elements.forEach(function (element) {
       if (element.closest('.loading') || element.classList.contains('js-reveal')) return;
+      if (element.closest('[data-ds="stepper"]')) return;
       element.classList.add('js-reveal');
       window.gsap.fromTo(element, { autoAlpha: 0, y: 18 }, {
         autoAlpha: 1, y: 0, duration: .58, ease: 'power2.out',

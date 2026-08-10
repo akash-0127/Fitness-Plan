@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="description" content="Free fitness calculators: BMI, BMR, TDEE, body fat, macros, weight loss & gain planners, calorie burn, pace, 1RM, plus a USDA-backed food database and meal builder."/>
+<meta name="description" content="Free fitness calculators: BMI, BMR, TDEE, body fat, macros, weight loss & gain planners, calorie burn, pace, 1RM, plus a meal builder."/>
 <title>Fitness Tools &amp; Calculators — FitPlan</title>
 <script>!function(){var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme:light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t)}();</script>
 <style>
@@ -219,12 +219,6 @@
   .ws-title-row { display: flex; align-items: center; gap: 12px; }
   .ws-title { font-size: 1.25rem; font-weight: 800; }
   .ws-formula { font-size: 0.78rem; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; margin-top: 2px; }
-  .unit-toggle { display: flex; gap: 4px; background: var(--card2); border: 1px solid var(--border); border-radius: 999px; padding: 3px; }
-  .unit-btn {
-    border: none; background: transparent; color: var(--muted); font-size: 0.78rem;
-    font-weight: 700; padding: 6px 16px; border-radius: 999px; cursor: pointer; transition: all 0.2s;
-  }
-  .unit-btn.active { background: var(--accent); color: #fff; }
 
   .ws-form { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
   .fg { display: flex; flex-direction: column; gap: 5px; }
@@ -244,6 +238,8 @@
     color: var(--muted); background: var(--card2); border: 1.5px solid var(--border); border-left: none;
     border-radius: 0 10px 10px 0; white-space: nowrap;
   }
+  .in-unit.in-unit-sel { cursor: pointer; padding: 0 6px; min-width: 50px; text-align: center; color: var(--accent); outline: none; }
+  .in-unit.in-unit-sel:hover { background: var(--accent); color: #fff; }
   .ferr { font-size: 0.7rem; color: var(--red); min-height: 0; }
   .ferr.on { min-height: 14px; }
   .ws-actions { display: flex; gap: 10px; margin-top: 4px; grid-column: 1 / -1; }
@@ -445,10 +441,15 @@
   }
 </style>
 <link rel="stylesheet" href="ui-enhancements.css"/>
+<link rel="stylesheet" href="design-system.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
 <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
 <script defer src="ui-enhancements.js"></script>
+<script defer src="design-system.js"></script>
 </head>
 <body>
 
@@ -459,6 +460,7 @@
     <a href="Workout Plan.html">Workout Plans</a>
     <a href="Meal Plan.html">Diet Plans</a>
     <a href="fitness-tools.html" class="active">Fitness Tools</a>
+    <a href="food-database.html">Food Database</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
   </div>
@@ -484,7 +486,7 @@
       <button class="sc" data-open-tool="macro-split">Macros</button>
       <button class="sc" data-open-tool="weight-loss">Weight Loss</button>
       <button class="sc" data-open-tool="one-rep-max">1RM</button>
-      <button class="sc" data-open-tool="food-db">Food Database</button>
+      <button class="sc" onclick="location.href='food-database.html'">Food Database</button>
       <button class="sc" data-open-tool="meal-builder">Meal Builder</button>
     </div>
   </section>
@@ -509,34 +511,11 @@
   <!-- WORKSPACE -->
   <section class="ft-section" id="workspace" hidden></section>
 
-  <!-- FOOD DB -->
-  <section class="ft-section food-section" id="food-db">
-    <div class="section-head">
-      <div class="section-title">Food Nutrition Database</div>
-      <p class="section-sub">USDA-backed per-100g nutrition for everyday foods. Change the serving to recalculate each row.</p>
-    </div>
-    <div class="food-search">
-      <input id="foodSearch" type="search" placeholder="Search foods…" aria-label="Search foods"/>
-    </div>
-    <p class="food-meta" id="foodMeta">Loading nutrition data…</p>
-    <div class="table-wrap">
-      <table class="food-table">
-        <thead>
-          <tr>
-            <th>Food</th><th>Serving</th><th>Cal</th><th>Protein</th><th>Carbs</th><th>Fat</th><th>Fiber</th><th>Sugar</th><th>Sodium</th><th>Chol.</th>
-          </tr>
-        </thead>
-        <tbody id="foodTable"></tbody>
-      </table>
-      <div class="empty" id="foodEmpty" hidden><i data-lucide="search-x"></i><p>No foods match that search.</p></div>
-    </div>
-  </section>
-
   <!-- MEAL BUILDER -->
   <section class="ft-section meal-section" id="meal-builder">
     <div class="section-head">
       <div class="section-title">Meal Builder</div>
-      <p class="section-sub">Build a meal from the food database and watch the totals add up. Your meal is saved automatically in this browser.</p>
+      <p class="section-sub">Build a meal from the food database and watch the totals add up. Your meal is saved automatically in this browser. Need the full database? Open the <a href="food-database.html" style="color:var(--accent);font-weight:700">Food Nutrition Database</a>.</p>
     </div>
     <div class="meal-picker" id="mealPicker">
       <input id="mealSearch" type="search" placeholder="Search a food to add — e.g. chicken, oats, paneer, banana" aria-label="Add food to meal"/>
@@ -558,6 +537,7 @@
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
     <a href="fitness-tools.html">Fitness Tools</a>
+    <a href="food-database.html">Food Database</a>
     <a href="disclaimer.html">Medical Disclaimer</a>
     <a href="privacy.html">Privacy Policy</a>
     <a href="terms.html">Terms &amp; Conditions</a>

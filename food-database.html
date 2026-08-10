@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Free USDA-backed food nutrition database: calories, protein, carbs, fat, fiber, sugar, sodium and cholesterol per serving for everyday foods."/>
+<title>Food Nutrition Database — FitPlan</title>
+<script>!function(){var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme:light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t)}();</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  :root {
+    --green:#059669;--gl:#ecfdf5;--orange:#ea580c;--ol:#fff7ed;
+    --blue:#2563eb;--bl:#eff6ff;--red:#dc2626;--rl:#fef2f2;
+    --gold:#d97706;--goldl:#fffbeb;--bg:#f8fafc;--card:#ffffff;
+    --card2:#f8fafc;--card-hover:#f6f8fb;
+    --text:#0f172a;--muted:#64748b;--border:rgba(15,23,42,0.08);
+    --border-solid:#e2e8f0;--r:20px;--rs:14px;
+    --accent:#0891b2;--accent2:#0e7490;--accent-dim:rgba(8,145,178,0.06);
+    --success:#059669;--purple:#0891b2;--cyan:#0891b2;
+    --shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.03);
+    --shadow-hover:0 8px 30px rgba(0,0,0,0.07),0 2px 8px rgba(0,0,0,0.04);
+    --radius-btn:14px;
+    --gold-dim:rgba(217,119,6,0.08);--purple-dim:rgba(8,145,178,0.08);
+    --radius:20px;--radius-sm:14px;
+  }
+  [data-theme="dark"] {
+    --green:#7eca5a;--gl:#1a2e12;--orange:#f97316;--ol:#2a1a08;
+    --blue:#3b82f6;--bl:#0c1a2e;--red:#ef4444;--rl:#2a0c0c;
+    --gold:#fbbf24;--goldl:#2a2008;--bg:#0f172a;--card:#1e293b;
+    --card2:#1e293b;--card-hover:#253348;
+    --text:#f2f2f5;--muted:#94a3b8;--border:rgba(255,255,255,0.08);
+    --border-solid:#1e293b;--r:20px;--rs:14px;
+    --accent:#22d3ee;--accent2:#67e8f9;--accent-dim:rgba(34,211,238,0.12);
+    --success:#34d399;--purple:#67e8f9;--cyan:#22d3ee;
+    --shadow:0 1px 3px rgba(0,0,0,0.2),0 4px 12px rgba(0,0,0,0.15);
+    --shadow-hover:0 8px 32px rgba(0,0,0,0.3),0 2px 8px rgba(0,0,0,0.2);
+    --radius-btn:14px;
+    --gold-dim:rgba(251,191,36,0.12);--purple-dim:rgba(103,232,249,0.12);
+    --radius:20px;--radius-sm:14px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  @keyframes fadeInUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+  @keyframes breathe { 0%,100% { transform:scale(1); } 50% { transform:scale(1.03); } }
+
+  .portal-nav{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 2rem;background:var(--card);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200}
+  .portal-nav .nav-brand{font-size:1.1rem;font-weight:800;color:var(--accent);text-decoration:none}
+  .portal-nav .nav-links{display:flex;gap:1.5rem;align-items:center}
+  .portal-nav .nav-links a{color:var(--muted);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}
+  .portal-nav .nav-links a:hover,.portal-nav .nav-links a.active{color:var(--accent)}
+  .theme-toggle{background:none;border:1.5px solid var(--border);cursor:pointer;padding:5px;border-radius:50%;color:var(--muted);transition:all 0.3s;display:flex;align-items:center;justify-content:center;width:32px;height:32px}
+  .theme-toggle:hover{background:var(--border);color:var(--accent);border-color:var(--accent)}
+  .theme-toggle svg{width:16px;height:16px}
+  [data-theme="dark"] .sun-i{display:block}
+  [data-theme="dark"] .moon-i{display:none}
+  [data-theme="light"] .sun-i{display:none}
+  [data-theme="light"] .moon-i{display:block}
+
+  .page-wrap { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 1rem; }
+
+  .bg-glow {
+    position: fixed; top: -20%; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(8,145,178,0.06) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+    animation: breathe 8s ease-in-out infinite;
+  }
+
+  .hero { text-align: center; padding: 3rem 0.5rem 1.5rem; animation: fadeInUp 0.7s ease-out 0.1s both; }
+  .hero-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(8,145,178,0.08); border: 1px solid rgba(8,145,178,0.2);
+    color: var(--accent); font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 6px 18px; border-radius: 999px; margin-bottom: 1.25rem;
+    animation: float 3s ease-in-out infinite;
+  }
+  .hero h1 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.8px; margin-bottom: 0.7rem; }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero-sub { font-size: 1.05rem; color: var(--muted); max-width: 640px; margin: 0 auto; }
+
+  .food-section {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow);
+    animation: fadeInUp 0.6s ease-out both;
+  }
+  .section-title {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 0.9rem; display: flex; align-items: center; gap: 10px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .section-sub { font-size: 0.9rem; color: var(--muted); margin-top: -0.5rem; margin-bottom: 1rem; }
+
+  .food-search input {
+    width: 100%; max-width: 420px; padding: 10px 16px; font-size: 0.9rem;
+    border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: var(--card2);
+    color: var(--text); outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .food-search input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(8,145,178,0.1); }
+  .food-meta { font-size: 0.72rem; color: var(--muted); margin: 0.75rem 0 0.5rem; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+  .food-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 760px; }
+  .food-table th {
+    text-align: left; padding: 9px 12px; font-size: 0.68rem; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--muted); background: var(--card2); border-bottom: 1px solid var(--border);
+    position: sticky; top: 0;
+  }
+  .food-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); }
+  .food-table tr:last-child td { border-bottom: none; }
+  .food-table .food-name { font-weight: 700; }
+  .food-table .num { text-align: right; font-variant-numeric: tabular-nums; color: var(--text); }
+  .food-serving { display: flex; gap: 6px; }
+  .f-qty { width: 56px; padding: 6px 8px; font-size: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--card2); color: var(--text); }
+  .f-unit { padding: 6px 8px; font-size: 0.78rem; border: 1px solid var(--border); border-radius: 8px; background: var(--card2); color: var(--text); max-width: 140px; }
+  .empty { text-align: center; padding: 2rem 1rem; color: var(--muted); }
+  .empty i { width: 30px; height: 30px; margin-bottom: 6px; }
+  .empty p { font-size: 0.85rem; }
+
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px; margin: 1.25rem 0;
+    color: var(--accent); text-decoration: none; font-size: 0.85rem; font-weight: 700;
+  }
+  .back-link:hover { text-decoration: underline; }
+
+  .footer{text-align:center;padding:3rem 2rem 2.5rem;margin-top:2rem;border-top:1px solid var(--border);position:relative;z-index:1}
+  .footer-nav{display:flex;justify-content:center;flex-wrap:wrap;gap:0.4rem 1.25rem;margin-bottom:1.75rem}
+  .footer-nav a{color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:500;transition:color 0.2s}
+  .footer-nav a:hover{color:var(--accent)}
+  .footer-copy{font-size:0.75rem;color:var(--muted);line-height:1.6}
+  .footer-copy a{color:var(--accent2);text-decoration:none;font-weight:500}
+  .footer-copy a:hover{text-decoration:underline}
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::selection { background: rgba(8,145,178,0.25); color: var(--text); }
+
+  @media (max-width: 700px) {
+    .food-section { padding: 1.1rem; }
+    .food-table th:nth-child(7), .food-table td:nth-child(7),
+    .food-table th:nth-child(8), .food-table td:nth-child(8),
+    .food-table th:nth-child(9), .food-table td:nth-child(9),
+    .food-table th:nth-child(10), .food-table td:nth-child(10) { display: none; }
+    .footer{padding:2rem 1.25rem;margin-top:1.5rem}
+    .footer-nav{gap:0.3rem 0.8rem}
+  }
+</style>
+<link rel="stylesheet" href="ui-enhancements.css"/>
+<link rel="stylesheet" href="design-system.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+<script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script defer src="ui-enhancements.js"></script>
+<script defer src="design-system.js"></script>
+</head>
+<body>
+
+<nav class="portal-nav">
+  <a href="index.html" class="nav-brand">FitPlan</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="Workout Plan.html">Workout Plans</a>
+    <a href="Meal Plan.html">Diet Plans</a>
+    <a href="fitness-tools.html">Fitness Tools</a>
+    <a href="food-database.html" class="active">Food Database</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </div>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg class="sun-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="moon-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+</nav>
+
+<div class="bg-glow"></div>
+
+<div class="page-wrap">
+
+  <section class="hero" id="hero">
+    <div class="hero-pill">Free Nutrition Reference</div>
+    <h1>Food <em>Nutrition</em> Database</h1>
+    <p class="hero-sub">USDA-backed per-100g nutrition for everyday foods. Change the serving to recalculate each row.</p>
+  </section>
+
+  <section class="food-section" id="food-db">
+    <div class="section-head">
+      <div class="section-title">Food Nutrition Database</div>
+      <p class="section-sub">Nutrition per 100g by default — adjust the serving size per row to see exact values for your portion.</p>
+    </div>
+    <div class="food-search">
+      <input id="foodSearch" type="search" placeholder="Search foods…" aria-label="Search foods"/>
+    </div>
+    <p class="food-meta" id="foodMeta">Loading nutrition data…</p>
+    <div class="table-wrap">
+      <table class="food-table">
+        <thead>
+          <tr>
+            <th>Food</th><th>Serving</th><th>Cal</th><th>Protein</th><th>Carbs</th><th>Fat</th><th>Fiber</th><th>Sugar</th><th>Sodium</th><th>Chol.</th>
+          </tr>
+        </thead>
+        <tbody id="foodTable"></tbody>
+      </table>
+      <div class="empty" id="foodEmpty" hidden><i data-lucide="search-x"></i><p>No foods match that search.</p></div>
+    </div>
+  </section>
+
+  <a class="back-link" href="fitness-tools.html"><i data-lucide="arrow-left" style="width:15px;height:15px"></i> Back to Fitness Tools</a>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-nav">
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="fitness-tools.html">Fitness Tools</a>
+    <a href="food-database.html">Food Database</a>
+    <a href="disclaimer.html">Medical Disclaimer</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms &amp; Conditions</a>
+  </div>
+  <div class="footer-copy">
+    Designed by <a href="https://instagram.com/akash.liftsup" target="_blank">Akash Singh</a> · © 2026 FitPlan · All plans are for educational purposes
+  </div>
+</footer>
+
+<script src="js/fitness/formulas.js"></script>
+<script src="js/fitness/food-db.js"></script>
+<script>
+function toggleTheme(){var h=document.documentElement,c=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',c);localStorage.setItem('theme',c);document.body.style.transition='background 0.4s,color 0.4s';setTimeout(function(){document.body.style.transition=''},500)}
+</script>
+</body>
+</html>
