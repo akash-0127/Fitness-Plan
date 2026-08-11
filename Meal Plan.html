@@ -484,7 +484,7 @@ body::after{
 }
 .topnav,.header,.footer,.success-banner{position:relative;z-index:1}
 
-h1,h2,h3,.ptitle,.stitle,.sc-v,.bmi-v,.calcalc-val,.macro-head,.stat-v,.tl-name,.prem-price,.wstep,.recap-v,.recap-t{font-family:'Space Grotesk','Inter',sans-serif;letter-spacing:-0.02em}
+h1,h2,h3,.ptitle,.stitle,.sc-v,.bmi-v,.calcalc-val,.macro-head,.stat-v,.tl-name,.prem-price,.wstep{font-family:'Space Grotesk','Inter',sans-serif;letter-spacing:-0.02em}
 
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 ::selection{background:rgba(96,165,250,0.4);color:var(--text)}
@@ -599,15 +599,6 @@ input[type=text]:focus,input[type=number]:focus,input[type=tel]:focus,input[type
 .step-nav{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border)}
 .btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border-solid)}
 .btn-ghost:hover{background:var(--card2);color:var(--text);border-color:var(--accent);transform:none;box-shadow:none}
-
-/* ── RECAP ── */
-.recap{background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.2rem;margin-bottom:1.25rem}
-.recap-t{font-size:0.7rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent2);margin-bottom:0.8rem;display:flex;align-items:center;gap:8px}
-.recap-t::before{content:"";width:18px;height:4px;border-radius:99px;background:repeating-linear-gradient(90deg,var(--accent) 0 5px,transparent 5px 9px)}
-.recap-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
-.recap-i{background:var(--card);border:1px solid var(--border-solid);border-radius:12px;padding:8px 12px}
-.recap-l{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:700}
-.recap-v{font-size:0.78rem;font-weight:700;color:var(--text);margin-top:2px}
 
 /* ── palette catch-up: residual cyan/gold rules in base sheet ── */
 .ai-step.active .ai-step-dot{box-shadow:0 0 8px rgba(96,165,250,0.65)}
@@ -732,7 +723,7 @@ input[type=text]:focus,input[type=number]:focus,input[type=tel]:focus,input[type
         t.classList.toggle('on', k === i);
         t.setAttribute('aria-selected', k === i ? 'true' : 'false');
       });
-      if (i === stepsDef.length - 1) refreshRecap();
+      if (i === stepsDef.length - 1) updateLocks();
     }
 
     /* 5 ── per-step required gating (reuses existing error spans) */
@@ -746,6 +737,15 @@ input[type=text]:focus,input[type=number]:focus,input[type=tel]:focus,input[type
         if (f) f.classList.remove('on');
       });
     });
+    function stepOk(i){
+      if (i !== 0) return true;
+      var ok = true;
+      required.forEach(function(pair){
+        var el = document.getElementById(pair[0]);
+        if (el && !String(el.value).trim()) ok = false;
+      });
+      return ok;
+    }
     function validateStep(i){
       if (i !== 0) return true;
       var ok = true, first = null;
@@ -763,6 +763,12 @@ input[type=text]:focus,input[type=number]:focus,input[type=tel]:focus,input[type
       if (first){ first.focus(); first.scrollIntoView({ behavior:'smooth', block:'center' }); }
       return ok;
     }
+    function updateLocks(){
+      steps.forEach(function(s, k){
+        var nx = s.querySelector('[data-nav="next"]');
+        if (nx) nx.classList.toggle('locked', !stepOk(k));
+      });
+    }
 
     steps.forEach(function(s){
       var nx = s.querySelector('[data-nav="next"]');
@@ -772,53 +778,20 @@ input[type=text]:focus,input[type=number]:focus,input[type=tel]:focus,input[type
     });
     wsteps.addEventListener('click', function(ev){
       var t = ev.target.closest ? ev.target.closest('.wstep') : null;
-      if (t) goTo(+t.getAttribute('data-goto'));
+      if (!t) return;
+      var i = +t.getAttribute('data-goto');
+      if (i > curStep){
+        for (var k = curStep; k < i; k++){
+          if (!validateStep(k)) return;
+        }
+      }
+      goTo(i);
     });
+    document.addEventListener('input', updateLocks);
+    document.addEventListener('click', updateLocks);
+    updateLocks();
 
-    /* 6 ── review recap */
-    var recap = document.createElement('div');
-    recap.className = 'recap'; recap.id = 'recap';
-    var recapT = document.createElement('div'); recapT.className = 'recap-t'; recapT.textContent = 'Review your selections';
-    var recapG = document.createElement('div'); recapG.className = 'recap-g'; recapG.id = 'recapGrid'; recapG.setAttribute('aria-live','polite');
-    recap.appendChild(recapT); recap.appendChild(recapG);
-    var reviewStep = steps[stepsDef.length - 1];
-    var firstSec = reviewStep.querySelector('.sec');
-    if (firstSec) firstSec.insertBefore(recap, firstSec.firstChild);
-
-    function pick(g){ var el = qs('.chip.on[data-g="' + g + '"]'); return el ? el.textContent.replace(/\s+/g,' ').trim() : null; }
-    function refreshRecap(){
-      var rows = [];
-      function add(l, v){ if (v != null && String(v).trim() !== '' && String(v).trim() !== 'None') rows.push({ l:l, v:esc(v) }); }
-      add('Client', qs('#cName') && qs('#cName').value);
-      add('Phone', qs('#phone') && qs('#phone').value);
-      add('Email', qs('#email') && qs('#email').value);
-      add('Age', qs('#age') && qs('#age').value);
-      var wu = qs('#weightUnit .unit-btn.active');
-      add('Weight', (qs('#wt') ? qs('#wt').value || '\u2014' : '') + ' ' + (wu ? wu.textContent.trim() : 'kg'));
-      var hu = qs('#heightUnit .unit-btn.active');
-      add('Height', (qs('#ht') ? qs('#ht').value || '\u2014' : '') + ' ' + (hu ? hu.textContent.trim() : 'cm'));
-      add('Gender', pick('gender'));
-      add('Goal', pick('goal'));
-      add('Activity', pick('activity'));
-      add('Training Days', pick('tdays'));
-      add('Timing', pick('timing'));
-      add('Meals / Day', pick('meals'));
-      add('Budget', pick('budget'));
-      add('Cooking Time', pick('cooktime'));
-      add('Stress', pick('stress'));
-      var diet = qs('.dchip.on');
-      add('Diet', diet && diet.firstChild ? diet.firstChild.nodeValue : null);
-      var health = qsa('#healthChips .hchip.on').map(function(h){ return h.textContent.trim(); }).join(', ');
-      add('Health', health);
-      recapG.innerHTML = rows.map(function(r){
-        return '<div class="recap-i"><div class="recap-l">' + r.l + '</div><div class="recap-v">' + r.v + '</div></div>';
-      }).join('');
-    }
-
-    /* 7 ── live recap refresh + loading brand + print bar placement */
-    document.addEventListener('click', function(){ if (curStep === stepsDef.length - 1) refreshRecap(); });
-    document.addEventListener('input', function(){ if (curStep === stepsDef.length - 1) refreshRecap(); });
-
+    /* 6 ── loading brand + print bar placement */
     var loading = document.getElementById('loading');
     if (loading){
       var brand = document.createElement('div');

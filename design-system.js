@@ -211,13 +211,6 @@
     wsteps.appendChild(seg); wsteps.appendChild(lbls);
     root.insertBefore(wsteps, root.firstChild);
 
-    /* recap */
-    var recap = document.createElement('div');
-    recap.className = 'recap';
-    recap.innerHTML = '<div class="recap-t">Your selections</div><div class="recap-g" aria-live="polite"></div>';
-    wsteps.insertAdjacentElement('afterend', recap);
-    var recapGrid = $('.recap-g', recap);
-
     /* nav */
     var nav = document.createElement('nav');
     nav.className = 'step-nav';
@@ -230,25 +223,57 @@
     nav.appendChild(prev); nav.appendChild(next);
     root.appendChild(nav);
 
-    function stepValue(s) {
-      var chips = $$('.chip.on', s).map(function (c) {
-        return c.textContent.replace(/[^\w\s%.\-]/g, '').trim();
-      }).filter(Boolean);
-      if (chips.length) return chips.join(' \u00b7 ');
-      var inp = s.querySelector('[data-recap]');
-      return inp && inp.value ? inp.value.trim() : '\u2014';
+    /* ── step gating: fill the current step before moving forward ── */
+    function visibleFields(s) {
+      var out = [];
+      $$('input, select, textarea', s).forEach(function (el) {
+        if (el.type === 'hidden') return;
+        if (el.closest && el.closest('[style*="display:none"], [style*="display: none"]')) return;
+        out.push(el);
+      });
+      return out;
     }
 
-    function refreshRecap() {
-      recapGrid.innerHTML = steps.map(function (s) {
-        var v = stepValue(s).replace(/</g, '&lt;');
-        return '<div class="recap-i"><div class="recap-l">' + (s.getAttribute('data-title') || 'Step') + '</div><div class="recap-v">' + v + '</div></div>';
-      }).join('');
+    function firstIncomplete(s) {
+      var fields = visibleFields(s);
+      for (var i = 0; i < fields.length; i++) {
+        if (!String(fields[i].value || '').trim()) return fields[i];
+      }
+      var groups = $$('.chips, .dchips', s);
+      for (var j = 0; j < groups.length; j++) {
+        if (!$$('.chip.on, .dchip.on', groups[j]).length) return groups[j];
+      }
+      return null;
+    }
+
+    function isStepComplete(s) { return !firstIncomplete(s); }
+
+    function showStepErrors(s) {
+      var bad = firstIncomplete(s);
+      if (!bad) return;
+      if (bad.focus) bad.focus({ preventScroll: true });
+      if (bad.scrollIntoView) bad.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      visibleFields(s).forEach(function (el) {
+        el.classList.toggle('err', !String(el.value || '').trim());
+      });
+    }
+
+    function canAdvance(fromIdx, toIdx) {
+      for (var k = fromIdx; k < toIdx; k++) {
+        if (!isStepComplete(steps[k])) { showStepErrors(steps[k]); return false; }
+      }
+      return true;
+    }
+
+    function updateNext() {
+      next.classList.toggle('locked', !isStepComplete(steps[cur]));
+      next.style.display = cur === steps.length - 1 ? 'none' : '';
     }
 
     function go(i, manual) {
       i = Math.max(0, Math.min(steps.length - 1, i));
       if (i === cur && !manual) return;
+      if (i > cur && !canAdvance(cur, i)) return;
       cur = i;
       steps.forEach(function (s, k) {
         s.classList.toggle('step', k !== cur);
@@ -260,8 +285,7 @@
         t.setAttribute('aria-selected', k === cur ? 'true' : 'false');
       });
       segs.forEach(function (s2, k) { s2.classList.toggle('on', k <= cur); });
-      next.style.display = cur === steps.length - 1 ? 'none' : '';
-      refreshRecap();
+      updateNext();
       if (manual && !reduceMotion) {
         var top = root.getBoundingClientRect().top + window.pageYOffset - 80;
         if (window.pageYOffset > top - 40) window.scrollTo({ top: top, behavior: 'smooth' });
@@ -269,8 +293,10 @@
     }
 
     document.addEventListener('click', function (e) {
-      if (e.target && e.target.closest && e.target.closest('.chip')) refreshRecap();
+      if (e.target && e.target.closest && (e.target.closest('.chip') || e.target.closest('.dchip'))) updateNext();
     });
+    document.addEventListener('input', updateNext);
+    document.addEventListener('change', updateNext);
 
     DS.goStep = function (i) { go(i, true); };
     DS.nextStep = function () { go(cur + 1); };
