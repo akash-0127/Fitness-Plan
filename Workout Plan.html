@@ -428,19 +428,23 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 </head>
 <body>
 
-<nav class="topnav">
-  <a href="index.html" class="back-link">← Back to FitPlan</a>
-  <div class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="fitness-tools.html">Fitness Tools</a>
-    <a href="blogs.html">Blogs</a>
-    <a href="about.html">About</a>
-    <a href="contact.html">Contact</a>
-    <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
-      <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z" fill="currentColor"/></svg>
-    </button>
+<nav class="hamburger-nav">
+  <button class="menu-btn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <div class="nav-backdrop"></div>
+  <div class="nav-drawer">
+    <div class="drawer-head">
+      <a href="index.html" class="nav-brand">FitPlan</a>
+      <button class="drawer-close" aria-label="Close menu">✕</button>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="fitness-tools.html">Fitness Tools</a>
+      <a href="blogs.html">Blogs</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <button class="dt-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg class="sun-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="moon-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
   </div>
-
 </nav>
 
 <div class="loading" id="loading">

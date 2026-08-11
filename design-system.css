@@ -546,8 +546,49 @@ input.err{border-color:var(--red);background:var(--rl)!important}
   .ask-row .ask-btn{padding:13px 18px;width:100%}
   .hero-shortcuts{gap:6px}
 }
+/* ── HAMBURGER MENU (left) ── */
+.menu-btn{position:fixed;top:0.9rem;left:1rem;z-index:300;width:44px;height:44px;border-radius:12px;border:1px solid var(--border-solid);background:var(--card);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .3s,opacity .3s}
+.menu-btn span{display:block;width:20px;height:2px;border-radius:99px;background:var(--text);transition:transform .25s,opacity .2s}
+.menu-btn:hover{border-color:var(--accent);box-shadow:var(--shadow-hover)}
+.menu-btn:active{transform:scale(0.94)}
+.menu-btn.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.menu-btn.open span:nth-child(2){opacity:0}
+.menu-btn.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.menu-btn.menu-hidden{transform:translateY(-90px);opacity:0;pointer-events:none}
+
+.header{padding-left:5.25rem!important}
+
+.nav-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .3s;z-index:310}
+.nav-backdrop.open{opacity:1;pointer-events:auto}
+
+.nav-drawer{position:fixed;top:0;left:0;bottom:0;width:300px;max-width:86vw;background:var(--card);border-right:1px solid var(--border-solid);box-shadow:var(--shadow-hover);transform:translateX(-105%);transition:transform .32s cubic-bezier(0.32,0.72,0,1);z-index:320;display:flex;flex-direction:column;padding:1.3rem 1.4rem;overflow-y:auto}
+.nav-drawer.open{transform:translateX(0)}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.6rem}
+.nav-drawer .nav-brand{font-size:1.2rem;font-weight:800;color:var(--accent);text-decoration:none}
+.drawer-close{width:34px;height:34px;border-radius:10px;border:1px solid var(--border-solid);background:var(--card2);color:var(--muted);cursor:pointer;font-size:1rem;line-height:1;display:flex;align-items:center;justify-content:center;transition:color .2s,border-color .2s}
+.drawer-close:hover{color:var(--text);border-color:var(--accent)}
+.nav-drawer .nav-links{display:flex;flex-direction:column;gap:0.35rem;flex:1}
+.nav-drawer .nav-links a{color:var(--muted);text-decoration:none;font-size:0.95rem;font-weight:600;padding:0.65rem 0.9rem;border-radius:10px;transition:background .2s,color .2s}
+.nav-drawer .nav-links a:hover{background:var(--accent-dim);color:var(--accent)}
+.nav-drawer .nav-links a.active{background:var(--accent-dim);color:var(--accent);font-weight:700}
+.nav-drawer .dt-toggle{margin-top:1.4rem;width:38px;height:38px;border-radius:12px;border:1px solid var(--border-solid);background:var(--card2);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color .3s,border-color .3s,transform .3s}
+.nav-drawer .dt-toggle:hover{color:var(--accent);border-color:var(--accent);transform:rotate(20deg)}
+.nav-drawer .dt-toggle svg{width:17px;height:17px}
+.dt-toggle .sun-i{display:none}
+.dt-toggle .moon-i{display:none}
+[data-theme="dark"] .dt-toggle .sun-i{display:block}
+[data-theme="dark"] .dt-toggle .moon-i{display:none}
+[data-theme="light"] .dt-toggle .sun-i{display:none}
+[data-theme="light"] .dt-toggle .moon-i{display:block}
+
+@media(max-width:640px){
+  .menu-btn{top:0.65rem;left:0.75rem;width:40px;height:40px}
+  .header{padding-left:4rem!important}
+}
+
 @media print{
   .wsteps,.step,.step-nav,#wsteps,.portal-nav,.topnav{display:none!important}
+  .menu-btn,.nav-backdrop,.nav-drawer{display:none!important}
   body::before,body::after,.bg-glow{display:none!important}
   .output{background:#fff!important;box-shadow:none;border:none}
 }

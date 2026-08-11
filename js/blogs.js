@@ -89,7 +89,6 @@
     if (metaEl) {
       if (active === 'All') {
         var lbl = posts.length + (posts.length === 1 ? ' post' : ' posts');
-        if (posts.length) lbl += ' — latest 2 per category';
         metaEl.textContent = lbl;
       } else {
         var n = sorted.filter(function (p) { return p.category === active; }).length;

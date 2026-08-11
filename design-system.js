@@ -307,9 +307,57 @@
     go(0, true);
   }
 
+  /* ── HAMBURGER MENU ── */
+  function initMenu() {
+    var btn = $('.menu-btn');
+    var drawer = $('.nav-drawer');
+    if (!btn || !drawer) return;
+    var backdrop = $('.nav-backdrop') || document.createElement('div');
+    if (!backdrop.parentNode) {
+      backdrop.className = 'nav-backdrop';
+      document.body.appendChild(backdrop);
+    }
+    function setOpen(open) {
+      btn.classList.toggle('open', open);
+      drawer.classList.toggle('open', open);
+      backdrop.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) {
+        document.body.style.overflow = 'hidden';
+        var f = drawer.querySelector('a, button');
+        if (f && f.focus) f.focus();
+      } else {
+        document.body.style.overflow = '';
+        btn.focus();
+      }
+    }
+    btn.addEventListener('click', function () {
+      setOpen(!drawer.classList.contains('open'));
+    });
+    backdrop.addEventListener('click', function () { setOpen(false); });
+    drawer.addEventListener('click', function (e) {
+      if (e.target && e.target.closest && e.target.closest('a')) setOpen(false);
+      if (e.target && (e.target.closest && e.target.closest('.drawer-close'))) setOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && drawer.classList.contains('open')) setOpen(false);
+    });
+
+    /* auto-hide when scrolling down, reappear when scrolling up */
+    var lastY = window.pageYOffset || 0;
+    window.addEventListener('scroll', function () {
+      var y = window.pageYOffset || 0;
+      if (!drawer.classList.contains('open')) {
+        btn.classList.toggle('menu-hidden', y > 48 && y > lastY);
+      }
+      lastY = y;
+    }, { passive: true });
+  }
+
   /* ── INIT ── */
   function init() {
     ensureTheme();
+    initMenu();
     initGoalCards();
     initAskBar();
     initQueryParams();
