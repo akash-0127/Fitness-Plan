@@ -551,9 +551,8 @@
   <a href="index.html" class="nav-brand">FitPlan</a>
   <div class="nav-links">
     <a href="index.html" class="active">Home</a>
-    <a href="Workout Plan.html">Workout Plans</a>
-    <a href="Meal Plan.html">Diet Plans</a>
     <a href="fitness-tools.html">Fitness Tools</a>
+    <a href="blogs.html">Blogs</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
   </div>
@@ -570,98 +569,10 @@
     <h1>What are we working on <em>today?</em></h1>
     <p class="goal-sub">Pick a goal and get a plan built around your body, schedule and lifestyle — no generic templates, no guesswork.</p>
 
-    <div class="goal-grid">
-      <a class="goal-card" data-goal="lose-fat" href="Meal Plan.html?goal=fatloss">
-        <div class="goal-icon">&#x1F525;</div>
-        <div class="goal-name">Lose Fat</div>
-        <div class="goal-desc">Calorie-smart meal plan plus training to drop body fat.</div>
-        <div class="goal-go">Build plan</div>
-      </a>
-      <a class="goal-card" data-goal="build-muscle" href="Workout Plan.html?goal=muscle">
-        <div class="goal-icon">&#x1F4AA;</div>
-        <div class="goal-name">Build Muscle</div>
-        <div class="goal-desc">Progressive training with protein-focused nutrition.</div>
-        <div class="goal-go">Build plan</div>
-      </a>
-      <a class="goal-card" data-goal="get-stronger" href="Workout Plan.html?goal=strength">
-        <div class="goal-icon">&#x1F3CB;&#xFE0F;</div>
-        <div class="goal-name">Get Stronger</div>
-        <div class="goal-desc">Strength-first program built around your lifts.</div>
-        <div class="goal-go">Build plan</div>
-      </a>
-      <a class="goal-card" data-goal="improve-fitness" href="Combo Plan.html?goal=endurance">
-        <div class="goal-icon">&#x26A1;</div>
-        <div class="goal-name">Improve Fitness</div>
-        <div class="goal-desc">Combined diet and training for all-round health.</div>
-        <div class="goal-go">Build plan</div>
-      </a>
-    </div>
-
-    <div class="goal-ask">
-      <div class="ask-label">Or tell us in your own words</div>
-      <div class="ask-row">
-        <input id="goalAskInput" type="text" placeholder="e.g. I want to lose fat and build muscle" aria-label="Describe your goal"/>
-        <button class="ask-btn" type="button" aria-label="Start building your plan">Start &#8594;</button>
-      </div>
-      <div class="ask-hints">
-        <button class="ask-hint" type="button">I want to lose weight</button>
-        <button class="ask-hint" type="button">I want to build muscle</button>
-        <button class="ask-hint" type="button">I want to get stronger</button>
-        <button class="ask-hint" type="button">I want to get fitter</button>
-      </div>
-      <span class="ferr">Hmm, tell us your goal — e.g. &quot;lose fat&quot; or &quot;build muscle&quot;.</span>
-    </div>
-  </section>
-
-  <!-- TRUST STRIP -->
-  <div class="stat-strip">
-    <div class="ss-item"><b class="count-up" data-target="1000" data-suffix="+">0</b>&nbsp;plans generated</div>
-    <div class="ss-item"><b class="count-up" data-target="15" data-suffix="+">0</b>&nbsp;diet types</div>
-    <div class="ss-item"><b>5</b>&nbsp;goal categories</div>
-    <div class="ss-item"><b class="count-up" data-target="100" data-suffix="%">0</b>&nbsp;free forever</div>
-  </div>
-
-</div><!-- /page-wrap -->
-
-<!-- POPULAR TOOLS -->
-<section class="popular">
-  <div class="section-head">
-    <div class="section-title">Popular tools</div>
-    <p class="section-sub">Instant calculators — no signup, results right in your browser.</p>
-  </div>
-  <div class="popular-grid">
-    <a class="popular-card" href="fitness-tools.html?tool=bmi">
-      <div class="pop-icon">&#x2696;&#xFE0F;</div>
-      <div class="pop-name">BMI Calculator</div>
-      <div class="pop-desc">See where your weight sits — BMI plus a body-fat estimate.</div>
-      <div class="pop-cta">Calculate BMI</div>
-    </a>
-    <a class="popular-card" href="fitness-tools.html?tool=tdee">
-      <div class="pop-icon">&#x1F525;</div>
-      <div class="pop-name">Calorie Target (TDEE)</div>
-      <div class="pop-desc">Your maintenance, fat-loss and muscle-gain calories.</div>
-      <div class="pop-cta">Calculate calories</div>
-    </a>
-    <a class="popular-card" href="fitness-tools.html?tool=macro-split">
-      <div class="pop-icon">&#x1F969;</div>
-      <div class="pop-name">Macro Split</div>
-      <div class="pop-desc">Protein, carbs and fat grams for your daily target.</div>
-      <div class="pop-cta">Split macros</div>
-    </a>
-    <a class="popular-card" href="fitness-tools.html?tool=one-rep-max">
-      <div class="pop-icon">&#x1F3CB;&#xFE0F;</div>
-      <div class="pop-name">1RM Estimator</div>
-      <div class="pop-desc">Estimate your one-rep max from any set you've hit.</div>
-      <div class="pop-cta">Find my 1RM</div>
-    </a>
-  </div>
-</section>
-
-<!-- FULL PLAN GENERATORS -->
-<div class="reveal-wrap show" id="revealWrap">
-  <div class="plan-section" id="planSection">
-    <div class="plan-section-title">Or build your full plan</div>
-    <div class="plan-cards">
+    <div class="reveal-wrap show">
+      <div class="plan-section">
+        <div class="plan-section-title">Build your full plan</div>
+        <div class="plan-cards">
 
       <!-- MEAL PLAN -->
       <div class="plan-card card-meal" onclick="goToPlan('Meal Plan.html', this)">
@@ -747,15 +658,76 @@
         </div>
       </div>
 
+        </div>
+      </div>
     </div>
+
+    <div class="goal-ask">
+      <div class="ask-label">Or tell us in your own words</div>
+      <div class="ask-row">
+        <input id="goalAskInput" type="text" placeholder="e.g. I want to lose fat and build muscle" aria-label="Describe your goal"/>
+        <button class="ask-btn" type="button" aria-label="Start building your plan">Start &#8594;</button>
+      </div>
+      <div class="ask-hints">
+        <button class="ask-hint" type="button">I want to lose weight</button>
+        <button class="ask-hint" type="button">I want to build muscle</button>
+        <button class="ask-hint" type="button">I want to get stronger</button>
+        <button class="ask-hint" type="button">I want to get fitter</button>
+      </div>
+      <span class="ferr">Hmm, tell us your goal — e.g. &quot;lose fat&quot; or &quot;build muscle&quot;.</span>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <div class="stat-strip">
+    <div class="ss-item"><b class="count-up" data-target="1000" data-suffix="+">0</b>&nbsp;plans generated</div>
+    <div class="ss-item"><b class="count-up" data-target="15" data-suffix="+">0</b>&nbsp;diet types</div>
+    <div class="ss-item"><b>5</b>&nbsp;goal categories</div>
+    <div class="ss-item"><b class="count-up" data-target="100" data-suffix="%">0</b>&nbsp;free forever</div>
   </div>
-</div>
+
+</div><!-- /page-wrap -->
+
+<!-- POPULAR TOOLS -->
+<section class="popular">
+  <div class="section-head">
+    <div class="section-title">Popular tools</div>
+    <p class="section-sub">Instant calculators — no signup, results right in your browser.</p>
+  </div>
+  <div class="popular-grid">
+    <a class="popular-card" href="fitness-tools.html?tool=bmi">
+      <div class="pop-icon">&#x2696;&#xFE0F;</div>
+      <div class="pop-name">BMI Calculator</div>
+      <div class="pop-desc">See where your weight sits — BMI plus a body-fat estimate.</div>
+      <div class="pop-cta">Calculate BMI</div>
+    </a>
+    <a class="popular-card" href="fitness-tools.html?tool=tdee">
+      <div class="pop-icon">&#x1F525;</div>
+      <div class="pop-name">Calorie Target (TDEE)</div>
+      <div class="pop-desc">Your maintenance, fat-loss and muscle-gain calories.</div>
+      <div class="pop-cta">Calculate calories</div>
+    </a>
+    <a class="popular-card" href="fitness-tools.html?tool=macro-split">
+      <div class="pop-icon">&#x1F969;</div>
+      <div class="pop-name">Macro Split</div>
+      <div class="pop-desc">Protein, carbs and fat grams for your daily target.</div>
+      <div class="pop-cta">Split macros</div>
+    </a>
+    <a class="popular-card" href="fitness-tools.html?tool=one-rep-max">
+      <div class="pop-icon">&#x1F3CB;&#xFE0F;</div>
+      <div class="pop-name">1RM Estimator</div>
+      <div class="pop-desc">Estimate your one-rep max from any set you've hit.</div>
+      <div class="pop-cta">Find my 1RM</div>
+    </a>
+  </div>
+</section>
 
 <footer class="footer">
   <div class="footer-nav">
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
     <a href="fitness-tools.html">Fitness Tools</a>
+    <a href="blogs.html">Blogs</a>
     <a href="disclaimer.html">Medical Disclaimer</a>
     <a href="privacy.html">Privacy Policy</a>
     <a href="terms.html">Terms &amp; Conditions</a>

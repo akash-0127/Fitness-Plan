@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="FitPlan Community Blog — lifestyle, health, workout and recipe articles. Write your own post and get it published after approval."/>
+<title>Blog — FitPlan</title>
+<script>!function(){var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme:light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t)}();</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  :root {
+    --green:#059669;--gl:#ecfdf5;--orange:#ea580c;--ol:#fff7ed;
+    --blue:#2563eb;--bl:#eff6ff;--red:#dc2626;--rl:#fef2f2;
+    --gold:#d97706;--goldl:#fffbeb;--bg:#f8fafc;--card:#ffffff;
+    --card2:#f8fafc;--card-hover:#f6f8fb;
+    --text:#0f172a;--muted:#64748b;--border:rgba(15,23,42,0.08);
+    --border-solid:#e2e8f0;--r:20px;--rs:14px;
+    --accent:#0891b2;--accent2:#0e7490;--accent-dim:rgba(8,145,178,0.06);
+    --success:#059669;--purple:#0891b2;--cyan:#0891b2;
+    --shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.03);
+    --shadow-hover:0 8px 30px rgba(0,0,0,0.07),0 2px 8px rgba(0,0,0,0.04);
+    --radius-btn:14px;
+    --gold-dim:rgba(217,119,6,0.08);--purple-dim:rgba(8,145,178,0.08);
+    --radius:20px;--radius-sm:14px;
+  }
+  [data-theme="dark"] {
+    --green:#7eca5a;--gl:#1a2e12;--orange:#f97316;--ol:#2a1a08;
+    --blue:#3b82f6;--bl:#0c1a2e;--red:#ef4444;--rl:#2a0c0c;
+    --gold:#fbbf24;--goldl:#2a2008;--bg:#0f172a;--card:#1e293b;
+    --card2:#1e293b;--card-hover:#253348;
+    --text:#f2f2f5;--muted:#94a3b8;--border:rgba(255,255,255,0.08);
+    --border-solid:#1e293b;--r:20px;--rs:14px;
+    --accent:#22d3ee;--accent2:#67e8f9;--accent-dim:rgba(34,211,238,0.12);
+    --success:#34d399;--purple:#67e8f9;--cyan:#22d3ee;
+    --shadow:0 1px 3px rgba(0,0,0,0.2),0 4px 12px rgba(0,0,0,0.15);
+    --shadow-hover:0 8px 32px rgba(0,0,0,0.3),0 2px 8px rgba(0,0,0,0.2);
+    --radius-btn:14px;
+    --gold-dim:rgba(251,191,36,0.12);--purple-dim:rgba(103,232,249,0.12);
+    --radius:20px;--radius-sm:14px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  @keyframes fadeInUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+  @keyframes breathe { 0%,100% { transform:scale(1); } 50% { transform:scale(1.03); } }
+
+  .portal-nav{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 2rem;background:var(--card);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200}
+  .portal-nav .nav-brand{font-size:1.1rem;font-weight:800;color:var(--accent);text-decoration:none}
+  .portal-nav .nav-links{display:flex;gap:1.5rem;align-items:center}
+  .portal-nav .nav-links a{color:var(--muted);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}
+  .portal-nav .nav-links a:hover,.portal-nav .nav-links a.active{color:var(--accent)}
+  .theme-toggle{background:none;border:1.5px solid var(--border);cursor:pointer;padding:5px;border-radius:50%;color:var(--muted);transition:all 0.3s;display:flex;align-items:center;justify-content:center;width:32px;height:32px}
+  .theme-toggle:hover{background:var(--border);color:var(--accent);border-color:var(--accent)}
+  .theme-toggle svg{width:16px;height:16px}
+  [data-theme="dark"] .sun-i{display:block}
+  [data-theme="dark"] .moon-i{display:none}
+  [data-theme="light"] .sun-i{display:none}
+  [data-theme="light"] .moon-i{display:block}
+
+  .page-wrap { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 1rem; }
+
+  .bg-glow {
+    position: fixed; top: -20%; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(8,145,178,0.06) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+    animation: breathe 8s ease-in-out infinite;
+  }
+
+  .hero { text-align: center; padding: 3rem 0.5rem 1.75rem; animation: fadeInUp 0.7s ease-out 0.1s both; }
+  .hero-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(8,145,178,0.08); border: 1px solid rgba(8,145,178,0.2);
+    color: var(--accent); font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 6px 18px; border-radius: 999px; margin-bottom: 1.25rem;
+    animation: float 3s ease-in-out infinite;
+  }
+  .hero h1 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.8px; margin-bottom: 0.7rem; }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero-sub { font-size: 1.05rem; color: var(--muted); max-width: 640px; margin: 0 auto; }
+
+  .blog-section, .write-section {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow);
+    animation: fadeInUp 0.6s ease-out both;
+  }
+  .section-title {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 0.9rem; display: flex; align-items: center; gap: 10px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .section-sub { font-size: 0.9rem; color: var(--muted); margin-top: -0.5rem; margin-bottom: 1.25rem; }
+
+  .blog-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .blog-meta { font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .chip-count { font-size: 0.68rem; opacity: 0.75; }
+
+  .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+
+  .blog-card {
+    background: var(--card2); border: 1.5px solid var(--border);
+    border-radius: 16px; padding: 1.35rem 1.5rem 1.2rem;
+    cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column; gap: 0.6rem; position: relative; overflow: hidden;
+    outline: none;
+  }
+  .blog-card::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0); transform-origin: left; transition: transform 0.3s;
+  }
+  .blog-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: var(--shadow-hover); }
+  .blog-card:hover::before { transform: scaleX(1); }
+  .blog-card:focus-visible { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(8,145,178,0.15); }
+
+  .blog-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .blog-read { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.02em; }
+  .blog-title { font-size: 1.05rem; font-weight: 800; line-height: 1.35; color: var(--text); letter-spacing: -0.01em; }
+  .blog-excerpt { font-size: 0.82rem; color: var(--muted); line-height: 1.6; flex: 1; }
+  .blog-card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px solid var(--border); padding-top: 0.75rem; margin-top: 0.25rem; }
+  .blog-author { display: inline-flex; align-items: center; gap: 5px; font-size: 0.74rem; font-weight: 700; color: var(--text); }
+  .blog-author svg { color: var(--accent); }
+  .blog-date { font-size: 0.72rem; color: var(--muted); }
+
+  .blog-cat {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 0.65rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 999px;
+  }
+  .cat-lifestyle { background: rgba(5,150,105,0.12); color: var(--green); border: 1px solid rgba(5,150,105,0.25); }
+  .cat-health    { background: rgba(37,99,235,0.12); color: var(--blue); border: 1px solid rgba(37,99,235,0.25); }
+  .cat-workout   { background: rgba(139,92,246,0.12); color: #a78bfa; border: 1px solid rgba(139,92,246,0.25); }
+  .cat-recipes   { background: rgba(234,88,12,0.12); color: var(--orange); border: 1px solid rgba(234,88,12,0.25); }
+
+  .empty { text-align: center; padding: 2.5rem 1rem; color: var(--muted); }
+  .empty i { width: 30px; height: 30px; margin-bottom: 6px; }
+  .empty p { font-size: 0.85rem; }
+
+  /* ── WRITE FORM ── */
+  .blog-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+  .blog-step { background: var(--accent-dim); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.9rem 1rem; }
+  .blog-step b { display: block; font-size: 0.82rem; color: var(--text); margin-bottom: 2px; }
+  .blog-step span { font-size: 0.76rem; color: var(--muted); line-height: 1.5; }
+
+  .blog-form { display: flex; flex-direction: column; gap: 14px; }
+  .blog-field { display: flex; flex-direction: column; gap: 6px; }
+  .blog-field label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+  .blog-field input, .blog-field select, .blog-field textarea {
+    width: 100%; padding: 11px 14px; font-size: 0.9rem; font-family: inherit;
+    border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: var(--card2);
+    color: var(--text); outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .blog-field input:focus, .blog-field select:focus, .blog-field textarea:focus {
+    border-color: var(--accent); box-shadow: 0 0 0 4px rgba(8,145,178,0.1);
+  }
+  .blog-field textarea { resize: vertical; min-height: 160px; line-height: 1.6; }
+  .blog-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .blog-hint { font-size: 0.72rem; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+  .blog-form-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .blog-form-actions .btn { min-width: 200px; }
+  .blog-note { font-size: 0.74rem; color: var(--muted); }
+  .blog-success {
+    background: rgba(5,150,105,0.1); border: 1px solid rgba(5,150,105,0.3);
+    border-radius: var(--radius-sm); padding: 1rem 1.1rem; margin-top: 1rem;
+    font-size: 0.85rem; color: var(--text); line-height: 1.6;
+  }
+  .blog-success b { color: var(--green); }
+  .blog-error {
+    background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.3);
+    border-radius: var(--radius-sm); padding: 1rem 1.1rem; margin-top: 1rem;
+    font-size: 0.85rem; color: var(--text); line-height: 1.6;
+  }
+
+  /* ── MODAL ── */
+  .blog-modal { position: fixed; inset: 0; z-index: 400; display: flex; align-items: center; justify-content: center; padding: 1.25rem; }
+  .blog-modal[hidden] { display: none; }
+  .blog-modal-backdrop { position: absolute; inset: 0; background: rgba(2,6,23,0.6); backdrop-filter: blur(4px); }
+  .blog-modal-card {
+    position: relative; z-index: 1; background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); max-width: 720px; width: 100%; max-height: 85vh; overflow: auto;
+    padding: 1.75rem 2rem 2rem; box-shadow: var(--shadow-hover);
+    animation: fadeInUp 0.35s ease-out both;
+  }
+  .blog-modal-close {
+    position: absolute; top: 14px; right: 16px; background: none; border: 1.5px solid var(--border);
+    border-radius: 50%; width: 30px; height: 30px; cursor: pointer; color: var(--muted);
+    font-size: 1.1rem; line-height: 1; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .blog-modal-close:hover { color: var(--accent); border-color: var(--accent); }
+  .blog-modal-head { display: flex; align-items: center; gap: 10px; margin-bottom: 0.8rem; }
+  .blog-modal-title { font-size: clamp(1.3rem, 3vw, 1.7rem); font-weight: 800; line-height: 1.3; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+  .blog-modal-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.25rem; }
+  .blog-modal-meta strong { color: var(--text); }
+  .blog-modal-body { font-size: 0.94rem; color: var(--text); line-height: 1.75; }
+  .blog-modal-body p { margin-bottom: 1rem; }
+
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px; margin: 0.5rem 0 1.25rem;
+    color: var(--accent); text-decoration: none; font-size: 0.85rem; font-weight: 700;
+  }
+  .back-link:hover { text-decoration: underline; }
+
+  .footer{text-align:center;padding:3rem 2rem 2.5rem;margin-top:2rem;border-top:1px solid var(--border);position:relative;z-index:1}
+  .footer-nav{display:flex;justify-content:center;flex-wrap:wrap;gap:0.4rem 1.25rem;margin-bottom:1.75rem}
+  .footer-nav a{color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:500;transition:color 0.2s}
+  .footer-nav a:hover{color:var(--accent)}
+  .footer-copy{font-size:0.75rem;color:var(--muted);line-height:1.6}
+  .footer-copy a{color:var(--accent2);text-decoration:none;font-weight:500}
+  .footer-copy a:hover{text-decoration:underline}
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::selection { background: rgba(8,145,178,0.25); color: var(--text); }
+
+  @media (max-width: 700px) {
+    .portal-nav { padding: 0.6rem 1rem; }
+    .portal-nav .nav-links { gap: 0.9rem; }
+    .portal-nav .nav-links a { font-size: 0.78rem; }
+    .blog-section, .write-section { padding: 1.1rem; }
+    .blog-steps { grid-template-columns: 1fr; }
+    .blog-form-row { grid-template-columns: 1fr; }
+    .blog-modal-card { padding: 1.25rem 1.25rem 1.5rem; }
+    .footer{padding:2rem 1.25rem;margin-top:1.5rem}
+    .footer-nav{gap:0.3rem 0.8rem}
+  }
+</style>
+<link rel="stylesheet" href="ui-enhancements.css"/>
+<link rel="stylesheet" href="design-system.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+<script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script defer src="ui-enhancements.js"></script>
+<script defer src="design-system.js"></script>
+</head>
+<body>
+
+<nav class="portal-nav">
+  <a href="index.html" class="nav-brand">FitPlan</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="fitness-tools.html">Fitness Tools</a>
+    <a href="food-database.html">Food Database</a>
+    <a href="blogs.html" class="active">Blog</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </div>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><svg class="sun-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="moon-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+</nav>
+
+<div class="bg-glow"></div>
+
+<div class="page-wrap">
+
+  <section class="hero" id="hero">
+    <div class="hero-pill">FitPlan Community</div>
+    <h1>The FitPlan <em>Blog</em></h1>
+    <p class="hero-sub">Real stories, practical health tips, workouts and recipes from our community. Have something to share? Write a post below.</p>
+  </section>
+
+  <!-- APPROVED POSTS -->
+  <section class="blog-section" id="posts">
+    <div class="section-head">
+      <div class="section-title">Latest Posts</div>
+      <p class="section-sub">Every article below has been reviewed and approved before publishing.</p>
+    </div>
+
+    <div class="blog-toolbar">
+      <div class="chips" id="blogChips"></div>
+      <div class="blog-meta" id="blogMeta">Loading posts…</div>
+    </div>
+
+    <div class="blog-grid" id="blogGrid"></div>
+    <div class="empty" id="blogEmpty" hidden><i data-lucide="file-text"></i><p>No posts here yet. Be the first to write one!</p></div>
+  </section>
+
+  <!-- WRITE A POST -->
+  <section class="write-section" id="write">
+    <div class="section-head">
+      <div class="section-title">Write a Post</div>
+      <p class="section-sub">Share tips, recipes, workouts or lifestyle advice — it's free and takes two minutes.</p>
+    </div>
+
+    <div class="blog-steps">
+      <div class="blog-step"><b>1. Fill in the form</b><span>Give your post a title, pick a category and write it out below.</span></div>
+      <div class="blog-step"><b>2. Send it to us</b><span>Your post is emailed straight to the FitPlan review inbox — no extra steps.</span></div>
+      <div class="blog-step"><b>3. Get published</b><span>We review your post, then publish it or turn it down — either way you get an email.</span></div>
+    </div>
+
+    <form class="blog-form" id="blogForm" novalidate>
+      <div class="blog-field">
+        <label for="blogTitle">Post title</label>
+        <input id="blogTitle" type="text" maxlength="120" placeholder="e.g. My 90-day fat loss journey" required/>
+      </div>
+      <div class="blog-form-row">
+        <div class="blog-field">
+          <label for="blogCat">Category</label>
+          <select id="blogCat">
+            <option value="lifestyle">Lifestyle</option>
+            <option value="health">Health</option>
+            <option value="workout">Workout</option>
+            <option value="recipes">Recipes</option>
+          </select>
+        </div>
+        <div class="blog-field">
+          <label for="blogAuthor">Your name</label>
+          <input id="blogAuthor" type="text" maxlength="60" placeholder="How should we credit you?"/>
+        </div>
+      </div>
+      <div class="blog-field">
+        <label for="blogEmail">Your email</label>
+        <input id="blogEmail" type="email" maxlength="120" placeholder="We'll email you when your post is approved or rejected" required/>
+      </div>
+      <div class="blog-field">
+        <label for="blogContent">Your post</label>
+        <textarea id="blogContent" maxlength="8000" placeholder="Write your post here. Separate paragraphs with a blank line." required></textarea>
+        <div class="blog-hint"><span>Be honest, original and helpful — keep it roughly 300–800 words.</span><span id="blogCharCount"></span></div>
+      </div>
+
+      <div class="blog-form-actions">
+        <button class="btn btn-p" type="submit">Send for approval →</button>
+        <span class="blog-note">Your post and email go to the FitPlan review inbox. Nothing is published until approved.</span>
+      </div>
+
+      <input type="checkbox" name="botcheck" id="blogBotcheck" value="true" style="display:none" tabindex="-1" autocomplete="off"/>
+
+      <div class="blog-success" id="blogSuccess" hidden>
+        <b>Post sent!</b> Your blog has been emailed to the FitPlan team for review. You'll receive a confirmation email now, and a reply to that email once your post is approved or rejected.
+      </div>
+
+      <div class="blog-error" id="blogError" hidden></div>
+    </form>
+  </section>
+
+  <a class="back-link" href="index.html"><i data-lucide="arrow-left" style="width:15px;height:15px"></i> Back to FitPlan</a>
+
+</div>
+
+<!-- POST MODAL -->
+<div class="blog-modal" id="blogModal" hidden>
+  <div class="blog-modal-backdrop" data-close></div>
+  <div class="blog-modal-card" role="dialog" aria-modal="true" aria-labelledby="blogModalTitle">
+    <button class="blog-modal-close" data-close aria-label="Close">&#10005;</button>
+    <div id="blogModalBody"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-nav">
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="fitness-tools.html">Fitness Tools</a>
+    <a href="blogs.html">Blog</a>
+    <a href="disclaimer.html">Medical Disclaimer</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms &amp; Conditions</a>
+  </div>
+  <div class="footer-copy">
+    Designed by <a href="https://instagram.com/akash.liftsup" target="_blank">Akash Singh</a> · © 2026 FitPlan · All plans are for educational purposes
+  </div>
+</footer>
+
+<script src="js/blogs.js"></script>
+<script>
+function toggleTheme(){var h=document.documentElement,c=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',c);localStorage.setItem('theme',c);document.body.style.transition='background 0.4s,color 0.4s';setTimeout(function(){document.body.style.transition=''},500)}
+</script>
+</body>
+</html>

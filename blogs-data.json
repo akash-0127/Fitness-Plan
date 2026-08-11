@@ -1,0 +1,44 @@
+{
+  "posts": [
+    {
+      "id": "1",
+      "title": "5 Beginner Mistakes in the Gym (and How to Fix Them)",
+      "category": "workout",
+      "excerpt": "Ego lifting, skipping warm-ups, and chasing the wrong exercises — here's what most new lifters get wrong and the simple fixes.",
+      "content": "Every lifter starts somewhere, and almost all of us make the same mistakes in the first few months. The good news is they're easy to fix once you know what to look for.\n\nMistake one: ego lifting. The number on the bar means nothing if your form breaks down. Drop the weight, nail the movement, and the strength will follow.\n\nMistake two: skipping the warm-up. Five minutes of light cardio plus a couple of empty-bar sets can save you from months of nagging injuries.\n\nMistake three: training the mirror muscles. Hit your back, legs and glutes — that's where real progress lives.\n\nMistake four: no progression plan. 'Doing more' isn't a program. Add weight or reps week over week and track it.\n\nMistake five: ignoring recovery. Muscle is built while you rest. Sleep seven to eight hours and stop grinding when you're beat.",
+      "author": "Akash Singh",
+      "date": "2026-08-10",
+      "readTime": "4 min read"
+    },
+    {
+      "id": "2",
+      "title": "High-Protein Overnight Oats (3-Ingredient Base)",
+      "category": "recipes",
+      "excerpt": "A 2-minute prep, high-protein breakfast that keeps you full till lunch. Plus three flavour variations.",
+      "content": "Overnight oats are the easiest high-protein breakfast on the planet: no cooking, no fuss, ready by morning.\n\nBase recipe (serves 1):\n- 50g rolled oats\n- 200ml milk or plant milk\n- 1 scoop protein powder\n\nStir everything together in a jar, cover, and leave in the fridge overnight. In the morning add a splash of milk and a pinch of salt and you're done.\n\nVariation one — Chocolate Peanut: add 1 tbsp cocoa powder and 1 tbsp peanut butter.\n\nVariation two — Berry Bliss: stir in 80g mixed berries and 1 tsp honey.\n\nVariation three — Apple Cinnamon: add half a grated apple and a teaspoon of cinnamon.\n\nRough macros for the base: 450 kcal, 35g protein, 45g carbs, 12g fat.",
+      "author": "Ritika Sharma",
+      "date": "2026-08-08",
+      "readTime": "3 min read"
+    },
+    {
+      "id": "3",
+      "title": "Why Sleep Is Your Best Recovery Tool",
+      "category": "health",
+      "excerpt": "You can't out-train a bad night of sleep. Here's how sleep drives fat loss, muscle growth and your energy.",
+      "content": "Every plan on this site — meal plans, workout plans, calorie targets — works a little better when you sleep well. Here's why.\n\nGrowth hormone, the stuff that repairs muscle, is released mostly during deep sleep. Miss it and you recover slower, no matter how good your training is.\n\nSleep also regulates ghrelin and leptin, the hormones that control hunger. Short sleep makes you hungrier and more likely to reach for junk.\n\nAnd then there's the simple one: a rested brain lifts heavier, moves more, and sticks to the plan.\n\nPractical targets: seven to nine hours, a consistent bedtime, no screens 30 minutes before bed, and a cool dark room.",
+      "author": "Dr. Priya Nair",
+      "date": "2026-08-05",
+      "readTime": "3 min read"
+    },
+    {
+      "id": "4",
+      "title": "Building Habits That Actually Stick",
+      "category": "lifestyle",
+      "excerpt": "Motivation fades in a week. Systems last for years. A practical framework to make fitness a habit, not a chore.",
+      "content": "You don't need more motivation — you need a system. Here's the framework I give everyone who struggles to stay consistent.\n\nStart tiny. A habit that takes under two minutes is impossible to skip. 'Do 10 push-ups' beats 'workout for an hour' every single time.\n\nAttach it to something you already do. After your morning coffee, stretch for two minutes. The existing habit becomes your trigger.\n\nMake it obvious. Keep the gym bag packed, the shoes by the door, the oats on the counter.\n\nTrack it. A simple calendar, an X for every day you show up. Don't break the chain.\n\nNever miss twice. One missed day is an accident. Two in a row is the start of a new (bad) habit.",
+      "author": "Akash Singh",
+      "date": "2026-08-02",
+      "readTime": "4 min read"
+    }
+  ]
+}
