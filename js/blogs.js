@@ -6,6 +6,10 @@
      Paste your Google Apps Script web app URL here (the /exec link from the
      deployment in blog-approvals.gs). Until then, the form stays disabled. */
   var BLOG_APP_URL = 'https://script.google.com/macros/s/AKfycbx1nZ7FtKeQDsGfPR5-ETTKQK5TQKdu1w8g2muQRRZW4qvotM58gZyIVyrs2YXJNAgoBA/exec';
+  /* Admin delete key — must match the DELETE_KEY script property in Apps Script. */
+  var DELETE_KEY = '8f2c4d91a6b3e7f0c5d2a9b84e1f0637';
+  /* Admin mode: open the page with ?admin in the URL to reveal delete buttons. */
+  var isAdmin = /admin/i.test(location.search);
 
   var CAT_LABELS = { lifestyle: 'Lifestyle', health: 'Health', workout: 'Workout', recipes: 'Recipes' };
   var CAT_ORDER = ['lifestyle', 'health', 'workout', 'recipes'];
@@ -66,6 +70,7 @@
 
   function cardHtml(p) {
     return '<article class="blog-card" data-id="' + esc(p.id) + '" tabindex="0" role="button" aria-label="Read: ' + esc(p.title) + '">' +
+      (isAdmin ? '<button class="blog-delete" data-del="' + esc(p.id) + '" type="button" title="Delete this post"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button>' : '') +
       '<div class="blog-card-top">' + catBadge(p.category) +
         (p.readTime ? '<span class="blog-read">' + esc(p.readTime) + '</span>' : '') +
       '</div>' +
@@ -126,6 +131,14 @@
       });
     });
 
+    Array.prototype.forEach.call(grid.querySelectorAll('.blog-delete'), function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        deletePost(btn.getAttribute('data-del'));
+      });
+    });
+
     if (window.lucide) window.lucide.createIcons();
   }
 
@@ -152,6 +165,28 @@
     if (!modal) return;
     modal.hidden = true;
     document.body.style.overflow = '';
+  }
+
+  /* ── ADMIN DELETE ── */
+  function deletePost(id) {
+    var p = null;
+    for (var i = 0; i < posts.length; i++) { if (String(posts[i].id) === String(id)) { p = posts[i]; break; } }
+    if (!p) return;
+    if (!window.confirm('Delete "' + p.title + '" from the blog? This can\'t be undone.')) return;
+    fetch(BLOG_APP_URL + '?action=delete&id=' + encodeURIComponent(id) + '&key=' + encodeURIComponent(DELETE_KEY))
+      .then(function (r) {
+        return r.text().then(function (t) {
+          var d = null;
+          try { d = JSON.parse(t); } catch (e) {}
+          return { ok: r.ok, data: d };
+        });
+      })
+      .then(function (res) {
+        if (res.data && res.data.success) { location.reload(); }
+        else if (res.data && res.data.error) { window.alert('Could not delete: ' + res.data.error); }
+        else { window.alert('Could not delete the post right now. Please try again.'); }
+      })
+      .catch(function () { window.alert('Network error — could not delete the post.'); });
   }
 
   if (modal) {

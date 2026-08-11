@@ -10,9 +10,10 @@
  *      - Execute as: Me
  *      - Who has access: Anyone
  *      - Click Deploy, authorize, and COPY the /exec URL.
- *   3. Click the padlock "Project Settings" icon (left sidebar) > "Script properties" > "Add script property" and add TWO rows:
+ *   3. Click the padlock "Project Settings" icon (left sidebar) > "Script properties" > "Add script property" and add THREE rows:
  *        GITHUB_TOKEN  = your GitHub token (see step 4)
  *        APP_URL       = the /exec URL you just copied
+ *        DELETE_KEY    = the same value as DELETE_KEY in js/blogs.js (admin delete key)
  *   4. Create the GitHub token at https://github.com/settings/tokens
  *      - "Generate new token" (Fine-grained), Repository access: Only select repositories > Fitness-Plan
  *      - Permissions > Repository permissions > Contents: Read and write
@@ -26,6 +27,8 @@
  * Clicking Approve  -> writes the post into blogs-data.json on GitHub and pushes it,
  *                      then emails the writer that their post is live.
  * Clicking Reject   -> does not publish, emails the writer that it wasn't approved.
+ * Opening the blog with ?admin in the URL shows delete buttons on every post;
+ * the script removes the post from blogs-data.json, pushes, and clears the sheet row.
  */
 
 function doPost(e) {
@@ -93,6 +96,21 @@ function doGet(e) {
       }
     }
 
+    if (action === 'delete') {
+      if (!cfg.delKey || key !== cfg.delKey) return json_({ success: false, error: 'Invalid delete key.' });
+      var row = findRow_(id);
+      var info = githubRead_(cfg);
+      if (info.error) return json_({ success: false, error: info.error });
+      var posts = info.fileJson.posts || [];
+      var before = posts.length;
+      info.fileJson.posts = posts.filter(function (p) { return String(p.id) !== String(id); });
+      if (info.fileJson.posts.length === before) return json_({ success: false, error: 'Post not found in blogs-data.json.' });
+      var werr = githubWrite_(cfg, info, info.fileJson, 'Blog: delete post (admin)');
+      if (werr) return json_({ success: false, error: werr });
+      if (row) getSpreadsheet_().deleteRow(row);
+      return json_({ success: true });
+    }
+
     return html_('FitPlan Blog Approvals is running.', true);
   } catch (err) {
     return html_('Error: ' + err, false);
@@ -114,6 +132,7 @@ function getConfig_() {
     branch: p.getProperty('GITHUB_BRANCH') || 'main',
     url: p.getProperty('APP_URL') || '',
     key: key,
+    delKey: p.getProperty('DELETE_KEY') || '',
     owner: p.getProperty('OWNER_EMAIL') || Session.getEffectiveUser().getEmail()
   };
 }
@@ -170,10 +189,9 @@ function buildPost_(row) {
   };
 }
 
-function publishToGithub_(row, cfg) {
-  if (!cfg.token) return 'missing GITHUB_TOKEN. Add it under Project Settings > Script properties.';
-  if (!cfg.url) return 'missing APP_URL. Add your web app /exec URL under Script properties.';
-
+function githubRead_(cfg) {
+  if (!cfg.token) return { error: 'missing GITHUB_TOKEN. Add it under Project Settings > Script properties.' };
+  if (!cfg.url) return { error: 'missing APP_URL. Add your web app /exec URL under Script properties.' };
   var api = 'https://api.github.com/repos/' + cfg.repo + '/contents/blogs-data.json';
   var headers = {
     'Authorization': 'Bearer ' + cfg.token,
@@ -181,41 +199,47 @@ function publishToGithub_(row, cfg) {
     'X-GitHub-Api-Version': '2022-11-28',
     'User-Agent': 'FitPlan-Blog-Approvals'
   };
+  var res = UrlFetchApp.fetch(api, { headers: headers, muteHttpExceptions: true });
+  if (res.getResponseCode() !== 200) {
+    return { error: 'could not read blogs-data.json (' + res.getResponseCode() + ') ' + res.getContentText() };
+  }
+  var meta = JSON.parse(res.getContentText());
+  var b64 = String(meta.content).replace(/\s+/g, '');
+  var fileJson = JSON.parse(Utilities.newBlob(Utilities.base64Decode(b64), 'application/json', 'blogs-data.json').getDataAsString('UTF-8'));
+  return { api: api, headers: headers, meta: meta, fileJson: fileJson };
+}
 
+function githubWrite_(cfg, info, fileJson, message) {
+  var putBody = {
+    message: message,
+    content: Utilities.base64Encode(Utilities.newBlob(JSON.stringify(fileJson, null, 2)).getBytes()),
+    branch: cfg.branch,
+    sha: info.meta.sha
+  };
+  var res = UrlFetchApp.fetch(info.api, {
+    method: 'put',
+    headers: info.headers,
+    contentType: 'application/json',
+    payload: JSON.stringify(putBody),
+    muteHttpExceptions: true
+  });
+  if (res.getResponseCode() !== 200 && res.getResponseCode() !== 201) {
+    return 'could not write blogs-data.json (' + res.getResponseCode() + ') ' + res.getContentText();
+  }
+  return null;
+}
+
+function publishToGithub_(row, cfg) {
   try {
-    var getRes = UrlFetchApp.fetch(api, { headers: headers, muteHttpExceptions: true });
-    if (getRes.getResponseCode() !== 200) {
-      return 'could not read blogs-data.json (' + getRes.getResponseCode() + ') ' + getRes.getContentText();
-    }
-    var meta = JSON.parse(getRes.getContentText());
-    var b64 = String(meta.content).replace(/\s+/g, '');
-    var fileJson = JSON.parse(Utilities.newBlob(Utilities.base64Decode(b64), 'application/json', 'blogs-data.json').getDataAsString('UTF-8'));
-
-    var posts = fileJson.posts || [];
+    var info = githubRead_(cfg);
+    if (info.error) return info.error;
+    var posts = info.fileJson.posts || [];
     var maxId = posts.reduce(function (m, p) { return Math.max(m, parseInt(p.id, 10) || 0); }, 0);
     var post = buildPost_(row);
     post.id = String(maxId + 1);
     posts.push(post);
-    fileJson.posts = posts;
-
-    var newJson = JSON.stringify(fileJson, null, 2);
-    var putBody = {
-      message: 'Blog: publish "' + post.title + '"',
-      content: Utilities.base64Encode(Utilities.newBlob(newJson).getBytes()),
-      branch: cfg.branch,
-      sha: meta.sha
-    };
-    var putRes = UrlFetchApp.fetch(api, {
-      method: 'put',
-      headers: headers,
-      contentType: 'application/json',
-      payload: JSON.stringify(putBody),
-      muteHttpExceptions: true
-    });
-    if (putRes.getResponseCode() !== 200 && putRes.getResponseCode() !== 201) {
-      return 'could not write blogs-data.json (' + putRes.getResponseCode() + ') ' + putRes.getContentText();
-    }
-    return null;
+    info.fileJson.posts = posts;
+    return githubWrite_(cfg, info, info.fileJson, 'Blog: publish "' + post.title + '"');
   } catch (err) {
     return String(err);
   }
