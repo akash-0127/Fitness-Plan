@@ -2471,6 +2471,18 @@ function sendTg(chatId, text, cb) {
     body: JSON.stringify({chat_id: chatId, text: text})
   }).then(function(){ if(cb) cb(); }).catch(function(){ if(cb) cb(); });
 }
+function sendWeb3Form(subject, text) {
+  fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+    body: JSON.stringify({
+      access_key: '1af83a9e-c1c8-443b-8cad-e47575ad3bab',
+      subject: subject,
+      message: text,
+      from_name: 'FitPlan'
+    })
+  }).then(function(r){return r.json();}).then(function(d){console.log('Web3Forms response:', d);}).catch(function(e){console.error('Web3Forms error:', e);});
+}
 function isAdmin() { return window.location.search.indexOf('admin=1') > -1; }
 function confirmPayment() {
   var _n=document.getElementById('cName').value.trim()||'N/A';
@@ -2491,6 +2503,7 @@ function confirmPayment() {
   var _msg='💰 PREMIUM MEAL PLAN — PAYMENT CONFIRMED\n━━━━━━━━━━━━━━━━━━\n👤 CLIENT DETAILS\nName: '+_n+'\nPhone: '+_p+'\nEmail: '+_e+'\nAge: '+_age+'\nWeight: '+_wtDisp+'\nHeight: '+_htDisp+'\nGender: '+_gc('gender')+'\n\n🎯 GOAL & ACTIVITY\nGoal: '+_gc('goal')+'\nActivity: '+_gc('activity')+'\nTraining Days: '+_gc('tdays')+'\nWorkout Timing: '+_gc('timing')+'\n\n🥗 DIET & LIFESTYLE\nDiet: '+_dc()+'\nMeals/Day: '+_gc('meals')+'\nBudget: '+_gc('budget')+'\nCooking Time: '+_gc('cooktime')+'\nHealth: '+_health+'\nStress: '+_gc('stress')+'\n━━━━━━━━━━━━━━━━━━\nAmount: ₹99';
   document.getElementById('qrOverlay').classList.remove('on');
   sendTg('676917032',_msg);
+  sendWeb3Form('💰 PREMIUM MEAL PLAN — PAYMENT CONFIRMED', _msg);
   window.scrollTo({top:0,behavior:'smooth'});
   document.getElementById('successBanner').classList.add('on');
   document.getElementById('successMsg').textContent='Your custom plan will be generated and shared with you in sometime. Thanks for choosing us!';
