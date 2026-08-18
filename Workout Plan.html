@@ -684,9 +684,7 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
       </div>
     </div>
   </div>
-  </section>
 
-  <section class="card step" data-ds-step data-title="Review &amp; Generate">
   <!-- BMI RESULT -->
   <div id="bmiPanel">
     <div style="font-size:0.67rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:0.75rem">&#x1F4CA; Body Composition Analysis</div>
@@ -821,6 +819,11 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 <!-- JS GOES HERE — Parts 2 and 3 inject below -->
 
 
+<script src="js/api-config.js"></script>
+<script src="js/api-spoonacular.js"></script>
+<script src="js/api-wger.js"></script>
+<script src="js/premium-email.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
 // ============================================================
 // PART 2: ALL DATA
@@ -1805,8 +1808,19 @@ function updateCalCalc() {
   document.getElementById('calCalc').classList.add('show');
 }
 
+function prefetchWorkouts() {
+  if (!API_KEYS||!API_KEYS.wger) return;
+  var totalDays=parseInt(S.days)||4;
+  Wger.fetchAll(S.training,S.goal,S.split,totalDays).then(function(wds){
+    window._apiWorkoutCache=wds||null;
+  }).catch(function(){ window._apiWorkoutCache=null; });
+}
+
 // WORKOUT SELECTION
 function getWDs(goal, training, gender, days, split) {
+  if (window._apiWorkoutCache && window._apiWorkoutCache.length) {
+    return window._apiWorkoutCache;
+  }
   var db = training === 'home' ? HOME : (gender === 'female' ? FGYM : GYM);
   var gDb = db[goal] || db.fatloss;
   if (!gDb) gDb = GYM.fatloss;
@@ -1959,6 +1973,7 @@ function setUnit(type, el) {
 // ============================================================
 function generate(mode) {
   if (!validate()) return;
+  if (mode !== 'premium') prefetchWorkouts();
 
   if (mode === 'premium') {
     document.getElementById('premOverlay').classList.add('on');
@@ -2022,6 +2037,55 @@ function sendTg(chatId, text, cb) {
     body: JSON.stringify({chat_id: chatId, text: text})
   }).then(function(){ if(cb) cb(); }).catch(function(){ if(cb) cb(); });
 }
+// ============================================================
+// PREMIUM PLAN EMAIL BUILDER (HTML template → EmailJS)
+// ============================================================
+var EJ = {
+  publicKey: '',   // from EmailJS dashboard → Account
+  serviceId: '',   // from EmailJS dashboard → Email Services
+  templateId: ''   // from EmailJS dashboard → Email Templates
+};
+function sendEmailJS(subject, html, cb) {
+  if (!window.emailjs || !EJ.publicKey || !EJ.serviceId || !EJ.templateId) {
+    console.error('EmailJS not configured');
+    if (cb) cb(false);
+    return;
+  }
+  emailjs.init({ publicKey: EJ.publicKey });
+  emailjs.send(EJ.serviceId, EJ.templateId, {
+    subject: subject,
+    plan_html: html
+  }).then(function (r) {
+    console.log('EmailJS success:', r.status, r.text);
+    if (cb) cb(true);
+  }, function (err) {
+    console.error('EmailJS error:', err);
+    if (cb) cb(false);
+  });
+}
+function buildPremiumPlanEmail() {
+  var wtU = document.querySelector('#weightUnit .unit-btn.active');
+  var htU = document.querySelector('#heightUnit .unit-btn.active');
+  var wtEl = document.getElementById('wt');
+  var htEl = document.getElementById('ht');
+  var origWt = wtEl.value, origHt = htEl.value;
+  if (wtU && wtU.dataset.val === 'lbs' && origWt) wtEl.value = (parseFloat(origWt) / 2.205).toFixed(1);
+  if (htU && htU.dataset.val === 'in' && origHt) htEl.value = (parseFloat(origHt) * 2.54).toFixed(1);
+  var html = '';
+  try {
+    renderPlan('premium');
+
+    if (window.PE) html = window.PE.build('workout');
+    var out = document.getElementById('output');
+    if (out) out.classList.remove('show');
+  } catch (err) {
+    console.error('buildPremiumPlanEmail error:', err);
+  }
+  wtEl.value = origWt;
+  htEl.value = origHt;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  return html;
+}
 function sendWeb3Form(subject, text) {
   fetch('https://api.web3forms.com/submit', {
     method: 'POST',
@@ -2033,6 +2097,25 @@ function sendWeb3Form(subject, text) {
       from_name: 'FitPlan'
     })
   }).then(function(r){return r.json();}).then(function(d){console.log('Web3Forms response:', d);}).catch(function(e){console.error('Web3Forms error:', e);});
+}
+function buildPremiumPlanText() {
+  var wtU=document.querySelector('#weightUnit .unit-btn.active');
+  var htU=document.querySelector('#heightUnit .unit-btn.active');
+  var wtEl=document.getElementById('wt');
+  var htEl=document.getElementById('ht');
+  var origWt=wtEl.value, origHt=htEl.value;
+  if(wtU&&wtU.dataset.val==='lbs'&&origWt) wtEl.value=(parseFloat(origWt)/2.205).toFixed(1);
+  if(htU&&htU.dataset.val==='in'&&origHt) htEl.value=(parseFloat(origHt)*2.54).toFixed(1);
+  var text='';
+  try {
+    renderPlan('premium');
+    var out=document.getElementById('output');
+    if(out){ text=out.innerText; out.classList.remove('show'); }
+  } catch(err) { console.error('buildPremiumPlanText error:', err); }
+  wtEl.value=origWt;
+  htEl.value=origHt;
+  window.scrollTo({top:0,behavior:'smooth'});
+  return text;
 }
 function isAdmin() { return window.location.search.indexOf('admin=1') > -1; }
 function confirmPayment() {
@@ -2052,7 +2135,11 @@ function confirmPayment() {
   var _msg='💰 PREMIUM WORKOUT PLAN — PAYMENT CONFIRMED\n━━━━━━━━━━━━━━━━━━\n👤 CLIENT DETAILS\nName: '+_n+'\nPhone: '+_p+'\nEmail: '+_e+'\nAge: '+_age+'\nWeight: '+_wtDisp+'\nHeight: '+_htDisp+'\nGender: '+_gc('gender')+'\n\n🎯 GOAL & EXPERIENCE\nGoal: '+_gc('goal')+'\nLevel: '+_gc('level')+'\n\n🏋️ TRAINING SETUP\nLocation: '+_gc('training')+'\nDuration: '+_gc('duration')+' min\nDays/Week: '+_gc('days')+'\nTiming: '+_gc('timing')+'\nSplit: '+(S.split||'N/A')+'\nEquipment: '+_gc('equipment')+'\n\n🎯 CUSTOMISATION\nPriority: '+_gc('priority')+'\nInjury: '+_gc('injury')+'\nCardio: '+_gc('cardio')+'\n━━━━━━━━━━━━━━━━━━\nAmount: ₹99';
   document.getElementById('qrOverlay').classList.remove('on');
   sendTg('676917032',_msg);
-  sendWeb3Form('💰 PREMIUM WORKOUT PLAN — PAYMENT CONFIRMED', _msg);
+  var _plan=buildPremiumPlanText();
+  var _html=buildPremiumPlanEmail();
+  sendEmailJS('Premium Workout Plan — '+_n, _html || _plan || _msg, function(ok){
+    if (!ok) sendWeb3Form('Premium Workout Plan — '+_n, _plan || _msg);
+  });
   window.scrollTo({top:0,behavior:'smooth'});
   document.getElementById('successBanner').classList.add('on');
   document.getElementById('successMsg').textContent='Your custom plan will be generated and shared with you in sometime. Thanks for choosing us!';

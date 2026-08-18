@@ -820,8 +820,8 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
     </div>
   </div>
 </div>
-</section>
-<section class="card step" data-ds-step data-title="Review &amp; Generate">
+
+<!-- BMI RESULT -->
 <div id="bmiPanel">
   <div style="font-size:0.67rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:0.75rem">&#x1F4CA; Body Composition Analysis</div>
   <div class="bmi-inner">
@@ -845,7 +845,6 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
 <div style="display:flex;gap:10px;margin-top:1.5rem;flex-wrap:wrap">
   <button class="gbtn" onclick="generate('normal')">🍽️💪 Generate Combo Plan</button>
   <button class="gbtn pbtn" onclick="generate('premium')">&#x2B50; Generate Premium Plan</button>
-
 </div>
   <p style="font-size:0.68rem;color:var(--muted);margin-top:0.75rem;line-height:1.5">By generating your plan, you acknowledge that this information is intended for educational purposes and does not replace professional medical advice. <a href="disclaimer.html" style="color:var(--accent2);text-decoration:none">Read full disclaimer</a></p>
 </section>
@@ -957,6 +956,11 @@ input[type=tel]:focus,input[type=email]:focus{border-color:var(--accent);box-sha
   <div class="footer-copy">© 2026 FitPlan</div>
 </footer>
 </div><!-- /wrap -->
+<script src="js/api-config.js"></script>
+<script src="js/api-spoonacular.js"></script>
+<script src="js/api-wger.js"></script>
+<script src="js/premium-email.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
 // ============================================================
 // WORKOUT DATA
@@ -3036,6 +3040,9 @@ function validate() {
   return ok;
 }
 function getWDs(goal, training, gender, days, split) {
+  if (window._apiWorkoutCache && window._apiWorkoutCache.length) {
+    return window._apiWorkoutCache;
+  }
   var db = training === 'home' ? HOME : (gender === 'female' ? FGYM : GYM);
   var gDb = db[goal] || db.fatloss;
   if (!gDb) gDb = GYM.fatloss;
@@ -3135,7 +3142,54 @@ function getCardio(goal, pref) {
   return all;
 }
 
+function buildMealsFromAPI(apiMeals, timing, numMeals, m, isRest, isPrem) {
+  var html='';
+  var slots3=['breakfast','lunch','dinner'];
+  var slots4=['breakfast','midmorning','lunch','dinner'];
+  var slots5=['breakfast','midmorning','lunch','preworkout','dinner'];
+  var slots6=['early','breakfast','midmorning','lunch','preworkout','dinner'];
+  var slotMap={3:slots3,4:slots4,5:slots5,6:slots6};
+  var activeSlots=slotMap[numMeals]||slots4;
+  if (activeSlots.indexOf('nightsnack')<0 && numMeals>=4) activeSlots.push('nightsnack');
+  var slotLabels={early:'Early Morning / Wake-Up',breakfast:'Breakfast',midmorning:'Mid-Morning Snack',lunch:'Lunch',preworkout:(timing==='morning'?'Pre-Workout (Morning)':timing==='evening'?'Pre/Post-Workout Snack':'Evening / Pre-Workout'),dinner:'Dinner',nightsnack:'Night Snack'};
+  var used={};
+  for (var i=0;i<activeSlots.length;i++) {
+    var slot=activeSlots[i];
+    var label=slotLabels[slot]||slot;
+    var target=Math.round(m.tgt/activeSlots.length);
+    if (slot==='nightsnack') target=150;
+    if (slot==='early') target=50;
+    if (slot==='midmorning') target=Math.round(m.tgt*0.1);
+    var bestIdx=-1,bestDiff=9999;
+    for (var j=0;j<apiMeals.length;j++) {
+      if (used[j]) continue;
+      var diff=Math.abs(apiMeals[j].cal-target);
+      if (diff<bestDiff){bestDiff=diff;bestIdx=j;}
+    }
+    if (bestIdx>=0) used[bestIdx]=true;
+    var recipe=bestIdx>=0?apiMeals[bestIdx]:null;
+    html+='<div class="tl"><div class="mslot-hd"><span class="tl-time">🕐 '+getSlotTime(slot,timing)+'</span><span class="tl-name">'+label+'</span>'+
+      '<span class="tl-macro">'+(recipe?recipe.cal:target)+' kcal · '+(recipe?recipe.prot:Math.round(m.protG/activeSlots.length))+'g protein</span>'+
+      (isRest&&(slot==='preworkout')?'<span class="rest-badge">SKIP OR LIGHT</span>':'')+
+      '</div><div class="tl-opts">';
+    if (recipe) {
+      html+='<div class="mopt"><strong>'+recipe.title+'</strong> — '+recipe.cal+' kcal, '+recipe.prot+'g protein, '+recipe.carb+'g carbs, '+recipe.fat+'g fat'+(recipe.time?' · '+recipe.time+' min':'')+'</div>';
+      var alts=0;
+      for (var k=0;k<apiMeals.length && alts<(isPrem?2:1);k++) {
+        if (used[k]) continue;
+        html+='<div class="mopt">'+apiMeals[k].title+' — '+apiMeals[k].cal+' kcal, '+apiMeals[k].prot+'g protein</div>';
+        used[k]=true;alts++;
+      }
+    } else {
+      html+='<div class="mopt">Flexible — pick any light meal from your diet type</div>';
+    }
+    html+='</div></div>';
+  }
+  return html;
+}
 function buildMeals(mp, goal, timing, numMeals, m, isRest, isPrem) {
+  var apiData=window._apiMealCache;
+  if (apiData&&apiData.length) return buildMealsFromAPI(apiData,timing,numMeals,m,isRest,isPrem);
   var html='';
   var optPick=isRest?1:0; // offset options on rest day for variety
 
@@ -3414,8 +3468,24 @@ function buildPremiumPanel(goal, m) {
 // ============================================================
 // GENERATE FUNCTION (combined)
 // ============================================================
+function prefetchMeals() {
+  if (!API_KEYS||!API_KEYS.spoonacular) return;
+  var calMax=Math.round(calcMetrics().tgt*1.2);
+  var count=parseInt(S.meals)||4;
+  Spoonacular.search(S.diet,calMax,count+2).then(function(recipes){
+    window._apiMealCache=recipes||null;
+  }).catch(function(){ window._apiMealCache=null; });
+}
+function prefetchWorkouts() {
+  if (!API_KEYS||!API_KEYS.wger) return;
+  var totalDays=parseInt(S.days)||4;
+  Wger.fetchAll(S.training,S.goal,S.split,totalDays).then(function(wds){
+    window._apiWorkoutCache=wds||null;
+  }).catch(function(){ window._apiWorkoutCache=null; });
+}
 function generate(mode) {
   if (!validate()) return;
+  if (mode !== 'premium') { prefetchMeals(); prefetchWorkouts(); }
 
   if (mode === 'premium') {
     document.getElementById('premOverlay').classList.add('on');
@@ -3485,6 +3555,56 @@ function sendTg(chatId, text, cb) {
     body: JSON.stringify({chat_id: chatId, text: text})
   }).then(function(){ if(cb) cb(); }).catch(function(){ if(cb) cb(); });
 }
+// ============================================================
+// PREMIUM PLAN EMAIL BUILDER (HTML template → EmailJS)
+// ============================================================
+var EJ = {
+  publicKey: '',   // from EmailJS dashboard → Account
+  serviceId: '',   // from EmailJS dashboard → Email Services
+  templateId: ''   // from EmailJS dashboard → Email Templates
+};
+function sendEmailJS(subject, html, cb) {
+  if (!window.emailjs || !EJ.publicKey || !EJ.serviceId || !EJ.templateId) {
+    console.error('EmailJS not configured');
+    if (cb) cb(false);
+    return;
+  }
+  emailjs.init({ publicKey: EJ.publicKey });
+  emailjs.send(EJ.serviceId, EJ.templateId, {
+    subject: subject,
+    plan_html: html
+  }).then(function (r) {
+    console.log('EmailJS success:', r.status, r.text);
+    if (cb) cb(true);
+  }, function (err) {
+    console.error('EmailJS error:', err);
+    if (cb) cb(false);
+  });
+}
+function buildPremiumPlanEmail() {
+  var wtU = document.querySelector('#weightUnit .unit-btn.active');
+  var htU = document.querySelector('#heightUnit .unit-btn.active');
+  var wtEl = document.getElementById('wt');
+  var htEl = document.getElementById('ht');
+  var origWt = wtEl.value, origHt = htEl.value;
+  if (wtU && wtU.dataset.val === 'lbs' && origWt) wtEl.value = (parseFloat(origWt) / 2.205).toFixed(1);
+  if (htU && htU.dataset.val === 'in' && origHt) htEl.value = (parseFloat(origHt) * 2.54).toFixed(1);
+  var html = '';
+  try {
+    renderMealPlan('premium');
+    renderWorkoutPlan('premium');
+
+    if (window.PE) html = window.PE.build('combo');
+    var out = document.getElementById('output');
+    if (out) out.classList.remove('show');
+  } catch (err) {
+    console.error('buildPremiumPlanEmail error:', err);
+  }
+  wtEl.value = origWt;
+  htEl.value = origHt;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  return html;
+}
 function sendWeb3Form(subject, text) {
   fetch('https://api.web3forms.com/submit', {
     method: 'POST',
@@ -3496,6 +3616,26 @@ function sendWeb3Form(subject, text) {
       from_name: 'FitPlan'
     })
   }).then(function(r){return r.json();}).then(function(d){console.log('Web3Forms response:', d);}).catch(function(e){console.error('Web3Forms error:', e);});
+}
+function buildPremiumPlanText() {
+  var wtU = document.querySelector('#weightUnit .unit-btn.active');
+  var htU = document.querySelector('#heightUnit .unit-btn.active');
+  var wtEl = document.getElementById('wt');
+  var htEl = document.getElementById('ht');
+  var origWt = wtEl.value, origHt = htEl.value;
+  if (wtU && wtU.dataset.val === 'lbs' && origWt) wtEl.value = (parseFloat(origWt) / 2.205).toFixed(1);
+  if (htU && htU.dataset.val === 'in' && origHt) htEl.value = (parseFloat(origHt) * 2.54).toFixed(1);
+  var text = '';
+  try {
+    renderMealPlan('premium');
+    renderWorkoutPlan('premium');
+    var out = document.getElementById('output');
+    if (out) { text = out.innerText; out.classList.remove('show'); }
+  } catch (err) { console.error('buildPremiumPlanText error:', err); }
+  wtEl.value = origWt;
+  htEl.value = origHt;
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  return text;
 }
 function isAdmin() { return window.location.search.indexOf('admin=1') > -1; }
 function confirmPayment() {
@@ -3517,7 +3657,11 @@ function confirmPayment() {
   var _msg='💰 PREMIUM COMBO PLAN — PAYMENT CONFIRMED\n━━━━━━━━━━━━━━━━━━\n👤 CLIENT DETAILS\nName: '+_n+'\nPhone: '+_p+'\nEmail: '+_e+'\nAge: '+_age+'\nWeight: '+_wtDisp+'\nHeight: '+_htDisp+'\nGender: '+_gc('gender')+'\n\n🎯 GOAL & ACTIVITY\nGoal: '+_gc('goal')+'\nActivity: '+_gc('activity')+'\nTraining Days: '+_gc('tdays')+'\n\n🥗 DIET & LIFESTYLE\nDiet: '+_dc()+'\nMeals/Day: '+_gc('meals')+'\nBudget: '+_gc('budget')+'\nCooking Time: '+_gc('cooktime')+'\nHealth: '+_health+'\n\n🏋️ TRAINING SETUP\nLocation: '+_gc('training')+'\nLevel: '+_gc('level')+'\nDuration: '+_gc('duration')+' min\nDays/Week: '+_gc('days')+'\nTiming: '+_gc('timing')+'\nSplit: '+(S.split||'N/A')+'\nEquipment: '+_gc('equipment')+'\n\n🎯 CUSTOMISATION\nPriority: '+_gc('priority')+'\nInjury: '+_gc('injury')+'\nCardio: '+_gc('cardio')+'\n━━━━━━━━━━━━━━━━━━\nAmount: ₹149';
   document.getElementById('qrOverlay').classList.remove('on');
   sendTg('676917032',_msg);
-  sendWeb3Form('💰 PREMIUM COMBO PLAN — PAYMENT CONFIRMED', _msg);
+  var _plan=buildPremiumPlanText();
+  var _html=buildPremiumPlanEmail();
+  sendEmailJS('Premium Combo Plan — '+_n, _html || _plan || _msg, function(ok){
+    if (!ok) sendWeb3Form('Premium Combo Plan — '+_n, _plan || _msg);
+  });
   window.scrollTo({top:0,behavior:'smooth'});
   document.getElementById('successBanner').classList.add('on');
   document.getElementById('successMsg').textContent='Your custom plan will be generated and shared with you in sometime. Thanks for choosing us!';
